@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "786019555929",
+    "firebase_url": "https://quotes-30510-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "quotes-30510",
+    "storage_bucket": "quotes-30510.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:786019555929:android:a125406b113deb288daf48",
+        "android_client_info": {
+          "package_name": "com.sforge.quotes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "786019555929-7r5mdk9d0qraej1nsssoklbm9484lao4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGrZSp8cBWpZSCLRHKVCoFm9fvgDrJgiI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "786019555929-7r5mdk9d0qraej1nsssoklbm9484lao4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
