@@ -70,18 +70,4 @@ public class CreateQuotes extends AppCompatActivity {
         Intent intent = new Intent(CreateQuotes.this, MainActivity.class);
         startActivity(intent);
     }
-    void confirmDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Cancel?");
-        builder.setMessage("Are you sure you want to exit without saving?");
-        builder.setPositiveButton("Yes", (dialogInterface, i) -> {
-            finish();
-            Intent intent = new Intent(CreateQuotes.this, MainActivity.class);
-            startActivity(intent);
-        });
-        builder.setNegativeButton("No", (dialogInterface, i) -> {
-
-        });
-        builder.create().show();
-    }
 }

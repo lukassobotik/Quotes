@@ -15,10 +15,15 @@
         android:textSize="25sp"
         android:textStyle="bold|italic"
         />
+
     <EditText
         android:id="@+id/createQuoteEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColorHighlight="@color/black"
+        android:textColorLink="@color/black"
+        android:textCursorDrawable="@color/white"
+        android:backgroundTint="@color/white"
         />
     <TextView
         android:layout_width="wrap_content"
@@ -31,11 +36,15 @@
         android:id="@+id/createAuthorEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColorHighlight="@color/black"
+        android:textColorLink="@color/black"
+        android:textCursorDrawable="@color/white"
+        android:backgroundTint="@color/white"
         />
 
     <Button
         android:id="@+id/submitQuoteButton"
-        style="@style/Widget.MaterialComponents.Button"
+        style="@style/Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/color_primary"
