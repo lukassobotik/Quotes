@@ -11,8 +11,8 @@ public class DAOQuote {
 
     private final DatabaseReference databaseReference;
     public DAOQuote() {
-        FirebaseDatabase db = FirebaseDatabase.getInstance("https://quotes-30510-default-rtdb.europe-west1.firebasedatabase.app");
-        databaseReference = db.getReference("Quotes");
+        FirebaseDatabase db = FirebaseDatabase.getInstance("https://quotes-30510-default-rtdb.europe-west1.firebasedatabase.app/");
+        databaseReference = db.getReference("Quotess");
     }
     public Task<Void> add(Quote emp) {
         return databaseReference.push().setValue(emp);

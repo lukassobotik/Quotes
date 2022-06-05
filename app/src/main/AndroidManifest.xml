@@ -10,11 +10,34 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Quotes">
         <activity
+            android:name=".ForgottenPassword"
+            android:exported="false"
+            android:label=""/>
+        <activity
+            android:name=".UserProfile"
+            android:exported="false"
+            android:label=""/>
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false"
+            android:label=""/>
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false"
+            android:label=""/>
+        <activity
+            android:name=".UserAccount"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.SlidrActivityTheme"
+            android:label=""/>
+        <activity
             android:name=".CreateQuotes"
-            android:exported="false" />
+            android:exported="false"
+            android:label="Create A Quote"/>
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.SlidrActivityTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

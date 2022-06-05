@@ -13,9 +13,15 @@
         <item name="android:statusBarColor" tools:targetApi="l">@color/color_primary_variant</item>
         <!-- Customize your theme here. -->
     </style>
+
+
     <style name="Button">
         <item name="android:background">@drawable/button_round_corners</item>
         <item name="backgroundTint">@color/dark_grey</item>
+    </style>
+    <style name="whiteButton">
+        <item name="android:background">@drawable/button_round_corners</item>
+        <item name="backgroundTint">@color/white</item>
     </style>
     <style name="addButton">
         <item name="android:background">@drawable/button_round_corners</item>
@@ -23,4 +29,25 @@
         <item name="android:drawableStart">@drawable/ic_baseline_add_24</item>
         <item name="drawableStartCompat">@drawable/ic_baseline_add_24</item>
     </style>
+    <style name="transparentButton" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/button_round_corners</item>
+        <item name="backgroundTint">@color/transparent</item>
+        <item name="elevation">0dp</item>
+        <item name="android:foregroundTint">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+
+    <style name="text">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+
+    <style name="Theme.AppCompat.SlidrActivityTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:background">@color/dark_grey</item>
+    </style>
+
+    <style name="Theme">Theme</style>
 </resources>

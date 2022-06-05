@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Quotes</string>
+
+    <string-array name="profileSpinner">
+        <item>Profile</item>
+        <item>Log out</item>
+    </string-array>
 </resources>
