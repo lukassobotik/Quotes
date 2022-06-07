@@ -1,8 +1,5 @@
 package com.sforge.quotes;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -13,9 +10,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -39,16 +35,10 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        register.setOnClickListener(view -> {
-            startActivity(new Intent(this, RegisterActivity.class));
-        });
-        forgotPassword.setOnClickListener(view -> {
-            startActivity(new Intent(this, ForgottenPassword.class));
-        });
+        register.setOnClickListener(view -> startActivity(new Intent(this, RegisterActivity.class)));
+        forgotPassword.setOnClickListener(view -> startActivity(new Intent(this, ForgottenPassword.class)));
 
-        loginButton.setOnClickListener(view -> {
-            userLogin();
-        });
+        loginButton.setOnClickListener(view -> userLogin());
     }
 
     private void userLogin() {
@@ -67,7 +57,6 @@ public class LoginActivity extends AppCompatActivity {
             passwordEditText.setError("Password is required!");
             passwordEditText.requestFocus();
         }
-
         if(password.length() < 6){
             passwordEditText.setError("Password has to Have at Least 6 Characters!");
             passwordEditText.requestFocus();

@@ -1,4 +1,4 @@
-package com.sforge.quotes;
+package com.sforge.quotes.QuoteEntity;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,12 +8,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.sforge.quotes.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private Context context;
+    private final Context context;
     List<Quote> list = new ArrayList<>();
     public QuoteAdapter(Context ctx){
         this.context = ctx;
@@ -21,6 +23,10 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void setItems(List<Quote> quote){
         list.clear();
         list.addAll(quote);
+    }
+
+    public String getCreatorAccountFromPosition(int position){
+        return list.get(position).getUser();
     }
 
     @NonNull
@@ -40,10 +46,6 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        int i = 0;
-        for (Quote q : list){
-            i++;
-        }
-        return i;
+        return list.size();
     }
 }

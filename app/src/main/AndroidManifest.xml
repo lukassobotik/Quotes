@@ -26,14 +26,10 @@
             android:exported="false"
             android:label=""/>
         <activity
-            android:name=".UserAccount"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.SlidrActivityTheme"
-            android:label=""/>
-        <activity
             android:name=".CreateQuotes"
             android:exported="false"
-            android:label="Create A Quote"/>
+            android:label="Create A Quote"
+            android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

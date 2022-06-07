@@ -1,8 +1,5 @@
 package com.sforge.quotes;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -12,8 +9,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgottenPassword extends AppCompatActivity {
@@ -35,9 +32,7 @@ public class ForgottenPassword extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
-        sendButton.setOnClickListener(view -> {
-            resetPassword();
-        });
+        sendButton.setOnClickListener(view -> resetPassword());
     }
 
     private void resetPassword(){
@@ -51,7 +46,6 @@ public class ForgottenPassword extends AppCompatActivity {
             emailEditText.setError("Please enter a valid Email Address!");
             emailEditText.requestFocus();
         }
-
         progressBar.setVisibility(View.VISIBLE);
         auth.sendPasswordResetEmail(email).addOnCompleteListener(task -> {
             if (task.isSuccessful()){

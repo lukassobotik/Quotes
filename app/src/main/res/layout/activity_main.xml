@@ -27,7 +27,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <Button
-        android:id="@+id/creatorAccount"
+        android:id="@+id/userProfileButton"
         style="@style/Button"
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -56,10 +56,11 @@
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@id/creatorAccount"
-        app:layout_constraintEnd_toEndOf="@id/creatorAccount"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/userProfileButton"
+        app:layout_constraintEnd_toEndOf="@id/userProfileButton"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@id/creatorAccount" />
+        app:layout_constraintStart_toStartOf="@id/userProfileButton" />
 
     <Button
         android:id="@+id/profileLogout"
@@ -72,10 +73,11 @@
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="16sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/profileShowProfile"
-        app:layout_constraintEnd_toEndOf="@id/creatorAccount"
+        app:layout_constraintEnd_toEndOf="@id/userProfileButton"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@id/creatorAccount" />
+        app:layout_constraintStart_toStartOf="@id/userProfileButton" />
 
     <Button
         android:id="@+id/profileLogin"
@@ -88,42 +90,80 @@
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="16sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/profileLogout"
-        app:layout_constraintEnd_toEndOf="@id/creatorAccount"
+        app:layout_constraintEnd_toEndOf="@id/userProfileButton"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@id/creatorAccount" />
+        app:layout_constraintStart_toStartOf="@id/userProfileButton" />
 
-    <include
-        android:id="@+id/include"
-        layout="@layout/activity_user_account"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:id="@+id/includeAccountProfile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
-    <Button
-        android:id="@+id/usrQuotesNextButton"
-        style="@style/Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Next"
-        android:textAllCaps="false"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/include"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.25" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:background="@color/transparent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/usrQuotesPreviousButton"
-        style="@style/Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Prev"
-        android:textAllCaps="false"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/include"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.25" />
+            <LinearLayout
+                android:id="@+id/usrScrollLayout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/mainActivityUsrQuotesLinearLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:orientation="horizontal">
+            </LinearLayout>
+            <TextView
+                android:id="@+id/mainActivityUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:text="Username"
+                android:textSize="20dp"
+                style="@style/text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.2" />
+
+            <LinearLayout
+                android:id="@+id/mainActivityPfpLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/mainActivityUsername"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:layout_width="125dp"
+                    android:layout_height="125dp"
+                    android:foreground="@drawable/ic_account"
+                    android:clickable="false"
+                    app:backgroundTint="#888888" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/mainActivityUsrQuotesLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/mainActivityUsername"
+                android:orientation="vertical">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/mainActivityUsrQuotes"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/quoteSwipeRefreshLayout"

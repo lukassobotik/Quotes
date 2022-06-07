@@ -1,20 +1,24 @@
 package com.sforge.quotes;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
-
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.sforge.quotes.QuoteEntity.DAOQuote;
+import com.sforge.quotes.QuoteEntity.Quote;
+
 import java.util.Objects;
 
 public class CreateQuotes extends AppCompatActivity {
+
+    private String user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,51 +27,36 @@ public class CreateQuotes extends AppCompatActivity {
 
         createActionBar();
 
-        final EditText createQuoteEditText = findViewById(R.id.createQuoteEditText);
-        final EditText createAuthorEditText = findViewById(R.id.createAuthorEditText);
+        EditText createQuoteEditText = findViewById(R.id.createQuoteEditText);
+        EditText createAuthorEditText = findViewById(R.id.createAuthorEditText);
         Button submitQuoteButton = findViewById(R.id.submitQuoteButton);
+
         DAOQuote dao = new DAOQuote();
 
+        user = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        DatabaseReference reference = new DAOQuote("Users/" + user + "/User Quotes").getReference();
+
         submitQuoteButton.setOnClickListener(view -> {
-            Quote quote = new Quote(createQuoteEditText.getText().toString(), createAuthorEditText.getText().toString());
-            dao.add(quote).addOnSuccessListener(suc -> {
-                Toast.makeText(this, "Quote is Added Successfully!", Toast.LENGTH_SHORT).show();
-            }).addOnFailureListener(er->{
-                Toast.makeText(this, "Failed To Add the Quote", Toast.LENGTH_SHORT).show();
-            }).addOnCanceledListener(() -> {
-                Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show();
-            });
+            Quote quote = new Quote(createQuoteEditText.getText().toString(), createAuthorEditText.getText().toString(), user);
+            reference.push().setValue(quote);
+            dao.add(quote)
+                    .addOnSuccessListener(suc -> Toast.makeText(this, "Quote is Added Successfully!", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(er-> Toast.makeText(this, "Failed To Add the Quote", Toast.LENGTH_SHORT).show())
+                    .addOnCanceledListener(() -> Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show());
         });
     }
 
     public void createActionBar(){
-        String localNightMode = "undefined";
         int nightModeFlags = this.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         switch (nightModeFlags) {
             case Configuration.UI_MODE_NIGHT_YES:
-                localNightMode = "night";
+                //Set the Action Bar color to Dark Gray
+                Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.dark_action_bar, null));
                 break;
 
             case Configuration.UI_MODE_NIGHT_NO:
-                localNightMode = "light";
-                break;
-
-            case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                localNightMode = "undefined";
                 break;
         }
-
-        if(localNightMode.equals("night")){
-            Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.dark_action_bar, null));
-        }
-        Log.d("createActionBar", localNightMode);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-        Intent intent = new Intent(CreateQuotes.this, MainActivity.class);
-        startActivity(intent);
     }
 }

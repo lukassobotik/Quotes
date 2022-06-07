@@ -1,11 +1,12 @@
-package com.sforge.quotes;
+package com.sforge.quotes.QuoteEntity;
 
 public class Quote {
 
     public Quote(){}
-    public Quote(String quote, String author) {
+    public Quote(String quote, String author, String user) {
         Quote = quote;
         Author = author;
+        this.user = user;
     }
 
     public String getQuote() {
@@ -24,6 +25,15 @@ public class Quote {
         Author = author;
     }
 
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
     private String Quote;
     private String Author;
+    public String user;
 }

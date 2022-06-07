@@ -1,6 +1,5 @@
 package com.sforge.quotes;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -13,12 +12,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
+import com.sforge.quotes.QuoteEntity.DAOQuote;
+import com.sforge.quotes.UserEntity.User;
 
 import java.util.Objects;
 
@@ -40,12 +36,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        banner.setOnClickListener(view -> {
-            startActivity(new Intent(this, MainActivity.class));
-        });
-        register.setOnClickListener(view -> {
-            registerUser();
-        });
+        banner.setOnClickListener(view -> startActivity(new Intent(this, MainActivity.class)));
+        register.setOnClickListener(view -> registerUser());
     }
 
     public void registerUser(){
@@ -79,8 +71,8 @@ public class RegisterActivity extends AppCompatActivity {
                 if (task.isSuccessful()){
                     User user = new User(sUsername, sEmail);
 
-                    FirebaseDatabase.getInstance("https://quotes-30510-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
-                            .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).setValue(user).addOnCompleteListener(task1 -> {
+                    new DAOQuote("Users").getReference().child(Objects.requireNonNull(
+                            FirebaseAuth.getInstance().getCurrentUser()).getUid()).setValue(user).addOnCompleteListener(task1 -> {
                         if (task.isSuccessful()){
                             Toast.makeText(this, "Successfully Registered!", Toast.LENGTH_SHORT).show();
                         }
