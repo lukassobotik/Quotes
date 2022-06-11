@@ -15,8 +15,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.sforge.quotes.R;
-import com.sforge.quotes.repository.DAOQuote;
 import com.sforge.quotes.entity.User;
+import com.sforge.quotes.repository.UserRepository;
 
 public class UserProfile extends AppCompatActivity {
 
@@ -41,32 +41,35 @@ public class UserProfile extends AppCompatActivity {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        if (user != null){
+        if (user != null) {
             String userID = user.getUid();
-            new DAOQuote("Users").getReference().child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    User userProfile = snapshot.getValue(User.class);
-                    if (userProfile != null){
-                        String userEmail = userProfile.getEmail();
-                        String username = userProfile.getUsername();
-                        email = userEmail;
-                        StringBuilder stringBuilder = new StringBuilder();
-                        stringBuilder.append("@").append(username);
+            new UserRepository().getDatabaseReference()
+                    .child(userID)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            User userProfile = snapshot.getValue(User.class);
+                            if (userProfile != null) {
+                                String userEmail = userProfile.getEmail();
+                                String username = userProfile.getUsername();
+                                email = userEmail;
+                                StringBuilder stringBuilder = new StringBuilder();
+                                stringBuilder.append("@").append(username);
 
-                        emailTV.setText(userEmail);
-                        usernameTV.setText(stringBuilder);
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(UserProfile.this, "Something went Wrong.", Toast.LENGTH_SHORT).show();
-                }
-            });
+                                emailTV.setText(userEmail);
+                                usernameTV.setText(stringBuilder);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(UserProfile.this, "Something went Wrong.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }
 
         profileSettings.setOnClickListener(view -> {
-            if (!isSettingMenuOpen){
+            if (!isSettingMenuOpen) {
                 showEmail.setVisibility(View.VISIBLE);
                 isSettingMenuOpen = true;
             } else {
@@ -77,7 +80,7 @@ public class UserProfile extends AppCompatActivity {
 
         final boolean[] isEmailShown = {false};
         showEmail.setOnClickListener(view -> {
-            if (!isEmailShown[0]){
+            if (!isEmailShown[0]) {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("Email: ").append(email);
                 showEmail.setText(stringBuilder);

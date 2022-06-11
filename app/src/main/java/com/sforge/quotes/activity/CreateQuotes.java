@@ -12,8 +12,9 @@ import androidx.core.content.res.ResourcesCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.sforge.quotes.R;
-import com.sforge.quotes.repository.DAOQuote;
 import com.sforge.quotes.entity.Quote;
+import com.sforge.quotes.repository.QuoteRepository;
+import com.sforge.quotes.repository.UserQuoteRepository;
 
 import java.util.Objects;
 
@@ -32,16 +33,16 @@ public class CreateQuotes extends AppCompatActivity {
         EditText createAuthorEditText = findViewById(R.id.createAuthorEditText);
         Button submitQuoteButton = findViewById(R.id.submitQuoteButton);
 
-        DAOQuote dao = new DAOQuote();
+        QuoteRepository quoteRepository = new QuoteRepository();
 
         user = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        DatabaseReference reference = new DAOQuote("Users/" + user + "/User Quotes").getReference();
+        UserQuoteRepository userQuoteRepository = new UserQuoteRepository(user);
 
         submitQuoteButton.setOnClickListener(view -> {
             Quote quote = new Quote(createQuoteEditText.getText().toString(), createAuthorEditText.getText().toString(), user);
-            reference.push().setValue(quote);
-            dao.add(quote)
+            userQuoteRepository.add(quote);
+            quoteRepository.add(quote)
                     .addOnSuccessListener(suc -> Toast.makeText(this, "Quote is Added Successfully!", Toast.LENGTH_SHORT).show())
                     .addOnFailureListener(er-> Toast.makeText(this, "Failed To Add the Quote", Toast.LENGTH_SHORT).show())
                     .addOnCanceledListener(() -> Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show());

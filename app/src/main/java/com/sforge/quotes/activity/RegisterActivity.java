@@ -14,8 +14,8 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.sforge.quotes.R;
-import com.sforge.quotes.repository.DAOQuote;
 import com.sforge.quotes.entity.User;
+import com.sforge.quotes.repository.UserRepository;
 
 import java.util.Objects;
 
@@ -41,56 +41,56 @@ public class RegisterActivity extends AppCompatActivity {
         register.setOnClickListener(view -> registerUser());
     }
 
-    public void registerUser(){
+    public void registerUser() {
         String sUsername = username.getText().toString().trim().toLowerCase();
         String sEmail = email.getText().toString().trim();
         String sPassword = password.getText().toString().trim();
 
-        if (sUsername.isEmpty()){
+        if (sUsername.isEmpty()) {
             username.setError("Username is Required!");
             username.requestFocus();
         }
-        if (sEmail.isEmpty()){
+        if (sEmail.isEmpty()) {
             email.setError("Email is Required!");
             email.requestFocus();
         }
-        if (!Patterns.EMAIL_ADDRESS.matcher(sEmail).matches()){
+        if (!Patterns.EMAIL_ADDRESS.matcher(sEmail).matches()) {
             email.setError("Enter a Valid Email Address!");
             email.requestFocus();
         }
-        if (sPassword.isEmpty()){
+        if (sPassword.isEmpty()) {
             password.setError("Password is Required!");
             password.requestFocus();
         }
-        if(password.length() < 6){
+        if (password.length() < 6) {
             password.setError("Password has to Have at Least 6 Characters!");
             password.requestFocus();
         }
 
         progressBar.setVisibility(View.VISIBLE);
         mAuth.createUserWithEmailAndPassword(sEmail, sPassword).addOnCompleteListener(task -> {
-                if (task.isSuccessful()){
-                    User user = new User(sUsername, sEmail);
+            if (task.isSuccessful()) {
+                User user = new User(sUsername, sEmail);
 
-                    new DAOQuote("Users").getReference().child(Objects.requireNonNull(
-                            FirebaseAuth.getInstance().getCurrentUser()).getUid()).setValue(user).addOnCompleteListener(task1 -> {
-                        if (task.isSuccessful()){
-                            Toast.makeText(this, "Successfully Registered!", Toast.LENGTH_SHORT).show();
-                        }
-                        else{
-                            Toast.makeText(this, "Something went Wrong.", Toast.LENGTH_SHORT).show();
-                        }
-                        progressBar.setVisibility(View.GONE);
-                    });
-                }
-                else {
-                    Toast.makeText(this, "Something went Wrong. Couldn't Create The User.", Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.GONE);
-                }
+                new UserRepository().getDatabaseReference()
+                        .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())
+                        .setValue(user)
+                        .addOnCompleteListener(task1 -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(this, "Successfully Registered!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(this, "Something went Wrong.", Toast.LENGTH_SHORT).show();
+                            }
+                            progressBar.setVisibility(View.GONE);
+                        });
+            } else {
+                Toast.makeText(this, "Something went Wrong. Couldn't Create The User.", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+            }
         });
     }
 
-    public void defineViews(){
+    public void defineViews() {
         banner = findViewById(R.id.registerQuotesTitle);
         username = findViewById(R.id.registerUsername);
         email = findViewById(R.id.registerEmailEditText);
