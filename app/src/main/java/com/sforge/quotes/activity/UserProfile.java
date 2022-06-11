@@ -48,8 +48,8 @@ public class UserProfile extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     User userProfile = snapshot.getValue(User.class);
                     if (userProfile != null){
-                        String userEmail = userProfile.email;
-                        String username = userProfile.username;
+                        String userEmail = userProfile.getEmail();
+                        String username = userProfile.getUsername();
                         email = userEmail;
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.append("@").append(username);
