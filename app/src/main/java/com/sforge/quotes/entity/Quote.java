@@ -1,24 +1,27 @@
 package com.sforge.quotes.entity;
 
 /**
- * Basic immutable entity holding data for Quote.
+ * Basic entity holding data for Quote.
  */
 public class Quote {
 
     /**
      * Quote string to be displayed.
      */
-    private final String quote;
+    private String quote;
 
     /**
      * Author of the quote.
      */
-    private final String author;
+    private String author;
 
     /**
      * User who added the quote.
      */
-    private final String user;
+    private String user;
+
+    public Quote() {
+    }
 
     /**
      * Public constructor for creating of immutable instance of this entity.

@@ -47,8 +47,7 @@ public class MainActivity extends AppCompatActivity {
     //Firebase Related
     boolean isLoggedIn = false;
     final boolean[] profileIsOpen = {false};
-    int dbSize = 0;
-    QuoteRepository dao;
+    QuoteRepository quoteRepository;
     List<Quote> quotes = new ArrayList<>();
     List<Quote> currentQuotes = new ArrayList<>();
 
@@ -137,17 +136,14 @@ public class MainActivity extends AppCompatActivity {
         if (!profileIsOpen[0]) {
             if (isLoggedIn) {
                 showUserProfileButton.setVisibility(View.VISIBLE);
+                profileLogoutButton.setVisibility(View.VISIBLE);
+            } else {
+                profileLoginButton.setVisibility(View.VISIBLE);
             }
             showUserProfileButton.startAnimation(
                     AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_top_to_bottom));
-            if (isLoggedIn) {
-                profileLogoutButton.setVisibility(View.VISIBLE);
-            }
             profileLogoutButton.startAnimation(
                     AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_top_to_bottom));
-            if (!isLoggedIn) {
-                profileLoginButton.setVisibility(View.VISIBLE);
-            }
             profileLoginButton.startAnimation(
                     AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_top_to_bottom));
             profileIsOpen[0] = true;
@@ -278,30 +274,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadAllDataFromDatabase() {
-        dao.getAll().addValueEventListener(new ValueEventListener() {
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot data : snapshot.getChildren()) {
-                    Quote quote = data.getValue(Quote.class);
-                    quotes.add(quote);
-                    dbSize++;
-                }
-                Collections.shuffle(quotes);
-                adapter.setItems(quotes);
-                adapter.notifyDataSetChanged();
-                currentQuotes.addAll(quotes);
-                if (!currentQuotes.isEmpty()) {
-                    includeAccountProfile.setVisibility(View.VISIBLE);
-                }
-                quotes.clear();
-            }
+        quoteRepository.getAll().addValueEventListener(
+                new ValueEventListener() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot data : snapshot.getChildren()) {
+                            Quote quote = data.getValue(Quote.class);
+                            quotes.add(quote);
+                        }
+                        Collections.shuffle(quotes);
+                        adapter.setItems(quotes);
+                        adapter.notifyDataSetChanged();
+                        currentQuotes.addAll(quotes);
+                        if (!currentQuotes.isEmpty()) {
+                            includeAccountProfile.setVisibility(View.VISIBLE);
+                        }
+                        quotes.clear();
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(MainActivity.this, "Failed to Retrieve Data.", Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(MainActivity.this, "Failed to Retrieve Data.", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     public void defineViews() {
@@ -325,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
         usrAdapter = new UserQuoteAdapter(this);
         recyclerView.setAdapter(adapter);
         usrQuotesRV.setAdapter(usrAdapter);
-        dao = new QuoteRepository();
+        quoteRepository = new QuoteRepository();
     }
 
     public void createActionBar() {

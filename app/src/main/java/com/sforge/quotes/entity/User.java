@@ -1,7 +1,7 @@
 package com.sforge.quotes.entity;
 
 /**
- * Immutable User entity.
+ * User entity.
  * Carries information about logged-in user.
  */
 public class User {
@@ -9,12 +9,15 @@ public class User {
     /**
      * Username field.
      */
-    private final String username;
+    private String username;
 
     /**
      * Email of the user.
      */
-    private final String email;
+    private String email;
+
+    public User() {
+    }
 
     /**
      * Constructor for immutable instance creation.

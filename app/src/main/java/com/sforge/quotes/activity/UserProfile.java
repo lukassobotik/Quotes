@@ -18,24 +18,46 @@ import com.sforge.quotes.R;
 import com.sforge.quotes.entity.User;
 import com.sforge.quotes.repository.UserRepository;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BiFunction;
+
 public class UserProfile extends AppCompatActivity {
 
-    boolean isSettingMenuOpen = false;
-
-    private TextView emailTV, usernameTV;
-
-    private Button profileSettings, showEmail;
+    private Button showEmail;
 
     private String email = "";
+
+    private final BiFunction<TextView, TextView, ValueEventListener> onDataChangeListener =
+            (emailTV, usernameTV) -> new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    User userProfile = snapshot.getValue(User.class);
+                    if (userProfile != null) {
+                        String userEmail = userProfile.getEmail();
+                        String username = userProfile.getUsername();
+                        email = userEmail;
+                        StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.append("@").append(username);
+
+                        emailTV.setText(userEmail);
+                        usernameTV.setText(stringBuilder);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(UserProfile.this, "Something went Wrong.", Toast.LENGTH_SHORT).show();
+                }
+            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
-        emailTV = findViewById(R.id.profileEmail);
-        usernameTV = findViewById(R.id.profileUsername);
-        profileSettings = findViewById(R.id.profileSettingsButton);
+        TextView emailTV = findViewById(R.id.profileEmail);
+        TextView usernameTV = findViewById(R.id.profileUsername);
+        Button profileSettings = findViewById(R.id.profileSettingsButton);
         showEmail = findViewById(R.id.profileShowEmail);
         showEmail.setVisibility(View.GONE);
 
@@ -45,50 +67,31 @@ public class UserProfile extends AppCompatActivity {
             String userID = user.getUid();
             new UserRepository().getDatabaseReference()
                     .child(userID)
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            User userProfile = snapshot.getValue(User.class);
-                            if (userProfile != null) {
-                                String userEmail = userProfile.getEmail();
-                                String username = userProfile.getUsername();
-                                email = userEmail;
-                                StringBuilder stringBuilder = new StringBuilder();
-                                stringBuilder.append("@").append(username);
-
-                                emailTV.setText(userEmail);
-                                usernameTV.setText(stringBuilder);
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            Toast.makeText(UserProfile.this, "Something went Wrong.", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    .addListenerForSingleValueEvent(onDataChangeListener.apply(emailTV, usernameTV));
         }
 
+        final AtomicBoolean isSettingMenuOpen = new AtomicBoolean(false);
         profileSettings.setOnClickListener(view -> {
-            if (!isSettingMenuOpen) {
+            if (!isSettingMenuOpen.get()) {
                 showEmail.setVisibility(View.VISIBLE);
-                isSettingMenuOpen = true;
+                isSettingMenuOpen.set(true);
             } else {
                 showEmail.setVisibility(View.GONE);
-                isSettingMenuOpen = false;
+                isSettingMenuOpen.set(false);
             }
         });
 
-        final boolean[] isEmailShown = {false};
+        final AtomicBoolean isEmailShown = new AtomicBoolean(false);
         showEmail.setOnClickListener(view -> {
-            if (!isEmailShown[0]) {
+            if (!isEmailShown.get()) {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("Email: ").append(email);
                 showEmail.setText(stringBuilder);
-                isEmailShown[0] = true;
+                isEmailShown.set(true);
             } else {
                 String s = "Show Email";
                 showEmail.setText(s);
-                isEmailShown[0] = false;
+                isEmailShown.set(false);
             }
         });
     }
