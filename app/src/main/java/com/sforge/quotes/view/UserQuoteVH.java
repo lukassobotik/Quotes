@@ -1,4 +1,4 @@
-package com.sforge.quotes.UserQuoteEntity;
+package com.sforge.quotes.view;
 
 import android.view.View;
 import android.widget.TextView;

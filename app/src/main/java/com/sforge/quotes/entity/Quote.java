@@ -1,4 +1,4 @@
-package com.sforge.quotes.QuoteEntity;
+package com.sforge.quotes.entity;
 
 public class Quote {
 

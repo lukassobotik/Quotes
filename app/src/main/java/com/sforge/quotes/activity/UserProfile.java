@@ -1,4 +1,4 @@
-package com.sforge.quotes;
+package com.sforge.quotes.activity;
 
 import android.os.Bundle;
 import android.view.View;
@@ -14,8 +14,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.sforge.quotes.QuoteEntity.DAOQuote;
-import com.sforge.quotes.UserEntity.User;
+import com.sforge.quotes.R;
+import com.sforge.quotes.repository.DAOQuote;
+import com.sforge.quotes.entity.User;
 
 public class UserProfile extends AppCompatActivity {
 

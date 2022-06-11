@@ -1,4 +1,4 @@
-package com.sforge.quotes.UserEntity;
+package com.sforge.quotes.entity;
 
 public class User {
 

@@ -1,4 +1,4 @@
-package com.sforge.quotes;
+package com.sforge.quotes.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -11,8 +11,9 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
-import com.sforge.quotes.QuoteEntity.DAOQuote;
-import com.sforge.quotes.QuoteEntity.Quote;
+import com.sforge.quotes.R;
+import com.sforge.quotes.repository.DAOQuote;
+import com.sforge.quotes.entity.Quote;
 
 import java.util.Objects;
 
