@@ -1,15 +1,5 @@
 package com.sforge.quotes.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.PagerSnapHelper;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SnapHelper;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -22,6 +12,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,12 +29,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.sforge.quotes.R;
-import com.sforge.quotes.repository.UserQuoteRepository;
-import com.sforge.quotes.entity.Quote;
 import com.sforge.quotes.adapter.QuoteAdapter;
-import com.sforge.quotes.entity.User;
 import com.sforge.quotes.adapter.UserQuoteAdapter;
+import com.sforge.quotes.entity.Quote;
+import com.sforge.quotes.entity.User;
 import com.sforge.quotes.repository.QuoteRepository;
+import com.sforge.quotes.repository.UserQuoteRepository;
 import com.sforge.quotes.repository.UserRepository;
 
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     List<Quote> usrQuotes;
 
     //UI Related
-    Button createQuote, profileButton, showUserProfileButton, profileLogoutButton, profileLoginButton;
+    Button createQuote, profileButton, showUserProfileButton, profileLogoutButton, profileLoginButton, mainBackButton;
     QuoteAdapter adapter;
     UserQuoteAdapter usrAdapter;
 
@@ -95,6 +95,19 @@ public class MainActivity extends AppCompatActivity {
         profileMenuClickListeners();
 
         loadAllDataFromDatabase();
+
+        createMainBackButton();
+    }
+
+    public void createMainBackButton() {
+        mainBackButton.setOnClickListener(view -> {
+            swipeRefreshLayout.setEnabled(true);
+            mainBackButton.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            adapter.notifyDataSetChanged();
+            recyclerView.startAnimation(
+                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_left_to_right));
+        });
     }
 
     //Quote Button Logic
@@ -222,6 +235,8 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
                         recyclerView.setVisibility(View.GONE);
+                        mainBackButton.setVisibility(View.VISIBLE);
+                        swipeRefreshLayout.setEnabled(false);
                     }
                 }
             };
@@ -239,6 +254,8 @@ public class MainActivity extends AppCompatActivity {
                 x2 = touchEvent.getX();
                 y2 = touchEvent.getY();
                 if (x1 < x2) {
+                    swipeRefreshLayout.setEnabled(true);
+                    mainBackButton.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
                     adapter.notifyDataSetChanged();
                     recyclerView.startAnimation(
@@ -304,13 +321,14 @@ public class MainActivity extends AppCompatActivity {
         createQuote = findViewById(R.id.createQuote);
         swipeRefreshLayout = findViewById(R.id.quoteSwipeRefreshLayout);
         recyclerView = findViewById(R.id.quoteRecyclerView);
-        usrQuotesRV = findViewById(R.id.mainActivityUsrQuotes);
+        usrQuotesRV = findViewById(R.id.usrQuotes);
         profileButton = findViewById(R.id.userProfileButton);
         showUserProfileButton = findViewById(R.id.profileShowProfile);
         profileLogoutButton = findViewById(R.id.profileLogout);
         profileLoginButton = findViewById(R.id.profileLogin);
         includeAccountProfile = findViewById(R.id.includeAccountProfile);
-        mainActivityUsername = findViewById(R.id.mainActivityUsername);
+        mainActivityUsername = findViewById(R.id.username);
+        mainBackButton = findViewById(R.id.mainBackButton);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         LinearLayoutManager usrManager = new LinearLayoutManager(this);
