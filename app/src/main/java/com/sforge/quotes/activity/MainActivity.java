@@ -1,4 +1,4 @@
-package com.sforge.quotes;
+package com.sforge.quotes.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,11 +28,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.sforge.quotes.QuoteEntity.DAOQuote;
-import com.sforge.quotes.QuoteEntity.Quote;
-import com.sforge.quotes.QuoteEntity.QuoteAdapter;
-import com.sforge.quotes.UserEntity.User;
-import com.sforge.quotes.UserQuoteEntity.UserQuoteAdapter;
+import com.sforge.quotes.R;
+import com.sforge.quotes.repository.DAOQuote;
+import com.sforge.quotes.entity.Quote;
+import com.sforge.quotes.adapter.QuoteAdapter;
+import com.sforge.quotes.entity.User;
+import com.sforge.quotes.adapter.UserQuoteAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;

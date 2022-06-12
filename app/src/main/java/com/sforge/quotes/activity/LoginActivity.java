@@ -1,4 +1,4 @@
-package com.sforge.quotes;
+package com.sforge.quotes.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sforge.quotes.R;
 
 public class LoginActivity extends AppCompatActivity {
 

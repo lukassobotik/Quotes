@@ -1,4 +1,4 @@
-package com.sforge.quotes.UserQuoteEntity;
+package com.sforge.quotes.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,34 +8,39 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sforge.quotes.QuoteEntity.Quote;
+import com.sforge.quotes.entity.Quote;
 import com.sforge.quotes.R;
+import com.sforge.quotes.view.QuoteVH;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserQuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context context;
     List<Quote> list = new ArrayList<>();
-    public UserQuoteAdapter(Context context){
-        this.context = context;
+    public QuoteAdapter(Context ctx){
+        this.context = ctx;
     }
     public void setItems(List<Quote> quote){
         list.clear();
         list.addAll(quote);
     }
 
+    public String getCreatorAccountFromPosition(int position){
+        return list.get(position).getUser();
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.usr_quotes_item, parent, false);
-        return new UserQuoteVH(view);
+        View view = LayoutInflater.from(context).inflate(R.layout.quote_item, parent, false);
+        return new QuoteVH(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        UserQuoteVH vh = (UserQuoteVH) holder;
+        QuoteVH vh = (QuoteVH) holder;
         Quote quote = list.get(position);
         vh.textQuote.setText(quote.getQuote());
         vh.textAuthor.setText(quote.getAuthor());
