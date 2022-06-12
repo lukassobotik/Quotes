@@ -1,5 +1,5 @@
 # Quotes
-**Quotes is a Social Media Platform which is all About sharing Quotes!**
+**Quotes is a Quote Sharing App!**
 
 ## Features
 - Endless Scroll like on **_Youtube Shorts_** or **_Instagram Reels!_**
