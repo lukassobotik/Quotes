@@ -154,22 +154,22 @@ public class MainActivity extends AppCompatActivity {
                 profileLoginButton.setVisibility(View.VISIBLE);
             }
             showUserProfileButton.startAnimation(
-                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_top_to_bottom));
+                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.profile_button_slide_top_to_bottom));
             profileLogoutButton.startAnimation(
-                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_top_to_bottom));
+                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.profile_button_slide_top_to_bottom));
             profileLoginButton.startAnimation(
-                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_top_to_bottom));
+                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.profile_button_slide_top_to_bottom));
             profileIsOpen[0] = true;
         } else {
             showUserProfileButton.setVisibility(View.GONE);
             showUserProfileButton.startAnimation(
-                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_bottom_to_top));
+                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.profile_button_slide_bottom_to_top));
             profileLogoutButton.setVisibility(View.GONE);
             profileLogoutButton.startAnimation(
-                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_bottom_to_top));
+                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.profile_button_slide_bottom_to_top));
             profileLoginButton.setVisibility(View.GONE);
             profileLoginButton.startAnimation(
-                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_bottom_to_top));
+                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.profile_button_slide_bottom_to_top));
             profileIsOpen[0] = false;
         }
     }
