@@ -1,15 +1,5 @@
 package com.sforge.quotes.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.PagerSnapHelper;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SnapHelper;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -22,6 +12,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,11 +29,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.sforge.quotes.R;
-import com.sforge.quotes.repository.DAOQuote;
-import com.sforge.quotes.entity.Quote;
 import com.sforge.quotes.adapter.QuoteAdapter;
-import com.sforge.quotes.entity.User;
 import com.sforge.quotes.adapter.UserQuoteAdapter;
+import com.sforge.quotes.entity.Quote;
+import com.sforge.quotes.entity.User;
+import com.sforge.quotes.repository.QuoteRepository;
+import com.sforge.quotes.repository.UserQuoteRepository;
+import com.sforge.quotes.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,8 +47,7 @@ public class MainActivity extends AppCompatActivity {
     //Firebase Related
     boolean isLoggedIn = false;
     final boolean[] profileIsOpen = {false};
-    int dbSize = 0;
-    DAOQuote dao;
+    QuoteRepository quoteRepository;
     List<Quote> quotes = new ArrayList<>();
     List<Quote> currentQuotes = new ArrayList<>();
 
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     List<Quote> usrQuotes;
 
     //UI Related
-    Button createQuote, profileButton, showUserProfileButton, profileLogoutButton, profileLoginButton;
+    Button createQuote, profileButton, showUserProfileButton, profileLogoutButton, profileLoginButton, mainBackButton;
     QuoteAdapter adapter;
     UserQuoteAdapter usrAdapter;
 
@@ -81,11 +82,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (firebaseUser != null){
+        if (firebaseUser != null) {
             isLoggedIn = true;
         }
 
-        if(isLoggedIn){
+        if (isLoggedIn) {
             profileLoginButton.setVisibility(View.GONE);
         }
 
@@ -94,6 +95,19 @@ public class MainActivity extends AppCompatActivity {
         profileMenuClickListeners();
 
         loadAllDataFromDatabase();
+
+        createMainBackButton();
+    }
+
+    public void createMainBackButton() {
+        mainBackButton.setOnClickListener(view -> {
+            swipeRefreshLayout.setEnabled(true);
+            mainBackButton.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            adapter.notifyDataSetChanged();
+            recyclerView.startAnimation(
+                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_left_to_right));
+        });
     }
 
     //Quote Button Logic
@@ -112,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void profileMenuClickListeners(){
+    public void profileMenuClickListeners() {
         profileButton.setOnClickListener(view -> profileIconOnClickEvent());
 
         profileLoginButton.setOnClickListener(view -> {
@@ -131,91 +145,107 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Profile Button On Click Logic
-    public void profileIconOnClickEvent(){
-        if (!profileIsOpen[0]){
+    public void profileIconOnClickEvent() {
+        if (!profileIsOpen[0]) {
             if (isLoggedIn) {
-                showUserProfileButton.setVisibility(View.VISIBLE);}
-            showUserProfileButton.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_top_to_bottom));
-            if (isLoggedIn) {
-                profileLogoutButton.setVisibility(View.VISIBLE);}
-            profileLogoutButton.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_top_to_bottom));
-            if (!isLoggedIn) {
-                profileLoginButton.setVisibility(View.VISIBLE);}
-            profileLoginButton.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_top_to_bottom));
+                showUserProfileButton.setVisibility(View.VISIBLE);
+                profileLogoutButton.setVisibility(View.VISIBLE);
+            } else {
+                profileLoginButton.setVisibility(View.VISIBLE);
+            }
+            showUserProfileButton.startAnimation(
+                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.profile_button_slide_top_to_bottom));
+            profileLogoutButton.startAnimation(
+                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.profile_button_slide_top_to_bottom));
+            profileLoginButton.startAnimation(
+                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.profile_button_slide_top_to_bottom));
             profileIsOpen[0] = true;
         } else {
             showUserProfileButton.setVisibility(View.GONE);
-            showUserProfileButton.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_bottom_to_top));
+            showUserProfileButton.startAnimation(
+                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.profile_button_slide_bottom_to_top));
             profileLogoutButton.setVisibility(View.GONE);
-            profileLogoutButton.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_bottom_to_top));
+            profileLogoutButton.startAnimation(
+                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.profile_button_slide_bottom_to_top));
             profileLoginButton.setVisibility(View.GONE);
-            profileLoginButton.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_bottom_to_top));
+            profileLoginButton.startAnimation(
+                    AnimationUtils.loadAnimation(getApplicationContext(), R.anim.profile_button_slide_bottom_to_top));
             profileIsOpen[0] = false;
         }
     }
 
-    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-        @Override
-        public float getSwipeThreshold(@NonNull RecyclerView.ViewHolder viewHolder) {
-            return 0.2f;
-        }
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback =
+            new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+                @Override
+                public float getSwipeThreshold(@NonNull RecyclerView.ViewHolder viewHolder) {
+                    return 0.2f;
+                }
 
-        @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-            return false;
-        }
+                @Override
+                public boolean onMove(@NonNull RecyclerView recyclerView,
+                                      @NonNull RecyclerView.ViewHolder viewHolder,
+                                      @NonNull RecyclerView.ViewHolder target) {
+                    return false;
+                }
 
-        @SuppressLint("NotifyDataSetChanged")
-        @Override
-        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            final int position = viewHolder.getAdapterPosition();
-            if (direction == ItemTouchHelper.LEFT) {
-                String swipeUID = adapter.getCreatorAccountFromPosition(position);
-                DatabaseReference userReference = new DAOQuote("Users").getReference();
-                userReference.child(swipeUID).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        User userProfile = snapshot.getValue(User.class);
-                        if (userProfile != null) {
-                            String username = userProfile.username;
-                            StringBuilder stringBuilder = new StringBuilder();
-                            stringBuilder.append("@").append(username);
+                @SuppressLint("NotifyDataSetChanged")
+                @Override
+                public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                    final int position = viewHolder.getAdapterPosition();
+                    if (direction == ItemTouchHelper.LEFT) {
+                        String swipeUID = adapter.getCreatorAccountFromPosition(position);
+                        DatabaseReference userReference = new UserRepository().getDatabaseReference();
+                        userReference.child(swipeUID).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                User userProfile = snapshot.getValue(User.class);
+                                if (userProfile != null) {
+                                    String username = userProfile.getUsername();
+                                    StringBuilder stringBuilder = new StringBuilder();
+                                    stringBuilder.append("@").append(username);
 
-                            mainActivityUsername.setText(stringBuilder);
-                        }
+                                    mainActivityUsername.setText(stringBuilder);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toast.makeText(MainActivity.this, "Something went Wrong.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        UserQuoteRepository userQuotesReference = new UserQuoteRepository(swipeUID);
+                        userQuotesReference
+                                .getAll()
+                                .addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        usrQuotes = new ArrayList<>();
+                                        for (DataSnapshot data : snapshot.getChildren()) {
+                                            Quote quote = data.getValue(Quote.class);
+                                            usrQuotes.add(quote);
+                                        }
+                                        usrAdapter.setItems(usrQuotes);
+                                        usrAdapter.notifyDataSetChanged();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Toast.makeText(MainActivity.this, "Something went Wrong.", Toast.LENGTH_SHORT)
+                                                .show();
+                                    }
+                                });
+                        recyclerView.setVisibility(View.GONE);
+                        mainBackButton.setVisibility(View.VISIBLE);
+                        swipeRefreshLayout.setEnabled(false);
                     }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(MainActivity.this, "Something went Wrong.", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                DatabaseReference userQuotesReference = new DAOQuote("Users/" + swipeUID + "/User Quotes").getReference();
-                userQuotesReference.orderByKey().addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        usrQuotes = new ArrayList<>();
-                        for (DataSnapshot data : snapshot.getChildren()) {
-                            Quote quote = data.getValue(Quote.class);
-                            usrQuotes.add(quote);
-                        }
-                        usrAdapter.setItems(usrQuotes);
-                        usrAdapter.notifyDataSetChanged();
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(MainActivity.this, "Something went Wrong.", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                recyclerView.setVisibility(View.GONE);
-            }
-        }
-    };
+                }
+            };
 
     //Motion event detection in Creator Account to show all the quotes (left to right swipe detection)
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public boolean onTouchEvent(MotionEvent touchEvent) {
-        switch(touchEvent.getAction()){
+        switch (touchEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 x1 = touchEvent.getX();
                 y1 = touchEvent.getY();
@@ -223,10 +253,13 @@ public class MainActivity extends AppCompatActivity {
             case MotionEvent.ACTION_UP:
                 x2 = touchEvent.getX();
                 y2 = touchEvent.getY();
-                if(x1 < x2){
+                if (x1 < x2) {
+                    swipeRefreshLayout.setEnabled(true);
+                    mainBackButton.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
                     adapter.notifyDataSetChanged();
-                    recyclerView.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_left_to_right));
+                    recyclerView.startAnimation(
+                            AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_left_to_right));
                 }
                 break;
         }
@@ -241,11 +274,13 @@ public class MainActivity extends AppCompatActivity {
             mSnapHelper.attachToRecyclerView(recyclerView);
         }
     }
+
     @Override
     protected void onPause() {
         super.onPause();
         //Store the Recyclerview scroll position
-        lastFirstVisiblePosition = ((LinearLayoutManager)recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+        lastFirstVisiblePosition =
+                ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
     }
 
     @Override
@@ -255,44 +290,45 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.getLayoutManager().scrollToPosition(lastFirstVisiblePosition);
     }
 
-    public void loadAllDataFromDatabase(){
-        dao.get().addValueEventListener(new ValueEventListener() {
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot data : snapshot.getChildren()){
-                    Quote quote = data.getValue(Quote.class);
-                    quotes.add(quote);
-                    dbSize++;
-                }
-                Collections.shuffle(quotes);
-                adapter.setItems(quotes);
-                adapter.notifyDataSetChanged();
-                currentQuotes.addAll(quotes);
-                if (!currentQuotes.isEmpty()) {
-                    includeAccountProfile.setVisibility(View.VISIBLE);
-                }
-                quotes.clear();
-            }
+    public void loadAllDataFromDatabase() {
+        quoteRepository.getAll().addValueEventListener(
+                new ValueEventListener() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot data : snapshot.getChildren()) {
+                            Quote quote = data.getValue(Quote.class);
+                            quotes.add(quote);
+                        }
+                        Collections.shuffle(quotes);
+                        adapter.setItems(quotes);
+                        adapter.notifyDataSetChanged();
+                        currentQuotes.addAll(quotes);
+                        if (!currentQuotes.isEmpty()) {
+                            includeAccountProfile.setVisibility(View.VISIBLE);
+                        }
+                        quotes.clear();
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(MainActivity.this, "Failed to Retrieve Data.", Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(MainActivity.this, "Failed to Retrieve Data.", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
-    public void defineViews(){
+    public void defineViews() {
         createQuote = findViewById(R.id.createQuote);
         swipeRefreshLayout = findViewById(R.id.quoteSwipeRefreshLayout);
         recyclerView = findViewById(R.id.quoteRecyclerView);
-        usrQuotesRV = findViewById(R.id.mainActivityUsrQuotes);
+        usrQuotesRV = findViewById(R.id.usrQuotes);
         profileButton = findViewById(R.id.userProfileButton);
         showUserProfileButton = findViewById(R.id.profileShowProfile);
         profileLogoutButton = findViewById(R.id.profileLogout);
         profileLoginButton = findViewById(R.id.profileLogin);
         includeAccountProfile = findViewById(R.id.includeAccountProfile);
-        mainActivityUsername = findViewById(R.id.mainActivityUsername);
+        mainActivityUsername = findViewById(R.id.username);
+        mainBackButton = findViewById(R.id.mainBackButton);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         LinearLayoutManager usrManager = new LinearLayoutManager(this);
@@ -303,15 +339,17 @@ public class MainActivity extends AppCompatActivity {
         usrAdapter = new UserQuoteAdapter(this);
         recyclerView.setAdapter(adapter);
         usrQuotesRV.setAdapter(usrAdapter);
-        dao = new DAOQuote();
+        quoteRepository = new QuoteRepository();
     }
 
-    public void createActionBar(){
+    public void createActionBar() {
         int nightModeFlags = this.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         switch (nightModeFlags) {
             case Configuration.UI_MODE_NIGHT_YES:
                 //Set the Action Bar color to Dark Gray
-                Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.dark_action_bar, null));
+                Objects.requireNonNull(getSupportActionBar())
+                        .setBackgroundDrawable(
+                                ResourcesCompat.getDrawable(getResources(), R.drawable.dark_action_bar, null));
                 break;
 
             case Configuration.UI_MODE_NIGHT_NO:
