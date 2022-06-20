@@ -10,16 +10,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.sforge.quotes.R;
-import com.sforge.quotes.repository.DAOQuote;
 import com.sforge.quotes.entity.Quote;
+import com.sforge.quotes.repository.QuoteRepository;
+import com.sforge.quotes.repository.UserQuoteRepository;
 
 import java.util.Objects;
 
 public class CreateQuotes extends AppCompatActivity {
 
     private String user;
+    private final int quoteLengthLimit = 999;
+    private final int authorLengthLimit = 99;
+
+    private QuoteRepository quoteRepository;
+    private EditText createQuoteEditText, createAuthorEditText;
+    private UserQuoteRepository userQuoteRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,24 +34,36 @@ public class CreateQuotes extends AppCompatActivity {
 
         createActionBar();
 
-        EditText createQuoteEditText = findViewById(R.id.createQuoteEditText);
-        EditText createAuthorEditText = findViewById(R.id.createAuthorEditText);
+        createQuoteEditText = findViewById(R.id.createQuoteEditText);
+        createAuthorEditText = findViewById(R.id.createAuthorEditText);
         Button submitQuoteButton = findViewById(R.id.submitQuoteButton);
 
-        DAOQuote dao = new DAOQuote();
+        quoteRepository = new QuoteRepository();
 
         user = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        DatabaseReference reference = new DAOQuote("Users/" + user + "/User Quotes").getReference();
+        userQuoteRepository = new UserQuoteRepository(user);
 
         submitQuoteButton.setOnClickListener(view -> {
-            Quote quote = new Quote(createQuoteEditText.getText().toString(), createAuthorEditText.getText().toString(), user);
-            reference.push().setValue(quote);
-            dao.add(quote)
-                    .addOnSuccessListener(suc -> Toast.makeText(this, "Quote is Added Successfully!", Toast.LENGTH_SHORT).show())
-                    .addOnFailureListener(er-> Toast.makeText(this, "Failed To Add the Quote", Toast.LENGTH_SHORT).show())
-                    .addOnCanceledListener(() -> Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show());
+            if (createQuoteEditText.getText().toString().length() <= quoteLengthLimit && createAuthorEditText.getText().toString().length() <= authorLengthLimit) {
+                createQuote();
+            } else if (createQuoteEditText.getText().toString().length() > quoteLengthLimit) {
+                createQuoteEditText.setError("Quote Length Limit is 999 Letters!");
+                createQuoteEditText.requestFocus();
+            } else if (createAuthorEditText.getText().toString().length() > authorLengthLimit) {
+                createAuthorEditText.setError("Author Length Limit is 99 Letters!");
+                createAuthorEditText.requestFocus();
+            }
         });
+    }
+
+    public void createQuote(){
+        Quote quote = new Quote(createQuoteEditText.getText().toString(), createAuthorEditText.getText().toString(), user);
+        userQuoteRepository.add(quote);
+        quoteRepository.add(quote)
+                .addOnSuccessListener(suc -> Toast.makeText(this, "Quote is Added Successfully!", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(er-> Toast.makeText(this, "Failed To Add the Quote", Toast.LENGTH_SHORT).show())
+                .addOnCanceledListener(() -> Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show());
     }
 
     public void createActionBar(){

@@ -8,20 +8,6 @@
     tools:context=".activity.UserProfile">
 
     <TextView
-        android:id="@+id/profileUsername"
-        style="@style/text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-condensed-medium"
-        android:text="\@Username"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.2" />
-
-    <TextView
         android:id="@+id/profileEmail"
         style="@style/text"
         android:layout_width="wrap_content"
@@ -53,7 +39,7 @@
         style="@style/whiteButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="Show Email"
         android:textSize="12dp"
         android:textColor="@color/black"
@@ -62,37 +48,16 @@
         app:layout_constraintTop_toBottomOf="@+id/profileSettingsButton" />
 
     <LinearLayout
-        android:id="@+id/profilePfpLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/profileUsername"
+        android:id="@+id/user_account_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:layout_width="125dp"
-            android:layout_height="125dp"
-            android:foreground="@drawable/ic_account"
-            android:clickable="false"
-            app:backgroundTint="#888888" />
+        <include layout="@layout/user_account" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/profileUsrQuotesLinearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileUsername"
-        android:orientation="vertical">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/profileUsrQuotes"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-
-            />
-
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
