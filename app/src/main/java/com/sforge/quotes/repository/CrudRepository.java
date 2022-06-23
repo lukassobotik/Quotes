@@ -24,6 +24,17 @@ abstract class CrudRepository {
                 .push()
                 .setValue(value);
     }
+    /**
+     * Method for adding an object with a specified key.
+     * @param value Value to be stored.
+     * @param key Specified key to store value under.
+     * @return Result of the process.
+     */
+    public Task<Void> addWithKey(String key, Object value) {
+        return databaseReference
+                .child(key)
+                .setValue(value);
+    }
 
     /**
      * Common method for adding object.

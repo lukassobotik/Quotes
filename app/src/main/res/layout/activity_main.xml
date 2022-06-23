@@ -9,14 +9,11 @@
 
     <Button
         android:id="@+id/createQuote"
-        style="@style/addButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:padding="10dp"
-        android:text="Create a Quote"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="16sp"
+        android:foreground="@drawable/ic_baseline_add_24"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -95,26 +92,6 @@
         app:layout_constraintEnd_toEndOf="@id/userProfileButton"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@id/userProfileButton" />
-
-    <Button
-        android:id="@+id/mainBackButton"
-        style="@style/whiteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:padding="10dp"
-        android:text="Back"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
 
     <LinearLayout
         android:id="@+id/includeAccountProfile"

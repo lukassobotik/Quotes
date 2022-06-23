@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     //Firebase Related
     boolean isLoggedIn = false;
     final boolean[] profileIsOpen = {false};
+    int databaseSize = 0;
     QuoteRepository quoteRepository;
     List<Quote> quotes = new ArrayList<>();
     List<Quote> currentQuotes = new ArrayList<>();
@@ -60,13 +62,16 @@ public class MainActivity extends AppCompatActivity {
     Button createQuote, profileButton, showUserProfileButton, profileLogoutButton, profileLoginButton, mainBackButton;
     QuoteAdapter adapter;
     UserQuoteAdapter usrAdapter;
+    ConstraintLayout quoteItemBackground;
 
+    int oldPosition = 0;
     int lastFirstVisiblePosition;
     float x1, x2, y1, y2;
 
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView, usrQuotesRV;
 
+    List<Quote> loadedQuotes = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +82,10 @@ public class MainActivity extends AppCompatActivity {
         defineViews();
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
+            currentQuotes.clear();
             loadAllDataFromDatabase();
             swipeRefreshLayout.setRefreshing(false);
+            oldPosition = 0;
         });
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -102,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
     public void createMainBackButton() {
         mainBackButton.setOnClickListener(view -> {
             swipeRefreshLayout.setEnabled(true);
-            mainBackButton.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
             adapter.notifyDataSetChanged();
             recyclerView.startAnimation(
@@ -130,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
         profileButton.setOnClickListener(view -> profileIconOnClickEvent());
 
         profileLoginButton.setOnClickListener(view -> {
-            finish();
             startActivity(new Intent(this, LoginActivity.class));
         });
 
@@ -178,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
             new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
                 @Override
                 public float getSwipeThreshold(@NonNull RecyclerView.ViewHolder viewHolder) {
+                    //Set swipe threshold
                     return 0.2f;
                 }
 
@@ -191,55 +197,56 @@ public class MainActivity extends AppCompatActivity {
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                    final int position = viewHolder.getAdapterPosition();
                     if (direction == ItemTouchHelper.LEFT) {
-                        String swipeUID = adapter.getCreatorAccountFromPosition(position);
-                        DatabaseReference userReference = new UserRepository().getDatabaseReference();
-                        userReference.child(swipeUID).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                User userProfile = snapshot.getValue(User.class);
-                                if (userProfile != null) {
-                                    String username = userProfile.getUsername();
-                                    StringBuilder stringBuilder = new StringBuilder();
-                                    stringBuilder.append("@").append(username);
-
-                                    mainActivityUsername.setText(stringBuilder);
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                                Toast.makeText(MainActivity.this, "Something went Wrong.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        UserQuoteRepository userQuotesReference = new UserQuoteRepository(swipeUID);
-                        userQuotesReference
-                                .getAll()
-                                .addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        usrQuotes = new ArrayList<>();
-                                        for (DataSnapshot data : snapshot.getChildren()) {
-                                            Quote quote = data.getValue(Quote.class);
-                                            usrQuotes.add(quote);
-                                        }
-                                        usrAdapter.setItems(usrQuotes);
-                                        usrAdapter.notifyDataSetChanged();
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-                                        Toast.makeText(MainActivity.this, "Something went Wrong.", Toast.LENGTH_SHORT)
-                                                .show();
-                                    }
-                                });
                         recyclerView.setVisibility(View.GONE);
-                        mainBackButton.setVisibility(View.VISIBLE);
                         swipeRefreshLayout.setEnabled(false);
                     }
                 }
             };
+
+    public void setCurrentQuoteCreatorInfo(int position){
+        String swipeUID = adapter.getCreatorAccountFromPosition(position);
+        DatabaseReference userReference = new UserRepository().getDatabaseReference();
+        userReference.child(swipeUID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User userProfile = snapshot.getValue(User.class);
+                if (userProfile != null) {
+                    String username = userProfile.getUsername();
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.append("@").append(username);
+
+                    mainActivityUsername.setText(stringBuilder);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "Something went Wrong.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        UserQuoteRepository userQuotesReference = new UserQuoteRepository(swipeUID);
+        userQuotesReference
+                .getAll()
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        usrQuotes = new ArrayList<>();
+                        for (DataSnapshot data : snapshot.getChildren()) {
+                            Quote quote = data.getValue(Quote.class);
+                            usrQuotes.add(quote);
+                        }
+                        usrAdapter.setItems(usrQuotes);
+                        usrAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(MainActivity.this, "Something went Wrong.", Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+    }
 
     //Motion event detection in Creator Account to show all the quotes (left to right swipe detection)
     @SuppressLint("NotifyDataSetChanged")
@@ -255,7 +262,6 @@ public class MainActivity extends AppCompatActivity {
                 y2 = touchEvent.getY();
                 if (x1 < x2) {
                     swipeRefreshLayout.setEnabled(true);
-                    mainBackButton.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
                     adapter.notifyDataSetChanged();
                     recyclerView.startAnimation(
@@ -269,10 +275,34 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SnapHelper mSnapHelper = new PagerSnapHelper();
+        SnapHelper snapHelper = new PagerSnapHelper();
         if (recyclerView.getOnFlingListener() == null) {
-            mSnapHelper.attachToRecyclerView(recyclerView);
+            snapHelper.attachToRecyclerView(recyclerView);
         }
+
+        //Listens for scrolls and sets the info of the quote creator + loads only a few quotes at a time to save performance
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                int position = ((LinearLayoutManager) Objects.requireNonNull(recyclerView.getLayoutManager())).findLastCompletelyVisibleItemPosition();
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && position != -1) {
+                    setCurrentQuoteCreatorInfo(position);
+
+                    //Load the next quote
+                    if (position + 1 < databaseSize && position > oldPosition) {
+                        loadedQuotes.add(currentQuotes.get(position + 1));
+                    }
+
+                    adapter.setItems(loadedQuotes);
+                    adapter.notifyDataSetChanged();
+
+                    if (oldPosition < position) {
+                        oldPosition = position;
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -307,6 +337,14 @@ public class MainActivity extends AppCompatActivity {
                         if (!currentQuotes.isEmpty()) {
                             includeAccountProfile.setVisibility(View.VISIBLE);
                         }
+                        //Load the creator info of the first loaded Quote
+                        setCurrentQuoteCreatorInfo(0);
+
+                        databaseSize = quotes.size();
+
+                        loadedQuotes.clear();
+                        loadedQuotes.add(quotes.get(0));
+                        loadedQuotes.add(quotes.get(1));
                         quotes.clear();
                     }
 
@@ -329,6 +367,8 @@ public class MainActivity extends AppCompatActivity {
         includeAccountProfile = findViewById(R.id.includeAccountProfile);
         mainActivityUsername = findViewById(R.id.username);
         mainBackButton = findViewById(R.id.mainBackButton);
+        mainBackButton.setVisibility(View.VISIBLE);
+        quoteItemBackground = findViewById(R.id.quoteItemBackground);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         LinearLayoutManager usrManager = new LinearLayoutManager(this);

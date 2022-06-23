@@ -1,15 +1,20 @@
 package com.sforge.quotes.activity;
 
 import android.annotation.SuppressLint;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,23 +23,32 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.sforge.quotes.R;
+import com.sforge.quotes.adapter.ImageAdapter;
 import com.sforge.quotes.adapter.UserQuoteAdapter;
+import com.sforge.quotes.entity.Quote;
 import com.sforge.quotes.entity.User;
 import com.sforge.quotes.repository.QuoteRepository;
+import com.sforge.quotes.repository.UserQuoteRepository;
 import com.sforge.quotes.repository.UserRepository;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 
 public class UserProfile extends AppCompatActivity {
 
-    private Button profileSettings, showEmail;
+    private Button profileSettings, showEmail, changeBackground, backButton, layoutBackButton;
 
     private String email = "";
 
+    List<Quote> usrQuotes = new ArrayList<>();
+
     QuoteRepository quoteRepository;
     UserQuoteAdapter usrAdapter;
-    private RecyclerView usrQuotesRV;
+    private RecyclerView usrQuotesRV, changeBackgroundRV;
+    LinearLayout backgroundRVLinearLayout;
 
     private final BiFunction<TextView, TextView, ValueEventListener> onDataChangeListener =
             (emailTV, usernameTV) -> new ValueEventListener() {
@@ -70,8 +84,22 @@ public class UserProfile extends AppCompatActivity {
         profileSettings = findViewById(R.id.profileSettingsButton);
         showEmail = findViewById(R.id.profileShowEmail);
         showEmail.setVisibility(View.GONE);
+        LinearLayoutManager usrManager = new LinearLayoutManager(this);
+        usrAdapter = new UserQuoteAdapter(this);
         usrQuotesRV = findViewById(R.id.usrQuotes);
+        usrQuotesRV.setAdapter(usrAdapter);
+        usrQuotesRV.setLayoutManager(usrManager);
         quoteRepository = new QuoteRepository();
+        backButton = findViewById(R.id.profileBackButton);
+        backButton.setOnClickListener(view -> finish());
+        layoutBackButton = findViewById(R.id.mainBackButton);
+        layoutBackButton.setVisibility(View.GONE);
+        changeBackground = findViewById(R.id.profileChangeBackground);
+        changeBackground.setVisibility(View.GONE);
+        changeBackgroundRV = findViewById(R.id.changeBackgroundRecyclerView);
+        changeBackgroundRV.setVisibility(View.GONE);
+        backgroundRVLinearLayout = findViewById(R.id.changeBackgroundRVLinearLayout);
+        backgroundRVLinearLayout.setVisibility(View.GONE);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -84,7 +112,31 @@ public class UserProfile extends AppCompatActivity {
 
         createSettingsMenu();
 
-        usrQuotesRV.setAdapter(usrAdapter);
+        getUserQuotes();
+    }
+
+    public void getUserQuotes() {
+        UserQuoteRepository userQuotesReference = new UserQuoteRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        userQuotesReference
+                .getAll()
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        usrQuotes = new ArrayList<>();
+                        for (DataSnapshot data : snapshot.getChildren()) {
+                            Quote quote = data.getValue(Quote.class);
+                            usrQuotes.add(quote);
+                        }
+                        usrAdapter.setItems(usrQuotes);
+                        usrAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(UserProfile.this, "Something went Wrong.", Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -95,10 +147,16 @@ public class UserProfile extends AppCompatActivity {
                 showEmail.setVisibility(View.VISIBLE);
                 showEmail.startAnimation(
                         AnimationUtils.loadAnimation(getApplicationContext(), R.anim.settings_button_slide_bottom_to_top));
+                changeBackground.setVisibility(View.VISIBLE);
+                changeBackground.startAnimation(
+                        AnimationUtils.loadAnimation(getApplicationContext(), R.anim.settings_button_slide_bottom_to_top));
                 isSettingMenuOpen.set(true);
             } else {
                 showEmail.setVisibility(View.GONE);
                 showEmail.startAnimation(
+                        AnimationUtils.loadAnimation(getApplicationContext(), R.anim.settings_button_slide_top_to_bottom));
+                changeBackground.setVisibility(View.GONE);
+                changeBackground.startAnimation(
                         AnimationUtils.loadAnimation(getApplicationContext(), R.anim.settings_button_slide_top_to_bottom));
                 isSettingMenuOpen.set(false);
             }
@@ -117,7 +175,32 @@ public class UserProfile extends AppCompatActivity {
                 isEmailShown.set(false);
             }
         });
-        usrQuotesRV.setAdapter(usrAdapter);
+
+        GridLayoutManager manager = new GridLayoutManager(this, 3);
+        ImageAdapter adapter = new ImageAdapter(this);
+        List<Drawable> images = new ArrayList<>();
+        images.add(getResources().getDrawable(R.drawable.rsz_blue_sky_1, null));
+        images.add(getResources().getDrawable(R.drawable.rsz_bridge_in_forest_1, null));
+        images.add(getResources().getDrawable(R.drawable.rsz_night_city_1, null));
+        images.add(getResources().getDrawable(R.drawable.rsz_dark_mountains_1, null));
+        images.add(getResources().getDrawable(R.drawable.rsz_bridge_in_forest_2, null));
+        images.add(getResources().getDrawable(R.drawable.rsz_forest_1, null));
+        adapter.setItems(images);
+        changeBackgroundRV.setLayoutManager(manager);
+        changeBackgroundRV.setAdapter(adapter);
+
+        final AtomicBoolean isBackgroundSettingShown = new AtomicBoolean(false);
+        changeBackground.setOnClickListener(view -> {
+            if (!isBackgroundSettingShown.get()) {
+                backgroundRVLinearLayout.setVisibility(View.VISIBLE);
+                changeBackgroundRV.setVisibility(View.VISIBLE);
+                isBackgroundSettingShown.set(true);
+            } else {
+                backgroundRVLinearLayout.setVisibility(View.GONE);
+                changeBackgroundRV.setVisibility(View.GONE);
+                isBackgroundSettingShown.set(false);
+            }
+        });
     }
 
     @Override

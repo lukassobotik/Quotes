@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/transparent"
+    android:background="@color/dark_grey"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.UserProfile">
@@ -22,6 +22,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.2" />
+
+    <Button
+        android:id="@+id/profileBackButton"
+        style="@style/transparentButton"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:foreground="@drawable/ic_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/profileSettingsButton"
@@ -47,11 +58,63 @@
         app:layout_constraintEnd_toEndOf="@+id/profileSettingsButton"
         app:layout_constraintTop_toBottomOf="@+id/profileSettingsButton" />
 
+    <Button
+        android:id="@+id/profileChangeBackground"
+        style="@style/whiteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Change Background"
+        android:textSize="12dp"
+        android:textColor="@color/black"
+        android:elevation="24dp"
+        app:layout_constraintEnd_toEndOf="@+id/profileSettingsButton"
+        app:layout_constraintTop_toBottomOf="@+id/profileShowEmail" />
+
+    <LinearLayout
+        android:id="@+id/changeBackgroundRVLinearLayout"
+        style="@style/whiteButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="4dp"
+        android:backgroundTint="@color/white"
+        android:elevation="24dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileChangeBackground">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/changeBackgroundRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Long Press to Apply In Lower Quality"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:textStyle="bold|italic"
+            android:layout_marginBottom="8dp"/>
+
+    </LinearLayout>
+
+
     <LinearLayout
         android:id="@+id/user_account_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
+        android:layout_marginTop="64dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

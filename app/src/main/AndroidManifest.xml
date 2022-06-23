@@ -16,6 +16,8 @@
         <activity
             android:name=".activity.UserProfile"
             android:exported="false"
+            android:theme="@style/Theme.Appcompat.Quotes.NoActionBar"
+            android:parentActivityName=".activity.MainActivity"
             android:label=""/>
         <activity
             android:name=".activity.RegisterActivity"
