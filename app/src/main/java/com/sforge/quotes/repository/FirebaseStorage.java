@@ -5,14 +5,14 @@ package com.sforge.quotes.repository;
  * Consider missing `public` keyword which makes this class `package private` (Only classes from this package can
  * access it).
  */
-class FirebaseStorage {
+public class FirebaseStorage {
 
     /**
      * Path tho the Firebase. It would be better to put it in configuration file. For example like here:
      * <a href="https://robosoft.medium.com/configuring-android-builds-a-step-by-step-guide-2e29e2e56487">...</a>
      */
-    private static final String REPOSITORY_PATH = "https://quotes-30510-default-rtdb.europe-west1.firebasedatabase.app/";
-    private static final com.google.firebase.database.FirebaseDatabase
+    public static final String REPOSITORY_PATH = "https://quotes-30510-default-rtdb.europe-west1.firebasedatabase.app/";
+    public static final com.google.firebase.database.FirebaseDatabase
             firebase = com.google.firebase.database.FirebaseDatabase.getInstance(REPOSITORY_PATH);
 
     /**

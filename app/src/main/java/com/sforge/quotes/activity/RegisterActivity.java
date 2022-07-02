@@ -1,7 +1,5 @@
 package com.sforge.quotes.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -11,6 +9,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.sforge.quotes.R;
@@ -49,22 +49,27 @@ public class RegisterActivity extends AppCompatActivity {
         if (sUsername.isEmpty()) {
             username.setError("Username is Required!");
             username.requestFocus();
+            return;
         }
         if (sEmail.isEmpty()) {
             email.setError("Email is Required!");
             email.requestFocus();
+            return;
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(sEmail).matches()) {
             email.setError("Enter a Valid Email Address!");
             email.requestFocus();
+            return;
         }
         if (sPassword.isEmpty()) {
             password.setError("Password is Required!");
             password.requestFocus();
+            return;
         }
         if (password.length() < 6) {
             password.setError("Password has to Have at Least 6 Characters!");
             password.requestFocus();
+            return;
         }
 
         progressBar.setVisibility(View.VISIBLE);

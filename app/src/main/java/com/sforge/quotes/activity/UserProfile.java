@@ -3,7 +3,6 @@ package com.sforge.quotes.activity;
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -32,7 +31,6 @@ import com.sforge.quotes.repository.UserQuoteRepository;
 import com.sforge.quotes.repository.UserRepository;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
@@ -68,8 +66,8 @@ public class UserProfile extends AppCompatActivity {
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(UserProfile.this, "Something went Wrong.", Toast.LENGTH_SHORT).show();
+                public void onCancelled(@NonNull DatabaseError error){
+                    Toast.makeText(UserProfile.this, "Couldn't Retrieve the User Info. " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             };
 
@@ -133,8 +131,7 @@ public class UserProfile extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(UserProfile.this, "Something went Wrong.", Toast.LENGTH_SHORT)
-                                .show();
+                        Toast.makeText(UserProfile.this, "Couldn't Retrieve the Quotes.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -142,6 +139,8 @@ public class UserProfile extends AppCompatActivity {
     @SuppressLint("UseCompatLoadingForDrawables")
     public void createSettingsMenu() {
         final AtomicBoolean isSettingMenuOpen = new AtomicBoolean(false);
+        final AtomicBoolean isEmailShown = new AtomicBoolean(false);
+        final AtomicBoolean isBackgroundSettingShown = new AtomicBoolean(false);
         profileSettings.setOnClickListener(view -> {
             if (!isSettingMenuOpen.get()) {
                 showEmail.setVisibility(View.VISIBLE);
@@ -158,11 +157,17 @@ public class UserProfile extends AppCompatActivity {
                 changeBackground.setVisibility(View.GONE);
                 changeBackground.startAnimation(
                         AnimationUtils.loadAnimation(getApplicationContext(), R.anim.settings_button_slide_top_to_bottom));
+                backgroundRVLinearLayout.setVisibility(View.GONE);
+                backgroundRVLinearLayout.startAnimation(
+                        AnimationUtils.loadAnimation(getApplicationContext(), R.anim.settings_button_slide_top_to_bottom));
+                changeBackgroundRV.setVisibility(View.GONE);
+                changeBackgroundRV.startAnimation(
+                        AnimationUtils.loadAnimation(getApplicationContext(), R.anim.settings_button_slide_top_to_bottom));
+                isBackgroundSettingShown.set(false);
                 isSettingMenuOpen.set(false);
             }
         });
 
-        final AtomicBoolean isEmailShown = new AtomicBoolean(false);
         showEmail.setOnClickListener(view -> {
             if (!isEmailShown.get()) {
                 StringBuilder stringBuilder = new StringBuilder();
@@ -189,7 +194,6 @@ public class UserProfile extends AppCompatActivity {
         changeBackgroundRV.setLayoutManager(manager);
         changeBackgroundRV.setAdapter(adapter);
 
-        final AtomicBoolean isBackgroundSettingShown = new AtomicBoolean(false);
         changeBackground.setOnClickListener(view -> {
             if (!isBackgroundSettingShown.get()) {
                 backgroundRVLinearLayout.setVisibility(View.VISIBLE);
