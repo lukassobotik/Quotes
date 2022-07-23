@@ -37,6 +37,19 @@ abstract class CrudRepository {
     }
 
     /**
+     * Method for adding an object with a specified key returned to the calling method.
+     * @param value Value to be stored.
+     * @return key.
+     */
+    public String addWithKeyReturn(Object value) {
+        String key = databaseReference.push().getKey();
+        if (key != null) {
+            databaseReference.child(key).setValue(value);
+        }
+        return key;
+    }
+
+    /**
      * Common method for adding object.
      * @param key key (id) of entity to be updated.
      * @param values values to store.

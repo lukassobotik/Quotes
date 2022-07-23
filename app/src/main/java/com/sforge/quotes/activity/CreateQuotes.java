@@ -2,10 +2,12 @@ package com.sforge.quotes.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.widget.Button;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
@@ -20,8 +22,10 @@ import java.util.Objects;
 public class CreateQuotes extends AppCompatActivity {
 
     private String user;
-    private final int quoteLengthLimit = 999;
-    private final int authorLengthLimit = 99;
+    private final int quoteLengthLimit = 200;
+    private final int authorLengthLimit = 50;
+    private final int minQuoteLengthLimit = 5;
+    private final int minAuthorLengthLimit = 2;
 
     private QuoteRepository quoteRepository;
     private EditText createQuoteEditText, createAuthorEditText;
@@ -36,31 +40,50 @@ public class CreateQuotes extends AppCompatActivity {
 
         createQuoteEditText = findViewById(R.id.createQuoteEditText);
         createAuthorEditText = findViewById(R.id.createAuthorEditText);
-        Button submitQuoteButton = findViewById(R.id.submitQuoteButton);
 
         quoteRepository = new QuoteRepository();
 
         user = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         userQuoteRepository = new UserQuoteRepository(user);
+    }
 
-        submitQuoteButton.setOnClickListener(view -> {
-            if (createQuoteEditText.getText().toString().length() <= quoteLengthLimit && createAuthorEditText.getText().toString().length() <= authorLengthLimit) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.create_quotes_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.create_quotes_menu_done) {
+            if (createQuoteEditText.getText().toString().length() <= quoteLengthLimit && createAuthorEditText.getText().toString().length() <= authorLengthLimit
+                    && createQuoteEditText.getText().toString().length() >= minQuoteLengthLimit && createAuthorEditText.getText().toString().length() >= minAuthorLengthLimit) {
                 createQuote();
+                finish();
             } else if (createQuoteEditText.getText().toString().length() > quoteLengthLimit) {
-                createQuoteEditText.setError("Quote Length Limit is 999 Letters!");
+                createQuoteEditText.setError("Quote Length Limit is " + quoteLengthLimit + " Letters!");
                 createQuoteEditText.requestFocus();
             } else if (createAuthorEditText.getText().toString().length() > authorLengthLimit) {
-                createAuthorEditText.setError("Author Length Limit is 99 Letters!");
+                createAuthorEditText.setError("Author Length Limit is " + authorLengthLimit + " Letters!");
+                createAuthorEditText.requestFocus();
+            } else if (createQuoteEditText.getText().toString().length() < minQuoteLengthLimit) {
+                createQuoteEditText.setError("Quote Must Have at Least " + minQuoteLengthLimit + " Letters!");
+                createQuoteEditText.requestFocus();
+            } else if (createAuthorEditText.getText().toString().length() < minAuthorLengthLimit) {
+                createAuthorEditText.setError("Author's Name Must Have At Least " + minAuthorLengthLimit + " Letters!");
                 createAuthorEditText.requestFocus();
             }
-        });
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void createQuote(){
         Quote quote = new Quote(createQuoteEditText.getText().toString(), createAuthorEditText.getText().toString(), user);
-        userQuoteRepository.add(quote);
-        quoteRepository.add(quote)
+        String key = userQuoteRepository.addWithKeyReturn(quote);
+        quoteRepository.addWithKey(key, quote)
                 .addOnSuccessListener(suc -> Toast.makeText(this, "Quote is Added Successfully!", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(er-> Toast.makeText(this, "Failed To Add the Quote", Toast.LENGTH_SHORT).show())
                 .addOnCanceledListener(() -> Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show());

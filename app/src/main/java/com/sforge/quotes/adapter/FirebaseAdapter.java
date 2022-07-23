@@ -2,18 +2,15 @@ package com.sforge.quotes.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.database.paging.DatabasePagingOptions;
+import com.firebase.ui.database.paging.FirebaseRecyclerPagingAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,37 +21,37 @@ import com.sforge.quotes.activity.MainActivity;
 import com.sforge.quotes.entity.Background;
 import com.sforge.quotes.entity.Quote;
 import com.sforge.quotes.entity.UserPreferences;
-import com.sforge.quotes.repository.QuoteRepository;
-import com.sforge.quotes.repository.UserBookmarksRepository;
 import com.sforge.quotes.repository.UserPreferencesRepository;
-import com.sforge.quotes.repository.UserQuoteRepository;
 import com.sforge.quotes.view.QuoteVH;
-import com.sforge.quotes.view.UserQuoteVH;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
-public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FirebaseAdapter extends FirebaseRecyclerPagingAdapter<Quote, QuoteVH> {
 
-    private final Context context;
+    Context context;
     List<Quote> list = new ArrayList<>();
-    public QuoteAdapter(Context ctx){
-        this.context = ctx;
-    }
-    public void setItems(List<Quote> quote){
-        list.clear();
-        list.addAll(quote);
+    /**
+     * Construct a new FirestorePagingAdapter from the given {@link DatabasePagingOptions}.
+     *
+     * @param options Defined options of the adapter
+     */
+    public FirebaseAdapter(Context context, @NonNull DatabasePagingOptions<Quote> options) {
+        super(options);
+        this.context = context;
     }
 
-    public String getCreatorAccountFromPosition(int position){
+    public String getCreatorAccountFromPosition(int position) {
         return list.get(position).getUser();
+    }
+
+    public Quote getQuoteFromPosition(int position) {
+        return list.get(position);
     }
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public QuoteVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.quote_item, parent, false);
         Background backgroundEntity = new Background();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -109,15 +106,14 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        QuoteVH vh = (QuoteVH) holder;
-        Quote quote = list.get(position);
-        vh.textQuote.setText(quote.getQuote());
-        vh.textAuthor.setText(quote.getAuthor());
-    }
-
-    @Override
-    public int getItemCount() {
-        return list.size();
+    protected void onBindViewHolder(@NonNull QuoteVH holder, int position, @NonNull Quote model) {
+        if (model.getQuote().equals("") && model.getAuthor().equals("") && model.getUser().equals("")) {
+            holder.itemView.setVisibility(View.GONE);
+            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+        } else {
+            holder.textQuote.setText(model.getQuote());
+            holder.textAuthor.setText(model.getAuthor());
+            list.add(model);
+        }
     }
 }

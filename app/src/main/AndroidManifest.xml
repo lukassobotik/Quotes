@@ -10,28 +10,33 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Quotes">
         <activity
+            android:name=".activity.CollectionsActivity"
+            android:exported="false"
+            android:label=""
+            android:theme="@style/Theme.Appcompat.Quotes.NoActionBar"/>
+        <activity
             android:name=".activity.ForgottenPassword"
             android:exported="false"
-            android:label=""/>
+            android:label="" />
         <activity
             android:name=".activity.UserProfile"
             android:exported="false"
-            android:theme="@style/Theme.Appcompat.Quotes.NoActionBar"
+            android:label=""
             android:parentActivityName=".activity.MainActivity"
-            android:label=""/>
+            android:theme="@style/Theme.Appcompat.Quotes.NoActionBar" />
         <activity
             android:name=".activity.RegisterActivity"
             android:exported="false"
-            android:label=""/>
+            android:label="" />
         <activity
             android:name=".activity.LoginActivity"
             android:exported="false"
-            android:label=""/>
+            android:label="" />
         <activity
             android:name=".activity.CreateQuotes"
             android:exported="false"
             android:label="Create A Quote"
-            android:parentActivityName=".activity.MainActivity"/>
+            android:parentActivityName=".activity.MainActivity" />
         <activity
             android:name=".activity.MainActivity"
             android:exported="true"
