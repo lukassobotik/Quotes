@@ -22,11 +22,9 @@ public class User {
     /**
      * Constructor for immutable instance creation.
      * @param username Username
-     * @param email email of the user.
      */
-    public User(final String username, final String email){
+    public User(final String username){
         this.username = username;
-        this.email = email;
     }
 
     public String getUsername() {

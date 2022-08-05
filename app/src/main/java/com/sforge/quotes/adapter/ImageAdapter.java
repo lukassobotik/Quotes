@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.sforge.quotes.R;
-import com.sforge.quotes.activity.UserProfile;
 import com.sforge.quotes.entity.Background;
 import com.sforge.quotes.entity.UserPreferences;
 import com.sforge.quotes.repository.UserPreferencesRepository;
@@ -70,7 +69,7 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             UserPreferences userPreferences = new UserPreferences(bgId.get(), "low");
             userPreferencesRepository.addWithKey("Background", userPreferences).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Toast.makeText(context.getApplicationContext(), "Successfully Changed the Background to Lower Quality", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context.getApplicationContext(), "Successfully changed the background in lower quality", Toast.LENGTH_SHORT).show();
                 }
             });
             return true;
@@ -95,7 +94,7 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             UserPreferences userPreferences = new UserPreferences(bgId.get(), "high");
             userPreferencesRepository.addWithKey("Background", userPreferences).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Toast.makeText(context.getApplicationContext(), "Successfully Changed the Background to Higher Quality", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context.getApplicationContext(), "Successfully changed the background in higher quality", Toast.LENGTH_SHORT).show();
                 }
             });
         });

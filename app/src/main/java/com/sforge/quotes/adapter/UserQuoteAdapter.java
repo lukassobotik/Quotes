@@ -71,7 +71,7 @@ public class UserQuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             if (childQuote != null && childQuote.getAuthor().equals(itemAuthor) && childQuote.getUser().equals(auth.getUid())) {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                                 builder.setTitle("Delete " + itemQuote + "?");
-                                builder.setMessage("Are you sure you want to delete \"" + itemQuote + "\"? "  + context.getResources().getString(R.string.delete_quote_disclaimer));
+                                builder.setMessage("Are you sure you want to delete \"" + itemQuote + "\"? \n \n"  + context.getResources().getString(R.string.delete_quote_disclaimer));
                                 builder.setPositiveButton("Yes", (dialogInterface, i) -> {
                                     //delete the quote from "/Quotes/" path
                                     quoteRepository.remove(quoteKey);

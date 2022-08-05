@@ -2,6 +2,7 @@ package com.sforge.quotes.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -10,12 +11,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.sforge.quotes.R;
 import com.sforge.quotes.entity.User;
 import com.sforge.quotes.repository.UserRepository;
+import com.sforge.quotes.repository.UsernameRepository;
 
 import java.util.Objects;
 
@@ -38,7 +44,33 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         banner.setOnClickListener(view -> startActivity(new Intent(this, MainActivity.class)));
-        register.setOnClickListener(view -> registerUser());
+        register.setOnClickListener(view -> doesUsernameExist(username.getText().toString().trim().toLowerCase()));
+    }
+
+    public void doesUsernameExist(String name) {
+        new UserRepository().getDatabaseReference().orderByChild("username").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean exists = false;
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    User user = data.getValue(User.class);
+                    if (user != null && user.getUsername().equals(name)) {
+                        exists = true;
+                    }
+                }
+                if (exists) {
+                    username.setError("Username already exists!");
+                    username.requestFocus();
+                } else {
+                    registerUser();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(RegisterActivity.this, "Cannot Access the Database Right Now. " + error, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void registerUser() {
@@ -75,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         mAuth.createUserWithEmailAndPassword(sEmail, sPassword).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                User user = new User(sUsername, sEmail);
+                User user = new User(sUsername);
 
                 new UserRepository().getDatabaseReference()
                         .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())

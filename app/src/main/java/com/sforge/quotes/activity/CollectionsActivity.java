@@ -1,5 +1,12 @@
 package com.sforge.quotes.activity;
 
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,13 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
-
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.paging.DatabasePagingOptions;
@@ -72,7 +72,8 @@ public class CollectionsActivity extends AppCompatActivity {
         create.setOnClickListener(view -> {
             String collection = createCollectionEditText.getText().toString().trim();
             if (collection.length() > 0) {
-                new UserCollectionRepository(FirebaseAuth.getInstance().getCurrentUser().getUid(), collection).add(new Quote("", "", ""));
+                //Create an empty quote (which will not be shown) so the directory will exist in Firebase
+                new UserCollectionRepository(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(), collection).add(new Quote("", "", ""));
             }
             createCollectionEditText.setText("");
             addLayout.setVisibility(View.GONE);
@@ -121,7 +122,7 @@ public class CollectionsActivity extends AppCompatActivity {
         back = findViewById(R.id.collectionBackButton);
         LinearLayoutManager collectionsManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(collectionsManager);
-        Query query = new UserBookmarksRepository(FirebaseAuth.getInstance().getCurrentUser().getUid()).getDatabaseReference();
+        Query query = new UserBookmarksRepository(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).getDatabaseReference();
         FirebaseRecyclerOptions<DataSnapshot> options = new FirebaseRecyclerOptions.Builder<DataSnapshot>()
                 .setQuery(query, snapshot -> snapshot)
                 .build();
@@ -138,25 +139,23 @@ public class CollectionsActivity extends AppCompatActivity {
             deleteTool = false;
             remove.setForeground(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_delete, null));
         } else {
-            Query quoteQuery = new UserCollectionRepository(FirebaseAuth.getInstance().getCurrentUser().getUid(), collection).getDatabaseReference();
+            Query quoteQuery = new UserCollectionRepository(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(), collection).getDatabaseReference();
             PagingConfig quotePagingConfig = new PagingConfig(1, 1, false);
             quoteOptions = new DatabasePagingOptions.Builder<Quote>()
                     .setLifecycleOwner(this)
                     .setQuery(quoteQuery, quotePagingConfig, Quote.class)
                     .build();
-            firebaseAdapter = new FirebaseAdapter(this, quoteOptions);
+            firebaseAdapter = new FirebaseAdapter(this, quoteOptions, false, recyclerView);
             recyclerView.setAdapter(firebaseAdapter);
             firebaseAdapter.startListening();
             placeholder.setVisibility(View.GONE);
             addButton.setVisibility(View.GONE);
             viewingQuotes = true;
-            quoteQuery = null;
         }
     }
 
     public void delete(String collection) {
-        //get and delete the Collection
-        UserCollectionRepository collectionRepository = new UserCollectionRepository(FirebaseAuth.getInstance().getCurrentUser().getUid(), collection);
+        UserCollectionRepository collectionRepository = new UserCollectionRepository(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(), collection);
         collectionRepository.getDatabaseReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -186,7 +185,7 @@ public class CollectionsActivity extends AppCompatActivity {
 
     public void deleteQuote(int position) {
         Quote quote = firebaseAdapter.getQuoteFromPosition(position);
-        UserCollectionRepository collectionRepository = new UserCollectionRepository(FirebaseAuth.getInstance().getCurrentUser().getUid(), localCollection);
+        UserCollectionRepository collectionRepository = new UserCollectionRepository(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(), localCollection);
         collectionRepository.getDatabaseReference().orderByChild("quote").equalTo(quote.getQuote())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

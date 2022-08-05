@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -60,7 +61,13 @@ public class UserProfile extends AppCompatActivity {
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.append("@").append(username);
 
-                        emailTV.setText(userEmail);
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
+                            for (UserInfo profile : user.getProviderData()) {
+                                String uEmail = profile.getEmail();
+                                emailTV.setText(uEmail);
+                            }
+                        }
                         usernameTV.setText(stringBuilder);
                     }
                 }
@@ -143,17 +150,17 @@ public class UserProfile extends AppCompatActivity {
         final AtomicBoolean isBackgroundSettingShown = new AtomicBoolean(false);
         profileSettings.setOnClickListener(view -> {
             if (!isSettingMenuOpen.get()) {
-                showEmail.setVisibility(View.VISIBLE);
-                showEmail.startAnimation(
-                        AnimationUtils.loadAnimation(getApplicationContext(), R.anim.settings_button_slide_bottom_to_top));
+//                showEmail.setVisibility(View.VISIBLE);
+//                showEmail.startAnimation(
+//                        AnimationUtils.loadAnimation(getApplicationContext(), R.anim.settings_button_slide_bottom_to_top));
                 changeBackground.setVisibility(View.VISIBLE);
                 changeBackground.startAnimation(
                         AnimationUtils.loadAnimation(getApplicationContext(), R.anim.settings_button_slide_bottom_to_top));
                 isSettingMenuOpen.set(true);
             } else {
-                showEmail.setVisibility(View.GONE);
-                showEmail.startAnimation(
-                        AnimationUtils.loadAnimation(getApplicationContext(), R.anim.settings_button_slide_top_to_bottom));
+//                showEmail.setVisibility(View.GONE);
+//                showEmail.startAnimation(
+//                        AnimationUtils.loadAnimation(getApplicationContext(), R.anim.settings_button_slide_top_to_bottom));
                 changeBackground.setVisibility(View.GONE);
                 changeBackground.startAnimation(
                         AnimationUtils.loadAnimation(getApplicationContext(), R.anim.settings_button_slide_top_to_bottom));
