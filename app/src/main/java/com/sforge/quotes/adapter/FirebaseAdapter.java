@@ -49,17 +49,35 @@ public class FirebaseAdapter extends FirebaseRecyclerPagingAdapter<Quote, QuoteV
         this.recyclerView = recyclerView;
     }
 
+    /**
+     * Method used to setting the quote creator
+     * @param position what position is the recycler view scrolled to
+     * @return user id
+     */
     public String getCreatorAccountFromPosition(int position) {
         return list.get(position).getUser();
     }
 
+    /**
+     * Method used to define what quote to add to a collection
+     * @param position what position is the recycler view scrolled to
+     * @return quote what is supposed to be added to a collection
+     */
     public Quote getQuoteFromPosition(int position) {
         return list.get(position);
     }
 
+    /**
+     * Method used to change items
+     * @param list items to be changed
+     */
     public void setList(List<Quote> list) {
         this.list = list;
     }
+
+    /**
+     * Method used to rearrange the quotes in an random order again
+     */
     public void shuffleList() {
         Collections.shuffle(list);
     }
@@ -122,7 +140,7 @@ public class FirebaseAdapter extends FirebaseRecyclerPagingAdapter<Quote, QuoteV
 
     @Override
     protected void onBindViewHolder(@NonNull QuoteVH holder, int position, @NonNull Quote model) {
-        //hide the first quote that is empty in collections
+        // hide the first quote that is empty in collections
         if (model.getQuote().equals("") && model.getAuthor().equals("") && model.getUser().equals("")) {
             holder.itemView.setVisibility(View.GONE);
             holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
