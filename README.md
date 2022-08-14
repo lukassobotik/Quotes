@@ -1,6 +1,5 @@
 # Quotes
-**Quotes is a Quote Sharing App!**
-
+**Quotes** is an Android application where you can **Share**, **Discover** and **Save** New **Quotes!**
 
 ## Features
 |**Feature**|**Current Version**|**Future Version**|
