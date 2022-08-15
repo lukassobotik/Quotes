@@ -22,7 +22,7 @@ Your Data Is Stored in Two Places:
 2. Everything else gets Stored in [Firebase Realtime Database](https://firebase.google.com/docs/database)
 
 In the Database, data is stored like this:
-<details><summary> root </summary><blockquote>
+<details open><summary> root </summary><blockquote>
 
   <details><summary> Quotes </summary><blockquote>
 
