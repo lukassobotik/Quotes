@@ -18,7 +18,7 @@
 
 ## What Data Is Being Stored? 
 Your Data Is Stored in Two Places:
-1. Your Account Info Like Email, Password gets Stored in [Firebase Auth](https://firebase.google.com/docs/auth)
+1. Your Account Info Like Email and Password gets Stored in [Firebase Auth](https://firebase.google.com/docs/auth)
 2. Everything else gets Stored in [Firebase Realtime Database](https://firebase.google.com/docs/database)
 
 In the Database, data is stored like this:
