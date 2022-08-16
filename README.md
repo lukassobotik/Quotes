@@ -11,8 +11,8 @@
 - Set a **Background** for all **Quotes**
 
 ## Features in the Future
-- **Quotes** are **Randomized**
-- Hundreds of Quotes will be **Added**
+- **Randomize Quotes**
+- **Increase** the **Default** amount of **Quotes**
 - **Request** and **View** all **Your Data** that is stored in **[Firebase](https://firebase.google.com/)**
 - Ability to **Delete Your Account** with all data
 
@@ -28,22 +28,26 @@ In the Database, data is stored like this:
 
   <details><summary> Quote1 </summary><blockquote>
 
-  ~~~
+  
   author: Author1
+
   quote: Quote1
+
   user: User1
-  ~~~
+  
   </blockquote></details>
     <details><summary> Quote2 </summary><blockquote>
 
-  ~~~
+  
   author: Author2
-  quote:Quote2
+
+  quote: Quote2
+
   user: User2
-  ~~~
+  
   </blockquote></details>
 
-</blockquote></details>
+  </blockquote></details>
   <details><summary> Users </summary><blockquote>
 
   <details><summary> User1 </summary><blockquote>
@@ -54,19 +58,23 @@ In the Database, data is stored like this:
 
   <details><summary> Quote1 </summary><blockquote>
 
-  ~~~
+  
   author: Author1
+
   quote: Quote1
+
   user: User1
-  ~~~
+  
   </blockquote></details>
   <details><summary> Quote2 </summary><blockquote>
 
-  ~~~
+  
   author: Author2
-  quote:Quote2
+
+  quote: Quote2
+
   user: User2
-  ~~~
+  
   </blockquote></details>
 
   </blockquote></details>
@@ -74,19 +82,23 @@ In the Database, data is stored like this:
 
   <details><summary> Quote1 </summary><blockquote>
 
-  ~~~
+  
   author: Author1
+
   quote: Quote1
+
   user: User1
-  ~~~
+  
   </blockquote></details>
   <details><summary> Quote2 </summary><blockquote>
 
-  ~~~
+  
   author: Author2
-  quote:Quote2
+
+  quote: Quote2
+
   user: User2
-  ~~~
+  
   </blockquote></details>
   </blockquote></details>
   </blockquote></details>
@@ -95,10 +107,11 @@ In the Database, data is stored like this:
   
   <details><summary> Background </summary><blockquote>
   
-  ~~~
+  
   bgId: rsz_forest_1
+
   bgQuality: low
-  ~~~
+  
  
   </blockquote></details>
   </blockquote></details>
@@ -107,25 +120,29 @@ In the Database, data is stored like this:
 
   <details><summary> Quote1 </summary><blockquote>
 
-  ~~~
+  
   author: Author1
+
   quote: Quote1
+
   user: User1
-  ~~~
+  
   </blockquote></details>
   <details><summary> Quote2 </summary><blockquote>
 
-  ~~~
+  
   author: Author2
-  quote:Quote2
+
+  quote: Quote2
+
   user: User2
-  ~~~
+  
   </blockquote></details>
   </blockquote></details>
 
-  ~~~
+  
   username: username1
-  ~~~
+  
 
   </blockquote></details>
 
@@ -137,19 +154,23 @@ In the Database, data is stored like this:
 
   <details><summary> Quote1 </summary><blockquote>
 
-  ~~~
+  
   author: Author1
+
   quote: Quote1
+
   user: User1
-  ~~~
+  
   </blockquote></details>
   <details><summary> Quote2 </summary><blockquote>
 
-  ~~~
+  
   author: Author2
-  quote:Quote2
+
+  quote: Quote2
+
   user: User2
-  ~~~
+  
   </blockquote></details>
 
   </blockquote></details>
@@ -157,19 +178,23 @@ In the Database, data is stored like this:
 
   <details><summary> Quote1 </summary><blockquote>
 
-  ~~~
+  
   author: Author1
+
   quote: Quote1
+
   user: User1
-  ~~~
+  
   </blockquote></details>
   <details><summary> Quote2 </summary><blockquote>
 
-  ~~~
+  
   author: Author2
-  quote:Quote2
+
+  quote: Quote2
+
   user: User2
-  ~~~
+  
   </blockquote></details>
   </blockquote></details>
   </blockquote></details>
@@ -178,10 +203,11 @@ In the Database, data is stored like this:
   
   <details><summary> Background </summary><blockquote>
   
-  ~~~
+  
   bgId: rsz_forest_1
+
   bgQuality: low
-  ~~~
+  
  
   </blockquote></details>
   </blockquote></details>
@@ -190,25 +216,29 @@ In the Database, data is stored like this:
 
   <details><summary> Quote1 </summary><blockquote>
 
-  ~~~
+  
   author: Author1
+
   quote: Quote1
+
   user: User1
-  ~~~
+  
   </blockquote></details>
   <details><summary> Quote2 </summary><blockquote>
 
-  ~~~
+  
   author: Author2
-  quote:Quote2
+
+  quote: Quote2
+
   user: User2
-  ~~~
+  
   </blockquote></details>
   </blockquote></details>
 
-  ~~~
+  
   username: username2
-  ~~~
+  
 
   </blockquote></details>
   </blockquote></details>
