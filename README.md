@@ -13,7 +13,6 @@
 
 ## Features in the Future
 - **Randomize Quotes**
-- **About** section with all credits what software has been used
 - **Increase** the **Default** amount of **Quotes**
 - Ability to **Delete Your Account** with all data
 
