@@ -5,6 +5,7 @@
 - Endless Scroll like on **Youtube Shorts** or **Instagram Reels!**
 - **Share** your **Favorite Quotes**
 - **Quotes, Preferences and Collections** are saved in **[Firebase](https://firebase.google.com/)**
+- **Request** and **View** all **Your Data** that is stored in **[Firebase](https://firebase.google.com/)**
 - **Account Login, Logout and Username** Creation
 - **Create** Your Own **Collections** and Add **Quotes** to them!
 - **Search** All Quotes
@@ -12,8 +13,8 @@
 
 ## Features in the Future
 - **Randomize Quotes**
+- **About** section with all credits what software has been used
 - **Increase** the **Default** amount of **Quotes**
-- **Request** and **View** all **Your Data** that is stored in **[Firebase](https://firebase.google.com/)**
 - Ability to **Delete Your Account** with all data
 
 ## What Data Is Being Stored? 
