@@ -7,6 +7,7 @@
 - **Quotes, Preferences and Collections** are saved in **[Firebase](https://firebase.google.com/)**
 - **Request** and **View** all **Your Data** that is stored in **[Firebase](https://firebase.google.com/)**
 - **Account Login, Logout and Username** Creation
+- Ability to **Delete Your Account** with all data
 - **Create** Your Own **Collections** and Add **Quotes** to them!
 - **Search** All Quotes
 - Set a **Background** for all **Quotes**
@@ -14,7 +15,6 @@
 ## Features in the Future
 - **Randomize Quotes**
 - **Increase** the **Default** amount of **Quotes**
-- Ability to **Delete Your Account** with all data
 
 ## What Data Is Being Stored? 
 Your Data Is Stored in Two Places:
