@@ -1,5 +1,5 @@
-# Quotes
-**Quotes** is an Android application where you can **Share**, **Discover** and **Save** New **Quotes!**
+# myQuotes
+**myQuotes** is an Android application where you can **Share**, **Discover** and **Save** New **Quotes!**
 
 ## Features
 - Endless Scroll like on **Youtube Shorts** or **Instagram Reels!**
