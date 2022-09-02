@@ -226,7 +226,21 @@
             </FrameLayout>
         </com.apachat.swipereveallayout.core.SwipeLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
+    <!--
+    <Button
+        style="@style/Button"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+    -->
     <SearchView
         android:id="@+id/searchView"
         android:layout_width="wrap_content"
@@ -234,7 +248,9 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        app:iconifiedByDefault="false"
+        app:iconifiedByDefault="true"
+        android:queryHint="@string/search_hint"
+        android:isScrollContainer="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

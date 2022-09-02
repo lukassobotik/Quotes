@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClosed(SwipeLayout view) {
                 recyclerView.suppressLayout(false);
                 usrQuotesRV.suppressLayout(false);
-                swipeRefreshLayout.setEnabled(true);
+                swipeRefreshLayout.setEnabled(position == 0);
             }
 
             @Override
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
             public void onSlide(SwipeLayout view, float slideOffset) {
                 recyclerView.suppressLayout(true);
                 usrQuotesRV.suppressLayout(true);
-                swipeRefreshLayout.setEnabled(false);
+                swipeRefreshLayout.setEnabled(position == 0);
             }
         });
 
@@ -164,7 +164,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void search(String query) {
-        Query searchQuery = quoteRepository.getDatabaseReference().orderByChild("quote").startAt(query).endAt(query + "~");
+        String type = "quote";
+        if (query.length() > 2 && query.charAt(0) == 'a' && query.charAt(1) == ':') {
+            type = "author";
+            query = query.substring(2);
+        } else if (query.length() > 2 && query.charAt(0) == 'q' && query.charAt(1) == ':') {
+            query = query.substring(2);
+        }
+
+        query = query.trim();
+
+        System.out.println(query);
+        System.out.println(type);
+
+        Query searchQuery = quoteRepository.getDatabaseReference().orderByChild(type).startAt(query).endAt(query + "\uf8ff");
         FirebaseRecyclerOptions<Quote> searchOptions = new FirebaseRecyclerOptions.Builder<Quote>()
                 .setQuery(searchQuery, Quote.class)
                 .build();
@@ -393,6 +406,7 @@ public class MainActivity extends AppCompatActivity {
                     quoteSwipeLayout.setLockDrag(true);
                     closeBookmarks();
                 }
+                swipeRefreshLayout.setEnabled(position == 0);
                 quoteSwipeLayout.setLockDrag(false);
             }
         });
