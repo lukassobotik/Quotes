@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
     public void createFirebaseAdapters() {
         //FirebaseAdapter
         Query quoteQuery = quoteRepository.getDatabaseReference();
-        PagingConfig quotePagingConfig = new PagingConfig(10, 10, false);
+        PagingConfig quotePagingConfig = new PagingConfig(1, 1, false);
         DatabasePagingOptions<Quote> quoteOptions = new DatabasePagingOptions.Builder<Quote>()
                 .setLifecycleOwner(this)
                 .setQuery(quoteQuery, quotePagingConfig, Quote.class)
