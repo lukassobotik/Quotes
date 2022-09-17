@@ -2,6 +2,7 @@
 **myQuotes** is an Android application where you can **Share**, **Discover** and **Save** New **Quotes!**
 
 ## Features
+- About **1500** quotes for **You** to discover
 - Endless Scroll like on **Youtube Shorts** or **Instagram Reels!**
 - **Share** your **Favorite Quotes**
 - **Quotes, Preferences and Collections** are saved in **[Firebase](https://firebase.google.com/)**
@@ -11,10 +12,6 @@
 - **Create** Your Own **Collections** and Add **Quotes** to them!
 - **Search** All Quotes
 - Set a **Background** for all **Quotes**
-
-## Features in the Future
-- **Randomize Quotes**
-- **Increase** the **Default** amount of **Quotes**
 
 ## What Data Is Being Stored? 
 Your Data Is Stored in Two Places:
