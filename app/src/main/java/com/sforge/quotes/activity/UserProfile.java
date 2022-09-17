@@ -49,7 +49,7 @@ public class UserProfile extends AppCompatActivity {
 
     private String email = "";
 
-    TextView userDataInfoTV, userDataTV, userDataPrefsTV, userDataQuotesTV, userDataUsernameTV, aboutAndroidStudioTV, aboutFirebaseTV, aboutSwipeLayoutTV, aboutGithub, deleteAccountText;
+    TextView userDataInfoTV, userDataTV, userDataPrefsTV, userDataQuotesTV, userDataUsernameTV, aboutAndroidStudioTV, aboutFirebaseTV, aboutSwipeLayoutTV, aboutGithub, quoteSource, deleteAccountText;
 
     List<Quote> usrQuotes = new ArrayList<>();
 
@@ -117,6 +117,7 @@ public class UserProfile extends AppCompatActivity {
         aboutFirebaseTV = findViewById(R.id.about_firebase_tv);
         aboutSwipeLayoutTV = findViewById(R.id.about_swipe_reveal_layout_tv);
         aboutGithub = findViewById(R.id.about_txt_github);
+        quoteSource = findViewById(R.id.about_txt_goodreads);
         deleteAccountButton = findViewById(R.id.profileDeleteAccount);
         deleteAccountButton.setVisibility(View.GONE);
         deleteLayout = findViewById(R.id.delete_account_layout);
@@ -228,6 +229,7 @@ public class UserProfile extends AppCompatActivity {
             aboutFirebaseTV.setMovementMethod(LinkMovementMethod.getInstance());
             aboutSwipeLayoutTV.setMovementMethod(LinkMovementMethod.getInstance());
             aboutGithub.setMovementMethod(LinkMovementMethod.getInstance());
+            quoteSource.setMovementMethod(LinkMovementMethod.getInstance());
         });
 
         deleteAccountButton.setOnClickListener(view -> {

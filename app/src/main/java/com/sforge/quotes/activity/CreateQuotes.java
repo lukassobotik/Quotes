@@ -61,7 +61,7 @@ public class CreateQuotes extends AppCompatActivity {
             if (createQuoteEditText.getText().toString().length() <= quoteLengthLimit && createAuthorEditText.getText().toString().length() <= authorLengthLimit
                     && createQuoteEditText.getText().toString().length() >= minQuoteLengthLimit && createAuthorEditText.getText().toString().length() >= minAuthorLengthLimit) {
                 createQuote();
-//                finish();
+                finish();
             } else if (createQuoteEditText.getText().toString().length() > quoteLengthLimit) {
                 createQuoteEditText.setError("Quote Length Limit is " + quoteLengthLimit + " Letters!");
                 createQuoteEditText.requestFocus();

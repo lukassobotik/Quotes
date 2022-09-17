@@ -63,7 +63,7 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      * @param quotes is the list of quotes where you add more items to
      */
     public void addItems(List<Quote> quotes) {
-        //Collections.shuffle(quotes);
+        Collections.shuffle(quotes);
         list.addAll(quotes);
     }
 
@@ -159,6 +159,10 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      * @return key of the last quote in the list
      */
     public String getLastItemId() {
-        return list.get(list.size() - 1).getKey();
+        if (list.size() > 0) {
+            return list.get(list.size() - 1).getKey();
+        } else {
+            return "";
+        }
     }
 }

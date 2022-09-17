@@ -520,7 +520,6 @@ public class MainActivity extends AppCompatActivity {
                 quoteSwipeLayout.setLockDrag(false);
 
                 if (!recyclerView.canScrollVertically(1)) {
-                    Toast.makeText(MainActivity.this, "" + quoteAdapter.getLastItemId(), Toast.LENGTH_SHORT).show();
                     loadQuotes(quoteAdapter.getLastItemId());
                 }
             }
@@ -538,7 +537,6 @@ public class MainActivity extends AppCompatActivity {
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!recyclerView.canScrollVertically(1)) {
-                    Toast.makeText(MainActivity.this, "" + usrAdapter.getLastItemId(), Toast.LENGTH_SHORT).show();
                     loadUserQuotes(usrAdapter.getLastItemId(), quoteAdapter.getCreatorAccountFromPosition(position));
                 }
             }

@@ -2,7 +2,7 @@
     <string name="app_name">myQuotes</string>
     <string name="search_hint">Type "a:" to search Authors and "q:" to search Quotes</string>
     <string name="delete_quote_disclaimer">The quote will always stay in private collections of other users, but it will be deleted in all discover feeds from now on</string>
-    <string name="user_data_info">This shows you all of the data stored in the database about you. For more info about how is data being stored, visit my <a href="https://github.com/PuckyEU/Quotes">Github page</a></string>
+    <string name="user_data_info">This shows you all of the data stored in the database about you. For more info about how is data being stored, visit my <a href="https://github.com/PuckyEU/Quotes#what-data-is-being-stored">Github page</a></string>
     <string name="firebase"><a href="https://firebase.google.com/">Firebase</a></string>
     <string name="android_studio"><a href="https://developer.android.com/studio">Android Studio</a></string>
     <string name="swipe_reveal_layout"><a href="https://github.com/FarhamHosseini/SwipeRevealLayout">Swipe Reveal Layout</a></string>
@@ -10,6 +10,7 @@
     <string name="github">This is an open source app, so you can find the apps code on my <a href="https://github.com/PuckyEU/Quotes">Github page</a></string>
     <string name="tools_used">Tools used to create this app:</string>
     <string name="delete_account_message">This will delete all of your Quotes, Collections, and every other Data that is Stored</string>
+    <string name="quote_source_info">The quotes that are provided by \@myQuotes are fetched from <a href="https://www.goodreads.com/quotes">goodreads.com</a>, so if you like any of them, you should definitely check them out</string>
 
     <string-array name="profileSpinner">
         <item>Profile</item>
