@@ -2,6 +2,7 @@ package com.sforge.quotes.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +36,10 @@ public class FirebaseAdapter extends FirebaseRecyclerPagingAdapter<Quote, QuoteV
     Context context;
     List<Quote> list = new ArrayList<>();
     boolean randomize;
+    boolean addItemsToList = true;
+    int loadedQuotes = 0;
     RecyclerView recyclerView;
-    List<HolderItem> holderItems = new ArrayList<>();
+
     /**
      * Construct a new FirestorePagingAdapter from the given {@link DatabasePagingOptions}.
      *
@@ -49,17 +52,35 @@ public class FirebaseAdapter extends FirebaseRecyclerPagingAdapter<Quote, QuoteV
         this.recyclerView = recyclerView;
     }
 
+    /**
+     * Method used to setting the quote creator
+     * @param position what position is the recycler view scrolled to
+     * @return user id
+     */
     public String getCreatorAccountFromPosition(int position) {
         return list.get(position).getUser();
     }
 
+    /**
+     * Method used to define what quote to add to a collection
+     * @param position what position is the recycler view scrolled to
+     * @return quote what is supposed to be added to a collection
+     */
     public Quote getQuoteFromPosition(int position) {
         return list.get(position);
     }
 
+    /**
+     * Method used to change items
+     * @param list items to be changed
+     */
     public void setList(List<Quote> list) {
         this.list = list;
     }
+
+    /**
+     * Method used to rearrange the quotes in an random order again
+     */
     public void shuffleList() {
         Collections.shuffle(list);
     }
@@ -122,56 +143,43 @@ public class FirebaseAdapter extends FirebaseRecyclerPagingAdapter<Quote, QuoteV
 
     @Override
     protected void onBindViewHolder(@NonNull QuoteVH holder, int position, @NonNull Quote model) {
-        //hide the first quote that is empty in collections
+        // hide the first quote that is empty in collections
         if (model.getQuote().equals("") && model.getAuthor().equals("") && model.getUser().equals("")) {
             holder.itemView.setVisibility(View.GONE);
             holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
         } else {
-            holderItems.add(new HolderItem(holder, model));
             if (!randomize) {
                 list.add(model);
                 holder.textQuote.setText(model.getQuote());
                 holder.textAuthor.setText(model.getAuthor());
             } else {
-                // getting the current position because position from onBindViewHolder isn't accurate
-                int pos = ((LinearLayoutManager) Objects.requireNonNull(recyclerView.getLayoutManager())).findLastVisibleItemPosition();
+                if (loadedQuotes <= holder.getBindingAdapterPosition()) {
+                    loadedQuotes = holder.getBindingAdapterPosition();
+                }
 
-                if (pos < 0) {
+                if (loadedQuotes % 3 == 0) {
+                    addItemsToList = true;
+                }
+
+                if (addItemsToList) {
                     list = new ArrayList<>();
-
-                    // onBindViewHolder gets called only if it needs to (1 quote ahead),
-                    // because of that this loads every quote that is fetched from the db,
-                    // but setting it issue because on position 0 only the holder for the current quote is called,
-                    // and not the quote ahead.
                     for (int i = 0; i < this.getItemCount(); i++) {
                         list.add(Objects.requireNonNull(this.peek(i)).getValue(Quote.class));
                     }
+                    addItemsToList = false;
                 }
 
-                if (pos == -1) {
+                if (loadedQuotes == 0) {
                     Collections.shuffle(list.subList(0, list.size()));
                     this.setList(list);
-                } else if (pos > 0) {
-                    Collections.shuffle(list.subList(pos + 1, list.size()));
+                } else if (position == loadedQuotes) {
+                    Collections.shuffle(list.subList(position + 1, list.size()));
                     this.setList(list);
                 }
 
-                // checking if text from holder equals "Text" because if the quote is already shown it shouldn't be overwritten
-                if (pos == -1
-                        && holder.textQuote.getText().toString().equals("Text")
-                        && holder.textAuthor.getText().toString().equals("Text")) {
-                    holder.textQuote.setText(list.get(0).getQuote());
-                    holder.textAuthor.setText(list.get(0).getAuthor());
-                } else if (pos == 0 && pos < this.getItemCount()
-                        && holder.textQuote.getText().toString().equals("Text")
-                        && holder.textAuthor.getText().toString().equals("Text")) {
-                    holder.textQuote.setText(list.get(1).getQuote());
-                    holder.textAuthor.setText(list.get(1).getAuthor());
-                } else if (pos > 0 && pos < this.getItemCount()
-                        && holder.textQuote.getText().toString().equals("Text")
-                        && holder.textAuthor.getText().toString().equals("Text")) {
-                    holder.textQuote.setText(list.get(pos).getQuote());
-                    holder.textAuthor.setText(list.get(pos).getAuthor());
+                if (position <= list.size()) {
+                    holder.textQuote.setText(list.get(position).getQuote());
+                    holder.textAuthor.setText(list.get(position).getAuthor());
                 }
             }
         }

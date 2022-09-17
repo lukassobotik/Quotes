@@ -66,7 +66,7 @@ public class BookmarksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             shortQuote = quote.getQuote();
 
             if (quote.getQuote().length() > 15) {
-                shortQuote = quote.getQuote().substring(0, 15);
+                shortQuote = quote.getQuote().substring(0, 15) + "...";
             }
 
             if (FirebaseAuth.getInstance().getCurrentUser() != null) {
