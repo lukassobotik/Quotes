@@ -29,12 +29,30 @@ public class UserQuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private final Context context;
     List<Quote> list = new ArrayList<>();
+
+    /**
+     * Constructor of this Adapter
+     * @param context the Activity data is displayed in
+     */
     public UserQuoteAdapter(Context context){
         this.context = context;
     }
+
+    /**
+     * Common Method used to change the displayed list
+     * @param quote is the list of quotes that is supposed to be displayed
+     */
     public void setItems(List<Quote> quote){
         list.clear();
         list.addAll(quote);
+    }
+
+    /**
+     * Common Method for adding more items to the displayed list
+     * @param quotes is the list of quotes where you add more items to
+     */
+    public void addItems(List<Quote> quotes) {
+        list.addAll(quotes);
     }
 
     @NonNull
@@ -111,5 +129,13 @@ public class UserQuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    /**
+     * Method used to load more data from the database
+     * @return key of the last quote in the list
+     */
+    public String getLastItemId() {
+        return list.get(list.size() - 1).getKey();
     }
 }

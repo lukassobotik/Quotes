@@ -40,16 +40,49 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private final Context context;
     List<Quote> list = new ArrayList<>();
-    public QuoteAdapter(Context ctx){
-        this.context = ctx;
-    }
-    public void setItems(List<Quote> quote){
-        list.clear();
-        list.addAll(quote);
+
+    /**
+     * Constructor of the Adapter
+     * @param context is the Activity where the data is displayed in
+     */
+    public QuoteAdapter(Context context){
+        this.context = context;
     }
 
+    /**
+     * Common Method used to change the displayed list
+     * @param quotes is the list of quotes that is supposed to be displayed
+     */
+    public void setItems(List<Quote> quotes){
+        list.clear();
+        list.addAll(quotes);
+    }
+
+    /**
+     * Common Method for adding more items to the displayed list
+     * @param quotes is the list of quotes where you add more items to
+     */
+    public void addItems(List<Quote> quotes) {
+        //Collections.shuffle(quotes);
+        list.addAll(quotes);
+    }
+
+    /**
+     * Method used to setting the quote creator
+     * @param position what position is the recycler view scrolled to
+     * @return user id
+     */
     public String getCreatorAccountFromPosition(int position){
         return list.get(position).getUser();
+    }
+
+    /**
+     * Method used to define what quote to add to a collection
+     * @param position what position is the recycler view scrolled to
+     * @return quote what is supposed to be added to a collection
+     */
+    public Quote getQuoteFromPosition(int position) {
+        return list.get(position);
     }
 
     @NonNull
@@ -119,5 +152,13 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    /**
+     * Method used to load more data from the database
+     * @return key of the last quote in the list
+     */
+    public String getLastItemId() {
+        return list.get(list.size() - 1).getKey();
     }
 }

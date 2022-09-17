@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.sforge.quotes.R;
 
+import java.util.Objects;
+
 public class ForgottenPassword extends AppCompatActivity {
 
     private EditText emailEditText;
@@ -52,7 +54,7 @@ public class ForgottenPassword extends AppCompatActivity {
             if (task.isSuccessful()){
                 Toast.makeText(this, "An Email to Reset Your Password has Been Sent!", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Something went Wrong.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Something went Wrong. " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

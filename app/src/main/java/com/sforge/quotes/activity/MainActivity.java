@@ -2,6 +2,7 @@ package com.sforge.quotes.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -33,7 +34,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.sforge.quotes.R;
 import com.sforge.quotes.adapter.BookmarksAdapter;
-import com.sforge.quotes.adapter.FirebaseAdapter;
+import com.sforge.quotes.adapter.QuoteAdapter;
 import com.sforge.quotes.adapter.SearchAdapter;
 import com.sforge.quotes.adapter.UserQuoteAdapter;
 import com.sforge.quotes.entity.Quote;
@@ -45,6 +46,7 @@ import com.sforge.quotes.repository.UsernameRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,13 +56,12 @@ public class MainActivity extends AppCompatActivity {
     boolean profileIsOpen = false;
     QuoteRepository quoteRepository;
     UserBookmarksRepository bookmarksRepository;
-    FirebaseAdapter firebaseAdapter;
+    QuoteAdapter quoteAdapter;
     SearchAdapter searchAdapter;
 
     //Account Profile Related
     LinearLayout includeAccountProfile;
     TextView mainActivityUsername;
-    List<Quote> usrQuotes;
 
     //UI Related
     Button createQuote, profileButton, showUserProfileButton, profileLogoutButton, profileLoginButton, mainBackButton, bookmarkButton, profileCollectionsButton;
@@ -74,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
 
     int lastFirstVisiblePosition;
     int position = 0;
+
+    private final int PREFETCH_DISTANCE = 10;
+    private final int RANDOM_START_BOUND = 500;
 
     RecyclerView recyclerView, usrQuotesRV, collectionsList, searchRV;
 
@@ -112,11 +116,6 @@ public class MainActivity extends AppCompatActivity {
                 recyclerView.suppressLayout(false);
                 usrQuotesRV.suppressLayout(false);
                 swipeRefreshLayout.setEnabled(false);
-
-                //precaution if the creator on the first position doesn't load
-                if (position == 0) {
-                    setCurrentQuoteCreatorInfo(0);
-                }
             }
 
             @Override
@@ -128,8 +127,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            firebaseAdapter.refresh();
-            firebaseAdapter.shuffleList();
+            usrAdapter.setItems(new ArrayList<>());
+            quoteAdapter = new QuoteAdapter(this);
+            loadQuotes(null);
+            recyclerView.setAdapter(quoteAdapter);
             swipeRefreshLayout.setRefreshing(false);
         });
 
@@ -183,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
         bookmarkButton.setOnClickListener(view -> {
 
             if (position == 0 && !areBookmarksOpen) {
-                collectionsAdapter.setQuote(firebaseAdapter.getQuoteFromPosition(0));
+                collectionsAdapter.setQuote(quoteAdapter.getQuoteFromPosition(0));
             }
 
             if (!areBookmarksOpen) {
@@ -207,17 +208,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createFirebaseAdapters() {
-        //FirebaseAdapter
-        Query quoteQuery = quoteRepository.getDatabaseReference();
-        PagingConfig quotePagingConfig = new PagingConfig(1, 1, false);
-        DatabasePagingOptions<Quote> quoteOptions = new DatabasePagingOptions.Builder<Quote>()
-                .setLifecycleOwner(this)
-                .setQuery(quoteQuery, quotePagingConfig, Quote.class)
-                .build();
-        firebaseAdapter = new FirebaseAdapter(this, quoteOptions, true, recyclerView);
-        recyclerView.setAdapter(firebaseAdapter);
-        firebaseAdapter.startListening();
-
+        //SearchAdapter
         Query searchQuery = quoteRepository.getDatabaseReference();
         FirebaseRecyclerOptions<Quote> searchOptions = new FirebaseRecyclerOptions.Builder<Quote>()
                 .setQuery(searchQuery, Quote.class)
@@ -250,6 +241,145 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+        //QuoteAdapter
+        quoteAdapter = new QuoteAdapter(this);
+        loadQuotes(null);
+        recyclerView.setAdapter(quoteAdapter);
+    }
+
+    public void loadQuotes(String nodeId) {
+        Query query = null;
+
+        if (nodeId == null) {
+            quoteRepository.getDatabaseReference().limitToFirst(RANDOM_START_BOUND).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    int i = new Random().nextInt(RANDOM_START_BOUND);
+                    int iteration = 0;
+                    Query query1;
+
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        if (iteration == i) {
+                            query1 = quoteRepository.getDatabaseReference()
+                                    .orderByKey()
+                                    .startAfter(data.getKey())
+                                    .limitToFirst(PREFETCH_DISTANCE);
+
+                            query1.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    List<Quote> quotes = new ArrayList<>();
+                                    for (DataSnapshot data : snapshot.getChildren()) {
+                                        Quote quote = data.getValue(Quote.class);
+                                        if (quote != null) {
+                                            Quote quoteWithKey = new Quote(quote.getQuote(), quote.getAuthor(), quote.getUser(), data.getKey());
+                                            quotes.add(quoteWithKey);
+                                        }
+                                    }
+
+                                    quoteAdapter.addItems(quotes);
+                                    quoteAdapter.notifyDataSetChanged();
+
+                                    //Load the first quote creator info
+                                    if (position == 0) {
+                                        setCurrentQuoteCreatorInfo(0);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            return;
+                        }
+                        iteration++;
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        if (nodeId != null) {
+            query = quoteRepository.getDatabaseReference()
+                    .orderByKey()
+                    .startAfter(nodeId)
+                    .limitToFirst(PREFETCH_DISTANCE);
+        }
+
+        if (query != null) {
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    List<Quote> quotes = new ArrayList<>();
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        Quote quote = data.getValue(Quote.class);
+                        if (quote != null) {
+                            Quote quoteWithKey = new Quote(quote.getQuote(), quote.getAuthor(), quote.getUser(), data.getKey());
+                            quotes.add(quoteWithKey);
+                        }
+                    }
+
+                    quoteAdapter.addItems(quotes);
+                    quoteAdapter.notifyDataSetChanged();
+
+                    //Load the first quote creator info
+                    if (position == 0) {
+                        setCurrentQuoteCreatorInfo(0);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+    }
+
+    public void loadUserQuotes(String nodeId, String userId) {
+        Query query;
+
+        if (nodeId == null) {
+            query = new UserQuoteRepository(userId)
+                    .getDatabaseReference()
+                    .orderByKey()
+                    .limitToFirst(PREFETCH_DISTANCE);
+        } else {
+            query = new UserQuoteRepository(userId)
+                    .getDatabaseReference()
+                    .orderByKey()
+                    .startAfter(nodeId)
+                    .limitToFirst(PREFETCH_DISTANCE);
+        }
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Quote> quotes = new ArrayList<>();
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    Quote quote = data.getValue(Quote.class);
+                    if (quote != null) {
+                        Quote quoteWithKey = new Quote(quote.getQuote(), quote.getAuthor(), quote.getUser(), data.getKey());
+                        quotes.add(quoteWithKey);
+                    }
+                }
+
+                usrAdapter.addItems(quotes);
+                usrAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void createMainBackButton() {
@@ -333,7 +463,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setCurrentQuoteCreatorInfo(int position) {
-        String swipeUID = firebaseAdapter.getCreatorAccountFromPosition(position);
+        String swipeUID = quoteAdapter.getCreatorAccountFromPosition(position);
         new UsernameRepository(swipeUID).getAll().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -351,27 +481,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Cannot Access the Database Right Now. " + error, Toast.LENGTH_SHORT).show();
             }
         });
-        UserQuoteRepository userQuotesReference = new UserQuoteRepository(swipeUID);
-        userQuotesReference
-                .getAll()
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        usrQuotes = new ArrayList<>();
-                        for (DataSnapshot data : snapshot.getChildren()) {
-                            Quote quote = data.getValue(Quote.class);
-                            usrQuotes.add(quote);
-                        }
-                        usrAdapter.setItems(usrQuotes);
-                        usrAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(MainActivity.this, "Something went Wrong.", Toast.LENGTH_SHORT)
-                                .show();
-                    }
-                });
+        loadUserQuotes(null, swipeUID);
     }
 
     @Override
@@ -389,20 +499,36 @@ public class MainActivity extends AppCompatActivity {
                 position = ((LinearLayoutManager) Objects.requireNonNull(recyclerView.getLayoutManager())).findLastCompletelyVisibleItemPosition();
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && position != -1) {
                     setCurrentQuoteCreatorInfo(position);
-                    collectionsAdapter.setQuote(firebaseAdapter.getQuoteFromPosition(position));
+                    collectionsAdapter.setQuote(quoteAdapter.getQuoteFromPosition(position));
                     quoteSwipeLayout.setLockDrag(true);
                     closeBookmarks();
                 }
                 quoteSwipeLayout.setLockDrag(false);
+
+                if (!recyclerView.canScrollVertically(1)) {
+                    Toast.makeText(MainActivity.this, "" + quoteAdapter.getLastItemId(), Toast.LENGTH_SHORT).show();
+                    loadQuotes(quoteAdapter.getLastItemId());
+                }
             }
         });
         //try to set the creator info on the first position
         try {
             setCurrentQuoteCreatorInfo(0);
-            collectionsAdapter.setQuote(firebaseAdapter.getQuoteFromPosition(0));
+            collectionsAdapter.setQuote(quoteAdapter.getQuoteFromPosition(0));
         } catch (IndexOutOfBoundsException e) {
             e.getCause();
         }
+
+        usrQuotesRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1)) {
+                    Toast.makeText(MainActivity.this, "" + usrAdapter.getLastItemId(), Toast.LENGTH_SHORT).show();
+                    loadUserQuotes(usrAdapter.getLastItemId(), quoteAdapter.getCreatorAccountFromPosition(position));
+                }
+            }
+        });
     }
 
     @Override
@@ -418,9 +544,9 @@ public class MainActivity extends AppCompatActivity {
         super.onPostResume();
         //Restore the last stored Recyclerview scroll position
         recyclerView.getLayoutManager().scrollToPosition(lastFirstVisiblePosition);
-        if (firebaseAdapter.getItemCount() != 0) {
+        if (quoteAdapter.getItemCount() != 0) {
             setCurrentQuoteCreatorInfo(lastFirstVisiblePosition);
-            collectionsAdapter.setQuote(firebaseAdapter.getQuoteFromPosition(lastFirstVisiblePosition));
+            collectionsAdapter.setQuote(quoteAdapter.getQuoteFromPosition(lastFirstVisiblePosition));
         }
 
         //#5 Issue Fix
