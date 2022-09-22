@@ -116,6 +116,19 @@
                 android:scrollbars="vertical"
                 android:elevation="30dp"/>
 
+            <TextView
+                android:id="@+id/about_privacy_policy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:textColor="@color/black"
+                android:text="@string/privacy_policy"
+                android:textSize="30sp"
+                android:textStyle="italic|bold"
+                android:gravity="center"
+                android:scrollbars="vertical"
+                android:elevation="30dp"/>
+
         </LinearLayout>
 
     </ScrollView>

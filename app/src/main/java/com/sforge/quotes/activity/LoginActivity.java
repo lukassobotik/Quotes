@@ -16,6 +16,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.sforge.quotes.R;
 
+import java.util.Objects;
+
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -75,6 +77,8 @@ public class LoginActivity extends AppCompatActivity {
                 else {
                     user.sendEmailVerification();
                     Toast.makeText(this, "An Email Link has Been sent. Please Verify your Email Address.", Toast.LENGTH_SHORT).show();
+                    mAuth.signOut();
+                    progressBar.setVisibility(View.GONE);
                 }
             }
             else {

@@ -49,7 +49,7 @@ public class UserProfile extends AppCompatActivity {
 
     private String email = "";
 
-    TextView userDataInfoTV, userDataTV, userDataPrefsTV, userDataQuotesTV, userDataUsernameTV, aboutAndroidStudioTV, aboutFirebaseTV, aboutSwipeLayoutTV, aboutGithub, quoteSource, deleteAccountText;
+    TextView userDataInfoTV, userDataTV, userDataPrefsTV, userDataQuotesTV, userDataUsernameTV, aboutAndroidStudioTV, aboutFirebaseTV, aboutSwipeLayoutTV, aboutGithub, quoteSource, deleteAccountText, privacyPolicy;
 
     List<Quote> usrQuotes = new ArrayList<>();
 
@@ -125,6 +125,7 @@ public class UserProfile extends AppCompatActivity {
         deleteButtonCancel = findViewById(R.id.delete_account_cancel);
         deleteButtonEditText = findViewById(R.id.delete_account_edit_text);
         deleteAccountText = findViewById(R.id.delete_account_message_confirmation);
+        privacyPolicy = findViewById(R.id.about_privacy_policy);
         userProfileLayout = findViewById(R.id.user_profile_layout);
         LinearLayoutManager usrManager = new LinearLayoutManager(this);
         usrAdapter = new UserQuoteAdapter(this);
@@ -223,14 +224,15 @@ public class UserProfile extends AppCompatActivity {
                             }
                         });
             }
-
-            userDataInfoTV.setMovementMethod(LinkMovementMethod.getInstance());
-            aboutAndroidStudioTV.setMovementMethod(LinkMovementMethod.getInstance());
-            aboutFirebaseTV.setMovementMethod(LinkMovementMethod.getInstance());
-            aboutSwipeLayoutTV.setMovementMethod(LinkMovementMethod.getInstance());
-            aboutGithub.setMovementMethod(LinkMovementMethod.getInstance());
-            quoteSource.setMovementMethod(LinkMovementMethod.getInstance());
         });
+
+        userDataInfoTV.setMovementMethod(LinkMovementMethod.getInstance());
+        aboutAndroidStudioTV.setMovementMethod(LinkMovementMethod.getInstance());
+        aboutFirebaseTV.setMovementMethod(LinkMovementMethod.getInstance());
+        aboutSwipeLayoutTV.setMovementMethod(LinkMovementMethod.getInstance());
+        aboutGithub.setMovementMethod(LinkMovementMethod.getInstance());
+        quoteSource.setMovementMethod(LinkMovementMethod.getInstance());
+        privacyPolicy.setMovementMethod(LinkMovementMethod.getInstance());
 
         deleteAccountButton.setOnClickListener(view -> {
             userProfileLayout.setVisibility(View.GONE);
