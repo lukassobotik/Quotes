@@ -10,10 +10,11 @@
     <Button
         android:id="@+id/createQuote"
         style="@style/Button"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:padding="10dp"
         android:foreground="@drawable/ic_baseline_add_24"
+        android:foregroundGravity="center"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -26,12 +27,13 @@
     <Button
         android:id="@+id/userProfileButton"
         style="@style/Button"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:foreground="@drawable/ic_person"
         android:foregroundTint="@color/white"
+        android:foregroundGravity="center"
         android:padding="10dp"
         android:textAllCaps="false"
         android:textColor="@color/white"
@@ -114,10 +116,11 @@
     <Button
         android:id="@+id/quoteBookmarkButton"
         style="@style/Button"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:foreground="@drawable/ic_bookmark_empty"
         android:foregroundTint="@color/white"
+        android:foregroundGravity="center"
         android:padding="10dp"
         android:textAllCaps="false"
         android:textColor="@color/white"
@@ -131,20 +134,41 @@
     <Button
         android:id="@+id/searchButton"
         style="@style/Button"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
         android:foreground="@drawable/ic_search"
+        android:foregroundTint="@color/white"
+        android:foregroundGravity="center"
+        android:padding="10dp"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/shareButton"
+        style="@style/Button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:foreground="@drawable/ic_share"
+        android:foregroundGravity="center"
         android:foregroundTint="@color/white"
         android:padding="10dp"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="16sp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
@@ -226,56 +250,4 @@
             </FrameLayout>
         </com.apachat.swipereveallayout.core.SwipeLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-    <!--
-    <Button
-        style="@style/Button"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-    -->
-    <SearchView
-        android:id="@+id/searchView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:iconifiedByDefault="true"
-        android:queryHint="@string/search_hint"
-        android:isScrollContainer="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <LinearLayout
-        android:id="@+id/searchLinearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/quoteBookmarkButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/searchRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,48 +1,104 @@
 package com.sforge.quotes.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.sforge.quotes.R;
+import com.sforge.quotes.activity.UserProfile;
+import com.sforge.quotes.dialog.CollectionsDialog;
 import com.sforge.quotes.entity.Quote;
-import com.sforge.quotes.view.CollectionActivityVH;
-import com.sforge.quotes.view.QuoteVH;
+import com.sforge.quotes.repository.QuoteRepository;
+import com.sforge.quotes.repository.UserQuoteRepository;
+import com.sforge.quotes.view.SearchVH;
+import com.sforge.quotes.view.UserQuoteVH;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class SearchAdapter extends FirebaseRecyclerAdapter<Quote, QuoteVH> {
+public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    Context context;
+    private final Context context;
     List<Quote> list = new ArrayList<>();
+
     /**
-     * @param context calling Activity
-     * @param options FirebaseRecyclerOptions to determine what quotes to show
+     * Constructor of this Adapter
+     * @param context the Activity data is displayed in
      */
-    public SearchAdapter(Context context, @NonNull FirebaseRecyclerOptions<Quote> options) {
-        super(options);
+    public SearchAdapter(Context context){
         this.context = context;
     }
 
-    @Override
-    protected void onBindViewHolder(@NonNull QuoteVH holder, int position, @NonNull Quote model) {
-        holder.textQuote.setText(model.getQuote());
-        holder.textAuthor.setText(model.getAuthor());
-        list.add(model);
+    /**
+     * Common Method used to change the displayed list
+     * @param quote is the list of quotes that is supposed to be displayed
+     */
+    public void setItems(List<Quote> quote){
+        list.clear();
+        list.addAll(quote);
+    }
+
+    /**
+     * Common Method for adding more items to the displayed list
+     * @param quotes is the list of quotes where you add more items to
+     */
+    public void addItems(List<Quote> quotes) {
+        list.addAll(quotes);
     }
 
     @NonNull
     @Override
-    public QuoteVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.quote_item, parent, false);
-        return new QuoteVH(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.search_item, parent, false);
+        return new SearchVH(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        SearchVH vh = (SearchVH) holder;
+        Quote quote = list.get(position);
+        if (quote != null) {
+            vh.textQuote.setText(quote.getQuote());
+            vh.textAuthor.setText(quote.getAuthor());
+
+            vh.bookmark.setOnClickListener(view -> {
+                Log.d("cab", "bookmark: " + quote.getQuote() + "    " + quote.getAuthor());
+                CollectionsDialog collectionsDialog = new CollectionsDialog(quote);
+                collectionsDialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "collectionsDialog");
+            });
+            vh.share.setOnClickListener(view -> {
+                Intent myIntent = new Intent (Intent.ACTION_SEND);
+                myIntent.setType("text/plain");
+                myIntent.putExtra(Intent.EXTRA_TEXT, quote.getQuote() + " - By " + quote.getAuthor());
+                context.startActivity(Intent.createChooser(myIntent, "Share using"));
+            });
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+
+    /**
+     * Method used to load more data from the database
+     * @return key of the last quote in the list
+     */
+    public String getLastItemId() {
+        return list.get(list.size() - 1).getKey();
     }
 }

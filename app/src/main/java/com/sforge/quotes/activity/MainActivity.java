@@ -2,20 +2,16 @@ package com.sforge.quotes.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.paging.PagingConfig;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,8 +20,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.apachat.swipereveallayout.core.SwipeLayout;
 import com.apachat.swipereveallayout.core.interfaces.Swipe;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.firebase.ui.database.paging.DatabasePagingOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,7 +29,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.sforge.quotes.R;
 import com.sforge.quotes.adapter.BookmarksAdapter;
 import com.sforge.quotes.adapter.QuoteAdapter;
-import com.sforge.quotes.adapter.SearchAdapter;
 import com.sforge.quotes.adapter.UserQuoteAdapter;
 import com.sforge.quotes.entity.Quote;
 import com.sforge.quotes.repository.QuoteRepository;
@@ -57,21 +50,19 @@ public class MainActivity extends AppCompatActivity {
     QuoteRepository quoteRepository;
     UserBookmarksRepository bookmarksRepository;
     QuoteAdapter quoteAdapter;
-    SearchAdapter searchAdapter;
 
     //Account Profile Related
     LinearLayout includeAccountProfile;
     TextView mainActivityUsername;
 
     //UI Related
-    Button createQuote, profileButton, showUserProfileButton, profileLogoutButton, profileLoginButton, mainBackButton, bookmarkButton, profileCollectionsButton;
+    Button createQuote, profileButton, showUserProfileButton, profileLogoutButton, profileLoginButton, mainBackButton, bookmarkButton, profileCollectionsButton, searchButton, shareButton;
     UserQuoteAdapter usrAdapter;
     BookmarksAdapter collectionsAdapter;
     ConstraintLayout quoteItemBackground;
     SwipeLayout quoteSwipeLayout;
     SwipeRefreshLayout swipeRefreshLayout;
-    LinearLayout addToBookmarksLayout, searchLayout;
-    SearchView searchView;
+    LinearLayout addToBookmarksLayout;
 
     int lastFirstVisiblePosition;
     int position = 0;
@@ -79,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private final int PREFETCH_DISTANCE = 10;
     private final int RANDOM_START_BOUND = 500;
 
-    RecyclerView recyclerView, usrQuotesRV, collectionsList, searchRV;
+    RecyclerView recyclerView, usrQuotesRV, collectionsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,53 +129,18 @@ public class MainActivity extends AppCompatActivity {
 
         createBookmarkButton();
 
-        searchView.setOnQueryTextFocusChangeListener((view, b) -> {
-            ViewGroup.LayoutParams layoutParams = searchView.getLayoutParams();
-            if (b) {
-                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                searchLayout.setVisibility(View.VISIBLE);
-            } else {
-                layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-                searchLayout.setVisibility(View.GONE);
-            }
+        searchButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, SearchActivity.class)));
+
+        shareButton.setOnClickListener(view -> {
+            StringBuilder stringBuilder = new StringBuilder();
+            Quote quote = quoteAdapter.getQuoteFromPosition(position);
+            stringBuilder.append(quote.getQuote()).append(" - By ").append(quote.getAuthor());
+
+            Intent myIntent = new Intent (Intent.ACTION_SEND);
+            myIntent.setType("text/plain");
+            myIntent.putExtra(Intent.EXTRA_TEXT, stringBuilder.toString());
+            startActivity(Intent.createChooser(myIntent, "Share using"));
         });
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                search(s);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                search(s);
-                return false;
-            }
-        });
-    }
-
-    public void search(String query) {
-        String type = "quote";
-        if (query.length() > 2 && query.charAt(0) == 'a' && query.charAt(1) == ':') {
-            type = "author";
-            query = query.substring(2);
-        } else if (query.length() > 2 && query.charAt(0) == 'q' && query.charAt(1) == ':') {
-            query = query.substring(2);
-        }
-
-        query = query.trim();
-
-        System.out.println(query);
-        System.out.println(type);
-
-        Query searchQuery = quoteRepository.getDatabaseReference().orderByChild(type).startAt(query).endAt(query + "\uf8ff");
-        FirebaseRecyclerOptions<Quote> searchOptions = new FirebaseRecyclerOptions.Builder<Quote>()
-                .setQuery(searchQuery, Quote.class)
-                .build();
-        searchAdapter = new SearchAdapter(this, searchOptions);
-        searchRV.setAdapter(searchAdapter);
-        searchAdapter.startListening();
     }
 
     private void createBookmarkButton() {
@@ -221,15 +177,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createFirebaseAdapters() {
-        //SearchAdapter
-        Query searchQuery = quoteRepository.getDatabaseReference();
-        FirebaseRecyclerOptions<Quote> searchOptions = new FirebaseRecyclerOptions.Builder<Quote>()
-                .setQuery(searchQuery, Quote.class)
-                .build();
-        searchAdapter = new SearchAdapter(this, searchOptions);
-        searchRV.setAdapter(searchAdapter);
-        searchAdapter.startListening();
-
         //CollectionsAdapter
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             bookmarksRepository = new UserBookmarksRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -356,7 +303,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void loadUserQuotes(String nodeId, String userId) {
+    public void loadUserQuotes(String nodeId, String userId, boolean deleteOldQuotes) {
         Query query;
 
         if (nodeId == null) {
@@ -384,8 +331,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-                usrAdapter.addItems(quotes);
-                usrAdapter.notifyDataSetChanged();
+                if (deleteOldQuotes) {
+                    usrAdapter.setItems(new ArrayList<>(quotes));
+                    usrAdapter.notifyDataSetChanged();
+                } else {
+                    usrAdapter.addItems(new ArrayList<>(quotes));
+                    usrAdapter.notifyItemRangeInserted(usrAdapter.getItemCount(), quotes.size());
+                }
             }
 
             @Override
@@ -494,7 +446,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Cannot Access the Database Right Now. " + error, Toast.LENGTH_SHORT).show();
             }
         });
-        loadUserQuotes(null, swipeUID);
+        loadUserQuotes(null, swipeUID, true);
     }
 
     @Override
@@ -537,7 +489,7 @@ public class MainActivity extends AppCompatActivity {
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!recyclerView.canScrollVertically(1)) {
-                    loadUserQuotes(usrAdapter.getLastItemId(), quoteAdapter.getCreatorAccountFromPosition(position));
+                    loadUserQuotes(usrAdapter.getLastItemId(), quoteAdapter.getCreatorAccountFromPosition(position), false);
                 }
             }
         });
@@ -585,18 +537,15 @@ public class MainActivity extends AppCompatActivity {
         bookmarkButton = findViewById(R.id.quoteBookmarkButton);
         mainBackButton = findViewById(R.id.mainBackButton);
         profileCollectionsButton = findViewById(R.id.profileCollections);
-        searchView = findViewById(R.id.searchView);
-        searchLayout = findViewById(R.id.searchLinearLayout);
-        searchRV = findViewById(R.id.searchRecyclerView);
         mainBackButton.setVisibility(View.VISIBLE);
+        searchButton = findViewById(R.id.searchButton);
+        shareButton = findViewById(R.id.shareButton);
         quoteItemBackground = findViewById(R.id.quoteItemBackground);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         LinearLayoutManager usrManager = new LinearLayoutManager(this);
         LinearLayoutManager collectionsManager = new LinearLayoutManager(this);
-        LinearLayoutManager searchManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
         recyclerView.setHasFixedSize(true);
-        searchRV.setLayoutManager(searchManager);
         usrQuotesRV.setLayoutManager(usrManager);
         collectionsList.setLayoutManager(collectionsManager);
         usrAdapter = new UserQuoteAdapter(this);

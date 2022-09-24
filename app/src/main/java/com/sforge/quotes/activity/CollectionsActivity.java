@@ -28,11 +28,17 @@ import com.google.firebase.database.ValueEventListener;
 import com.sforge.quotes.R;
 import com.sforge.quotes.adapter.CollectionActivityAdapter;
 import com.sforge.quotes.adapter.FirebaseAdapter;
+import com.sforge.quotes.adapter.QuoteAdapter;
 import com.sforge.quotes.entity.Quote;
+import com.sforge.quotes.repository.QuoteRepository;
 import com.sforge.quotes.repository.UserBookmarksRepository;
 import com.sforge.quotes.repository.UserCollectionRepository;
+import com.sforge.quotes.repository.UserQuoteRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class CollectionsActivity extends AppCompatActivity {
 
@@ -43,10 +49,11 @@ public class CollectionsActivity extends AppCompatActivity {
     View placeholder;
     ConstraintLayout addLayout;
     EditText createCollectionEditText;
-    FirebaseAdapter firebaseAdapter;
+    QuoteAdapter quoteAdapter;
     boolean viewingQuotes = false;
     boolean deleteTool = false;
     String localCollection = "";
+    private final int PREFETCH_DISTANCE = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +104,7 @@ public class CollectionsActivity extends AppCompatActivity {
         remove.setOnClickListener(view -> {
             if (viewingQuotes) {
                 int position = ((LinearLayoutManager) Objects.requireNonNull(recyclerView.getLayoutManager())).findLastCompletelyVisibleItemPosition();
-                deleteQuote(position - 1);
+                deleteQuote(position);
             } else {
                 if (!deleteTool) {
                     remove.setForeground(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_delete_red, null));
@@ -126,10 +133,62 @@ public class CollectionsActivity extends AppCompatActivity {
         FirebaseRecyclerOptions<DataSnapshot> options = new FirebaseRecyclerOptions.Builder<DataSnapshot>()
                 .setQuery(query, snapshot -> snapshot)
                 .build();
-
+        quoteAdapter = new QuoteAdapter(CollectionsActivity.this);
         collectionsAdapter = new CollectionActivityAdapter(this, options);
         collectionsAdapter.startListening();
         recyclerView.setAdapter(collectionsAdapter);
+    }
+
+    public void loadQuotes(String nodeId, String collection, boolean deleteOldQuotes) {
+        Query query;
+
+        if (nodeId == null) {
+            query = new UserCollectionRepository(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(), collection)
+                    .getDatabaseReference()
+                    .orderByKey()
+                    .limitToFirst(PREFETCH_DISTANCE);
+        } else {
+            query = new UserCollectionRepository(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(), collection)
+                    .getDatabaseReference()
+                    .orderByKey()
+                    .startAfter(nodeId)
+                    .limitToFirst(PREFETCH_DISTANCE);
+        }
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Quote> quotes = new ArrayList<>();
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    Quote quote = data.getValue(Quote.class);
+
+                    if (quote == null) {
+                        continue;
+                    }
+
+                    if (quote.getQuote().equals("") && quote.getAuthor().equals("") && quote.getUser().equals("")) {
+                        continue;
+                    }
+
+                    Quote quoteWithKey = new Quote(quote.getQuote(), quote.getAuthor(), quote.getUser(), data.getKey());
+                    quotes.add(quoteWithKey);
+                }
+
+                if (deleteOldQuotes) {
+                    quoteAdapter.setItems(new ArrayList<>(quotes));
+                    quoteAdapter.notifyDataSetChanged();
+                } else {
+                    quoteAdapter.addItems(new ArrayList<>(quotes));
+                    quoteAdapter.notifyItemRangeInserted(quoteAdapter.getItemCount(), quotes.size());
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(CollectionsActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void onClickCalled(String collection) {
@@ -139,15 +198,9 @@ public class CollectionsActivity extends AppCompatActivity {
             deleteTool = false;
             remove.setForeground(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_delete, null));
         } else {
-            Query quoteQuery = new UserCollectionRepository(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(), collection).getDatabaseReference();
-            PagingConfig quotePagingConfig = new PagingConfig(1, 1, false);
-            quoteOptions = new DatabasePagingOptions.Builder<Quote>()
-                    .setLifecycleOwner(this)
-                    .setQuery(quoteQuery, quotePagingConfig, Quote.class)
-                    .build();
-            firebaseAdapter = new FirebaseAdapter(this, quoteOptions, false, recyclerView);
-            recyclerView.setAdapter(firebaseAdapter);
-            firebaseAdapter.startListening();
+            loadQuotes(null, collection, true);
+            recyclerView.setAdapter(quoteAdapter);
+            quoteAdapter.notifyDataSetChanged();
             placeholder.setVisibility(View.GONE);
             addButton.setVisibility(View.GONE);
             viewingQuotes = true;
@@ -184,7 +237,7 @@ public class CollectionsActivity extends AppCompatActivity {
     }
 
     public void deleteQuote(int position) {
-        Quote quote = firebaseAdapter.getQuoteFromPosition(position);
+        Quote quote = quoteAdapter.getQuoteFromPosition(position);
         UserCollectionRepository collectionRepository = new UserCollectionRepository(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(), localCollection);
         collectionRepository.getDatabaseReference().orderByChild("quote").equalTo(quote.getQuote())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -200,7 +253,6 @@ public class CollectionsActivity extends AppCompatActivity {
                         builder.setMessage("Are you sure you want to delete \"" + quote.getQuote() + "\"" + " From " + "\"" + localCollection + "\"" +"?");
                         builder.setPositiveButton("Yes", (dialogInterface, i) -> {
                             collectionRepository.remove(quoteKey);
-                            firebaseAdapter.refresh();
                         });
                         builder.setNegativeButton("No", (dialogInterface, i) -> {});
                         builder.create().show();
@@ -222,6 +274,17 @@ public class CollectionsActivity extends AppCompatActivity {
         if (recyclerView.getOnFlingListener() == null) {
             snapHelper.attachToRecyclerView(recyclerView);
         }
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1)) {
+                    loadQuotes(quoteAdapter.getLastItemId(), localCollection, false);
+                    Toast.makeText(CollectionsActivity.this, "Load More", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override

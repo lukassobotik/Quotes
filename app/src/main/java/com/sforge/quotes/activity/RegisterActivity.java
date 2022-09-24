@@ -115,6 +115,10 @@ public class RegisterActivity extends AppCompatActivity {
                         .addOnCompleteListener(task1 -> {
                             if (task.isSuccessful()) {
                                 Toast.makeText(this, "Successfully Registered!", Toast.LENGTH_SHORT).show();
+                                mAuth.signOut();
+                                Toast.makeText(RegisterActivity.this, "Please Confirm your Email address and Log in afterwards", Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                finish();
                             } else {
                                 Toast.makeText(this, "Something went Wrong.", Toast.LENGTH_SHORT).show();
                             }

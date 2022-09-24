@@ -17,7 +17,7 @@
         <entry key="..\:/Users/LukasSobotik/Android/AndroidStudioProjects/Quotes/app/src/main/res/layout/activity_login.xml" value="0.3625" />
         <entry key="..\:/Users/LukasSobotik/Android/AndroidStudioProjects/Quotes/app/src/main/res/layout/activity_main.xml" value="0.29379485014774165" />
         <entry key="..\:/Users/LukasSobotik/Android/AndroidStudioProjects/Quotes/app/src/main/res/layout/activity_register.xml" value="0.3625" />
-        <entry key="..\:/Users/LukasSobotik/Android/AndroidStudioProjects/Quotes/app/src/main/res/layout/activity_search.xml" value="0.15220179563916203" />
+        <entry key="..\:/Users/LukasSobotik/Android/AndroidStudioProjects/Quotes/app/src/main/res/layout/activity_search.xml" value="0.27944280287040946" />
         <entry key="..\:/Users/LukasSobotik/Android/AndroidStudioProjects/Quotes/app/src/main/res/layout/activity_user_account.xml" value="0.33" />
         <entry key="..\:/Users/LukasSobotik/Android/AndroidStudioProjects/Quotes/app/src/main/res/layout/activity_user_profile.xml" value="0.33" />
         <entry key="..\:/Users/LukasSobotik/Android/AndroidStudioProjects/Quotes/app/src/main/res/layout/all_user_quotes_item.xml" value="0.3625" />
@@ -25,7 +25,9 @@
         <entry key="..\:/Users/LukasSobotik/Android/AndroidStudioProjects/Quotes/app/src/main/res/layout/collection_activity_item.xml" value="0.29379485014774165" />
         <entry key="..\:/Users/LukasSobotik/Android/AndroidStudioProjects/Quotes/app/src/main/res/layout/collection_item.xml" value="0.2967079948696024" />
         <entry key="..\:/Users/LukasSobotik/Android/AndroidStudioProjects/Quotes/app/src/main/res/layout/delete_account_layout.xml" value="0.2967079948696024" />
+        <entry key="..\:/Users/LukasSobotik/Android/AndroidStudioProjects/Quotes/app/src/main/res/layout/dialog_add_to_collection.xml" value="0.2821718683197948" />
         <entry key="..\:/Users/LukasSobotik/Android/AndroidStudioProjects/Quotes/app/src/main/res/layout/quote_item.xml" value="0.29379485014774165" />
+        <entry key="..\:/Users/LukasSobotik/Android/AndroidStudioProjects/Quotes/app/src/main/res/layout/search_item.xml" value="0.2821718683197948" />
         <entry key="..\:/Users/LukasSobotik/Android/AndroidStudioProjects/Quotes/app/src/main/res/layout/search_layout.xml" value="0.2967079948696024" />
         <entry key="..\:/Users/LukasSobotik/Android/AndroidStudioProjects/Quotes/app/src/main/res/layout/user_account.xml" value="0.3625" />
         <entry key="..\:/Users/LukasSobotik/Android/AndroidStudioProjects/Quotes/app/src/main/res/layout/user_account_quotes.xml" value="0.22" />

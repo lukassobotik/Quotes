@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -88,7 +89,10 @@ public class BookmarksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                                     builder.setTitle("\"" + shortQuote + "\"" + " Already Exists in " + "\"" + collection + "\"");
                                     builder.setMessage("Do you want to delete \"" + quote.getQuote() + "\" from " + "\"" + collection + "\"" + "?");
-                                    builder.setPositiveButton("Yes", (dialogInterface, i) -> collectionRepository.remove(quoteKey));
+                                    builder.setPositiveButton("Yes", (dialogInterface, i) -> {
+                                        collectionRepository.remove(quoteKey);
+                                        Toast.makeText(context, "Removed the Quote from " + "\"" + collection + "\"", Toast.LENGTH_SHORT).show();
+                                    });
                                     builder.setNegativeButton("No", (dialogInterface, i) -> {});
                                     builder.create().show();
                                     doesTheQuoteExist = true;
@@ -96,6 +100,7 @@ public class BookmarksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             }
                             if (!doesTheQuoteExist) {
                                 collectionRepository.add(quote);
+                                Toast.makeText(context, "Added the Quote to " + "\"" + collection + "\"", Toast.LENGTH_SHORT).show();
                             }
                         }
 

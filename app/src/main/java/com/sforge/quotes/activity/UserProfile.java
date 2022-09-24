@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.sforge.quotes.R;
 import com.sforge.quotes.adapter.ImageAdapter;
@@ -48,6 +49,8 @@ public class UserProfile extends AppCompatActivity {
     private Button profileSettings, showEmail, changeBackground, backButton, layoutBackButton, aboutButton, dataRequestButton, userDataBackButton, aboutBackButton, deleteAccountButton, deleteButtonSubmit, deleteButtonCancel;
 
     private String email = "";
+
+    private final int PREFETCH_DISTANCE = 10;
 
     TextView userDataInfoTV, userDataTV, userDataPrefsTV, userDataQuotesTV, userDataUsernameTV, aboutAndroidStudioTV, aboutFirebaseTV, aboutSwipeLayoutTV, aboutGithub, quoteSource, deleteAccountText, privacyPolicy;
 
@@ -155,7 +158,8 @@ public class UserProfile extends AppCompatActivity {
 
         createSettingsMenu();
 
-        getUserQuotes();
+        //getUserQuotes();
+        loadUserQuotes(null, FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         aboutBackButton.setOnClickListener(view -> aboutLayout.setVisibility(View.GONE));
 
@@ -271,20 +275,20 @@ public class UserProfile extends AppCompatActivity {
                         if (userProfile != null) {
                             if (deleteButtonEditText.getText().toString().trim().equals(userProfile)) {
 
-                                new UserRepository().remove(user.getUid()).addOnCompleteListener(task -> {
-                                    if (task.isSuccessful()) {
+                                new UserRepository().remove(user.getUid()).addOnCompleteListener(delTask -> {
+                                    if (delTask.isSuccessful()) {
                                         Toast.makeText(UserProfile.this, "Successfully Deleted The Account Data", Toast.LENGTH_SHORT).show();
+                                        user.delete().addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(UserProfile.this, "Successfully Deleted The Account", Toast.LENGTH_SHORT).show();
+                                                finish();
+                                                startActivity(new Intent(UserProfile.this ,MainActivity.class));
+                                            } else {
+                                                Toast.makeText(UserProfile.this, "Couldn't delete The Account. " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
                                     } else {
-                                        Toast.makeText(UserProfile.this, "Couldn't delete The Account Data.", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                                user.delete().addOnCompleteListener(task -> {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(UserProfile.this, "Successfully Deleted The Account", Toast.LENGTH_SHORT).show();
-                                        finish();
-                                        startActivity(new Intent(UserProfile.this ,MainActivity.class));
-                                    } else {
-                                        Toast.makeText(UserProfile.this, "Couldn't delete The Account.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(UserProfile.this, "Couldn't delete The Account Data. " + Objects.requireNonNull(delTask.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }
@@ -414,7 +418,58 @@ public class UserProfile extends AppCompatActivity {
         });
     }
 
-    public void accountDeletion() {
+    public void loadUserQuotes(String nodeId, String userId) {
+        Query query;
+
+        if (nodeId == null) {
+            query = new UserQuoteRepository(userId)
+                    .getDatabaseReference()
+                    .orderByKey()
+                    .limitToFirst(PREFETCH_DISTANCE);
+        } else {
+            query = new UserQuoteRepository(userId)
+                    .getDatabaseReference()
+                    .orderByKey()
+                    .startAfter(nodeId)
+                    .limitToFirst(PREFETCH_DISTANCE);
+        }
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Quote> quotes = new ArrayList<>();
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    Quote quote = data.getValue(Quote.class);
+                    if (quote != null) {
+                        Quote quoteWithKey = new Quote(quote.getQuote(), quote.getAuthor(), quote.getUser(), data.getKey());
+                        quotes.add(quoteWithKey);
+                    }
+                }
+
+                usrAdapter.addItems(new ArrayList<>(quotes));
+                usrAdapter.notifyItemRangeInserted(usrAdapter.getItemCount(), quotes.size());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(UserProfile.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        usrQuotesRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1)) {
+                    loadUserQuotes(usrAdapter.getLastItemId(), Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+                }
+            }
+        });
 
     }
 
