@@ -2,6 +2,7 @@ package com.sforge.quotes.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
@@ -19,6 +20,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,6 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.sforge.quotes.R;
 import com.sforge.quotes.adapter.ImageAdapter;
 import com.sforge.quotes.adapter.UserQuoteAdapter;
+import com.sforge.quotes.dialog.CollectionsDialog;
 import com.sforge.quotes.entity.Quote;
 import com.sforge.quotes.entity.User;
 import com.sforge.quotes.repository.QuoteRepository;
@@ -44,9 +47,9 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 
-public class UserProfile extends AppCompatActivity {
+public class UserProfile extends AppCompatActivity implements CollectionsDialog.CollectionsDialogListener {
 
-    private Button profileSettings, showEmail, changeBackground, backButton, layoutBackButton, aboutButton, dataRequestButton, userDataBackButton, aboutBackButton, deleteAccountButton, deleteButtonSubmit, deleteButtonCancel;
+    private Button profileSettings, changeBackground, backButton, layoutBackButton, aboutButton, dataRequestButton, userDataBackButton, aboutBackButton, deleteAccountButton, deleteButtonSubmit, deleteButtonCancel;
 
     private String email = "";
 
@@ -101,8 +104,6 @@ public class UserProfile extends AppCompatActivity {
         TextView usernameTV = findViewById(R.id.username);
 
         profileSettings = findViewById(R.id.profileSettingsButton);
-        showEmail = findViewById(R.id.profileShowEmail);
-        showEmail.setVisibility(View.GONE);
         aboutButton = findViewById(R.id.profileAbout);
         aboutButton.setVisibility(View.GONE);
         dataRequestButton = findViewById(R.id.profileRequestUserData);
@@ -158,7 +159,6 @@ public class UserProfile extends AppCompatActivity {
 
         createSettingsMenu();
 
-        //getUserQuotes();
         loadUserQuotes(null, FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         aboutBackButton.setOnClickListener(view -> aboutLayout.setVisibility(View.GONE));
@@ -304,39 +304,12 @@ public class UserProfile extends AppCompatActivity {
         });
     }
 
-    public void getUserQuotes() {
-        UserQuoteRepository userQuotesReference = new UserQuoteRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        userQuotesReference
-                .getAll()
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        usrQuotes = new ArrayList<>();
-                        for (DataSnapshot data : snapshot.getChildren()) {
-                            Quote quote = data.getValue(Quote.class);
-                            usrQuotes.add(quote);
-                        }
-                        usrAdapter.setItems(usrQuotes);
-                        usrAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(UserProfile.this, "Couldn't Retrieve the Quotes.", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
     @SuppressLint("UseCompatLoadingForDrawables")
     public void createSettingsMenu() {
         final AtomicBoolean isSettingMenuOpen = new AtomicBoolean(false);
-        final AtomicBoolean isEmailShown = new AtomicBoolean(false);
         final AtomicBoolean isBackgroundSettingShown = new AtomicBoolean(false);
         profileSettings.setOnClickListener(view -> {
             if (!isSettingMenuOpen.get()) {
-//                showEmail.setVisibility(View.VISIBLE);
-//                showEmail.startAnimation(
-//                        AnimationUtils.loadAnimation(getApplicationContext(), R.anim.settings_button_slide_bottom_to_top));
                 changeBackground.setVisibility(View.VISIBLE);
                 changeBackground.startAnimation(
                         AnimationUtils.loadAnimation(getApplicationContext(), R.anim.settings_button_slide_bottom_to_top));
@@ -351,9 +324,6 @@ public class UserProfile extends AppCompatActivity {
                         AnimationUtils.loadAnimation(getApplicationContext(), R.anim.settings_button_slide_bottom_to_top));
                 isSettingMenuOpen.set(true);
             } else {
-//                showEmail.setVisibility(View.GONE);
-//                showEmail.startAnimation(
-//                        AnimationUtils.loadAnimation(getApplicationContext(), R.anim.settings_button_slide_top_to_bottom));
                 changeBackground.setVisibility(View.GONE);
                 changeBackground.startAnimation(
                         AnimationUtils.loadAnimation(getApplicationContext(), R.anim.settings_button_slide_top_to_bottom));
@@ -379,20 +349,7 @@ public class UserProfile extends AppCompatActivity {
             }
         });
 
-        showEmail.setOnClickListener(view -> {
-            if (!isEmailShown.get()) {
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("Email: ").append(email);
-                showEmail.setText(stringBuilder);
-                isEmailShown.set(true);
-            } else {
-                String s = "Show Email";
-                showEmail.setText(s);
-                isEmailShown.set(false);
-            }
-        });
-
-        GridLayoutManager manager = new GridLayoutManager(this, 3);
+        StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         ImageAdapter adapter = new ImageAdapter(this);
         List<Drawable> images = new ArrayList<>();
         images.add(getResources().getDrawable(R.drawable.rsz_blue_sky_1, null));
@@ -401,6 +358,9 @@ public class UserProfile extends AppCompatActivity {
         images.add(getResources().getDrawable(R.drawable.rsz_dark_mountains_1, null));
         images.add(getResources().getDrawable(R.drawable.rsz_bridge_in_forest_2, null));
         images.add(getResources().getDrawable(R.drawable.rsz_forest_1, null));
+        images.add(getResources().getDrawable(R.drawable.rsz_white_gradient, null));
+        images.add(getResources().getDrawable(R.drawable.rsz_grey, null));
+        images.add(getResources().getDrawable(R.drawable.rsz_orange_purple_gradient, null));
         adapter.setItems(images);
         changeBackgroundRV.setLayoutManager(manager);
         changeBackgroundRV.setAdapter(adapter);
@@ -477,5 +437,15 @@ public class UserProfile extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    @Override
+    public void getData(int option) {
+
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
     }
 }

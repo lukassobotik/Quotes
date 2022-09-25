@@ -102,6 +102,64 @@
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <LinearLayout
+                android:id="@+id/usrQuoteButtonLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_margin="8dp">
+
+                <Button
+                    android:id="@+id/usrQuoteShareButton"
+                    style="@style/Button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:foreground="@drawable/ic_share"
+                    android:foregroundGravity="center"
+                    android:foregroundTint="@color/white"
+                    android:padding="10dp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:visibility="visible"
+                    android:layout_marginEnd="4dp" />
+
+                <Button
+                    android:id="@+id/usrQuoteDeleteButton"
+                    style="@style/Button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:foreground="@drawable/ic_delete"
+                    android:foregroundGravity="center"
+                    android:foregroundTint="@color/white"
+                    android:padding="10dp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:visibility="gone"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="4dp" />
+
+                <Button
+                    android:id="@+id/usrQuoteBookmarkButton"
+                    style="@style/Button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:foreground="@drawable/ic_bookmark_empty"
+                    android:foregroundTint="@color/white"
+                    android:foregroundGravity="center"
+                    android:padding="10dp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:layout_marginStart="4dp" />
+            </LinearLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout

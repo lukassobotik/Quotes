@@ -127,12 +127,7 @@
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:visibility="visible"
-                        android:layout_marginEnd="4dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="1.0" />
+                        android:layout_marginEnd="4dp" />
 
                     <Button
                         android:id="@+id/searchBookmarkButton"
@@ -146,12 +141,7 @@
                         android:textAllCaps="false"
                         android:textColor="@color/white"
                         android:textSize="16sp"
-                        android:layout_marginStart="4dp"
-                        app:layout_constraintBottom_toBottomOf="@+id/userProfileButton"
-                        app:layout_constraintEnd_toStartOf="@+id/userProfileButton"
-                        app:layout_constraintStart_toEndOf="@+id/createQuote"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="1.0" />
+                        android:layout_marginStart="4dp" />
 
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>

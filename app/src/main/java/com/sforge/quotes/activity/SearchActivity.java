@@ -53,7 +53,6 @@ public class SearchActivity extends AppCompatActivity implements CollectionsDial
         });
 
         backButton.setOnClickListener(view -> {
-            startActivity(new Intent(SearchActivity.this, MainActivity.class));
             finish();
         });
     }

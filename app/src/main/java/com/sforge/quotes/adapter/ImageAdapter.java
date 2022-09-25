@@ -65,6 +65,12 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 bgId.set(background.RSZ_BRIDGE_IN_FOREST_2);
             } else if (position == 5){
                 bgId.set(background.RSZ_FOREST_1);
+            } else if (position == 6) {
+                bgId.set(background.RSZ_WHITE_GRADIENT);
+            } else if (position == 7) {
+                bgId.set(background.RSZ_GREY);
+            } else if (position == 8){
+                bgId.set(background.RSZ_ORANGE_PURPLE_GRADIENT);
             }
             UserPreferences userPreferences = new UserPreferences(bgId.get(), "low");
             userPreferencesRepository.addWithKey("Background", userPreferences).addOnCompleteListener(task -> {
@@ -89,7 +95,11 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             } else if (position == 5) {
                 bgId.set(background.FOREST_1);
             } else if (position == 6) {
-                bgId.set(background.FOREST_1);
+                bgId.set(background.WHITE_GRADIENT);
+            } else if (position == 7) {
+                bgId.set(background.GREY);
+            } else if (position == 8) {
+                bgId.set(background.ORANGE_PURPLE_GRADIENT);
             }
             UserPreferences userPreferences = new UserPreferences(bgId.get(), "high");
             userPreferencesRepository.addWithKey("Background", userPreferences).addOnCompleteListener(task -> {

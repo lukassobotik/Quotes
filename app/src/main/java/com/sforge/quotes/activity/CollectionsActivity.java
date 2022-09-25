@@ -12,11 +12,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.paging.PagingConfig;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.paging.DatabasePagingOptions;
@@ -27,18 +27,14 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.sforge.quotes.R;
 import com.sforge.quotes.adapter.CollectionActivityAdapter;
-import com.sforge.quotes.adapter.FirebaseAdapter;
 import com.sforge.quotes.adapter.QuoteAdapter;
 import com.sforge.quotes.entity.Quote;
-import com.sforge.quotes.repository.QuoteRepository;
 import com.sforge.quotes.repository.UserBookmarksRepository;
 import com.sforge.quotes.repository.UserCollectionRepository;
-import com.sforge.quotes.repository.UserQuoteRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 
 public class CollectionsActivity extends AppCompatActivity {
 
@@ -119,7 +115,7 @@ public class CollectionsActivity extends AppCompatActivity {
 
     public void defineViews() {
         recyclerView = findViewById(R.id.collectionActivityRecyclerView);
-        addButton = findViewById(R.id.addtoCollection);
+        addButton = findViewById(R.id.addToCollection);
         placeholder = findViewById(R.id.collection_placeholder);
         addLayout = findViewById(R.id.createCollectionLayout);
         createCollectionEditText = findViewById(R.id.createCollectionEditText);
@@ -127,8 +123,7 @@ public class CollectionsActivity extends AppCompatActivity {
         cancel = findViewById(R.id.createCollectionButtonCancel);
         remove = findViewById(R.id.removeCollection);
         back = findViewById(R.id.collectionBackButton);
-        LinearLayoutManager collectionsManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(collectionsManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Query query = new UserBookmarksRepository(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).getDatabaseReference();
         FirebaseRecyclerOptions<DataSnapshot> options = new FirebaseRecyclerOptions.Builder<DataSnapshot>()
                 .setQuery(query, snapshot -> snapshot)
@@ -166,7 +161,7 @@ public class CollectionsActivity extends AppCompatActivity {
                         continue;
                     }
 
-                    if (quote.getQuote().equals("") && quote.getAuthor().equals("") && quote.getUser().equals("")) {
+                    if ("".equals(quote.getQuote()) && "".equals(quote.getAuthor()) && "".equals(quote.getUser())) {
                         continue;
                     }
 
@@ -281,7 +276,6 @@ public class CollectionsActivity extends AppCompatActivity {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!recyclerView.canScrollVertically(1)) {
                     loadQuotes(quoteAdapter.getLastItemId(), localCollection, false);
-                    Toast.makeText(CollectionsActivity.this, "Load More", Toast.LENGTH_SHORT).show();
                 }
             }
         });

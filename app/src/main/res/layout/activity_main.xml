@@ -136,29 +136,27 @@
         style="@style/Button"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:foreground="@drawable/ic_search"
-        android:foregroundTint="@color/white"
         android:foregroundGravity="center"
+        android:foregroundTint="@color/white"
         android:padding="10dp"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/userProfileButton"
+        app:layout_constraintStart_toEndOf="@+id/quoteBookmarkButton"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/shareButton"
         style="@style/Button"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:foreground="@drawable/ic_share"
         android:foregroundGravity="center"
         android:foregroundTint="@color/white"
@@ -168,10 +166,10 @@
         android:textSize="16sp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/quoteBookmarkButton"
+        app:layout_constraintStart_toEndOf="@+id/createQuote"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <LinearLayout
         android:id="@+id/addToBookmarksRVLinearLayout"

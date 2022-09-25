@@ -30,6 +30,7 @@ import com.sforge.quotes.R;
 import com.sforge.quotes.adapter.BookmarksAdapter;
 import com.sforge.quotes.adapter.QuoteAdapter;
 import com.sforge.quotes.adapter.UserQuoteAdapter;
+import com.sforge.quotes.dialog.CollectionsDialog;
 import com.sforge.quotes.entity.Quote;
 import com.sforge.quotes.repository.QuoteRepository;
 import com.sforge.quotes.repository.UserBookmarksRepository;
@@ -41,7 +42,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CollectionsDialog.CollectionsDialogListener {
 
     //Firebase Related
     boolean isLoggedIn = false;
@@ -554,4 +555,13 @@ public class MainActivity extends AppCompatActivity {
         quoteRepository = new QuoteRepository();
     }
 
+    @Override
+    public void getData(int option) {
+
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
+    }
 }
