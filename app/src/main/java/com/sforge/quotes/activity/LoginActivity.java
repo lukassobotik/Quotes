@@ -51,18 +51,22 @@ public class LoginActivity extends AppCompatActivity {
         if (email.isEmpty()){
             emailEditText.setError("Email is required!");
             emailEditText.requestFocus();
+            return;
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
             emailEditText.setError("Please Enter a Valid Email!");
             emailEditText.requestFocus();
+            return;
         }
         if (password.isEmpty()){
             passwordEditText.setError("Password is required!");
             passwordEditText.requestFocus();
+            return;
         }
         if(password.length() < 6){
             passwordEditText.setError("Password has to Have at Least 6 Characters!");
             passwordEditText.requestFocus();
+            return;
         }
 
         progressBar.setVisibility(View.VISIBLE);
@@ -70,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()){
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if (user.isEmailVerified()){
+                if (Objects.requireNonNull(user).isEmailVerified()){
                     finish();
                     startActivity(new Intent(this, UserProfile.class));
                 }
