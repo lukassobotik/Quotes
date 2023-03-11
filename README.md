@@ -1,7 +1,7 @@
 # myQuotes
 **myQuotes** is an Android application where you can **Share**, **Discover** and **Save** New **Quotes!**
 
-<a href='https://play.google.com/store/apps/details?id=com.sforge.quotes&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
+<a href='https://play.google.com/store/apps/details?id=com.sforge.quotes&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img width="200" height="80" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
 
 ## Features
 - About **1500** quotes for **You** to discover
