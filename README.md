@@ -1,19 +1,21 @@
-# myQuotes
-**myQuotes** is an Android application where you can **Share**, **Discover** and **Save** New **Quotes!**
+<h1 align="center">myQuotes</h1>
+<h3 align="center">Share, Discover and Save New Quotes!</h3>
+<p align="center">
+<a href="https://play.google.com/store/apps/details?id=com.sforge.quotes">Play Store</a> | <a href="https://www.buymeacoffee.com/puckyeu">Support Me</a> | <a href="https://lukassobotik.dev/project/myQuotes">Website</a>
+</p>
 
-<a href='https://play.google.com/store/apps/details?id=com.sforge.quotes&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img width="200" height="80" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
+## Overview
+If you're looking for inspiration, the app has around 1500 quotes waiting for you to discover. You can easily browse through them with an endless scroll feature, similar to Youtube Shorts or Instagram Reels. When you find a quote you love, you can share it with others, so they can enjoy it too.
 
-## Features
-- About **1500** quotes for **You** to discover
-- Endless Scroll like on **Youtube Shorts** or **Instagram Reels!**
-- **Share** your **Favorite Quotes**
-- **Quotes, Preferences and Collections** are saved in **[Firebase](https://firebase.google.com/)**
-- **Request** and **View** all **Your Data** that is stored in **[Firebase](https://firebase.google.com/)**
-- **Account Login, Logout and Username** Creation
-- Ability to **Delete Your Account** with all data
-- **Create** Your Own **Collections** and Add **Quotes** to them!
-- **Search** All Quotes
-- Set a **Background** for all **Quotes**
+All the quotes you save, along with your preferences and collections, are saved in Firebase. This means you can access them from anywhere, at any time. You can also request and view all your data that is stored in Firebase, so you always know exactly what information is being saved.
+
+To get started, you'll need to create an account, which is easy to do with the app's account login, logout, and username creation features. If you ever want to delete your account, the app allows you to do that too, along with all your saved data.
+
+One of the best features of the app is the ability to create your own collections and add quotes to them. This way, you can organize your favorite quotes however you like, making them easier to find and share.
+
+If you're looking for a specific quote, the app's search function allows you to find it quickly and easily. You can even set a background for all the quotes, so you can customize the app to your liking.
+
+Overall, the app is perfect for anyone looking for inspiration or a quick pick-me-up. With its vast collection of quotes and easy-to-use features, you'll be sure to find something that speaks to you.
 
 ## What Data Is Being Stored? 
 Your Data Is Stored in Two Places:
