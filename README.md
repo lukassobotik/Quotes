@@ -246,6 +246,15 @@ In the Database, data is stored like this:
   </blockquote></details>
 </blockquote></details>
 
+## Screenshots
+<div align="center">
+    <img style="align:center;" src="./app/src/sc-1.jpg" alt="Logo" width="100" />
+    <img style="align:center;" src="./app/src/sc-2.jpg" alt="Logo" width="100" />
+    <img style="align:center;" src="./app/src/sc-3.jpg" alt="Logo" width="100" />
+    <img style="align:center;" src="./app/src/sc-4.jpg" alt="Logo" width="100" />
+    <img style="align:center;" src="./app/src/sc-5.jpg" alt="Logo" width="100" />
+</div>
+
 ## Licence
 
 MIT License
