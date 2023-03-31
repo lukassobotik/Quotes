@@ -248,7 +248,6 @@ In the Database, data is stored like this:
 
 ## Screenshots
 <div align="center">
-
     <img style="align:center;" src="./app/src/sc-2.jpg" alt="Screenshot" width="100" />
     <img style="align:center;" src="./app/src/sc-3.jpg" alt="Screenshot" width="100" />
     <img style="align:center;" src="./app/src/sc-4.jpg" alt="Screenshot" width="100" />
