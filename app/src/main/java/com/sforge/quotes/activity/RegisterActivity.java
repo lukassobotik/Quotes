@@ -125,7 +125,8 @@ public class RegisterActivity extends AppCompatActivity {
                             progressBar.setVisibility(View.GONE);
                         });
             } else {
-                Toast.makeText(this, "Something went Wrong. Couldn't Create The User.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Something went Wrong. Couldn't Create The User. " + task.getException(), Toast.LENGTH_SHORT).show();
+                Log.e("RegisterActivity", "registerUser: " + task.getException());
                 progressBar.setVisibility(View.GONE);
             }
         });
