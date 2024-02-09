@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -224,7 +225,7 @@ public class UserProfile extends AppCompatActivity implements CollectionsDialog.
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-
+                                Log.e("UserProfile", error.getMessage());
                             }
                         });
             }
@@ -255,7 +256,7 @@ public class UserProfile extends AppCompatActivity implements CollectionsDialog.
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
+                        Log.e("UserProfile", error.getMessage());
                     }
                 });
             }
@@ -297,7 +298,7 @@ public class UserProfile extends AppCompatActivity implements CollectionsDialog.
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
+                        Log.e("UserProfile", error.getMessage());
                     }
                 });
             }
