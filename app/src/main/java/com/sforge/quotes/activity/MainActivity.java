@@ -20,6 +20,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.apachat.swipereveallayout.core.SwipeLayout;
 import com.apachat.swipereveallayout.core.interfaces.Swipe;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements CollectionsDialog
     SwipeLayout quoteSwipeLayout;
     SwipeRefreshLayout swipeRefreshLayout;
     LinearLayout addToBookmarksLayout;
+    BottomNavigationView bottomNavigationView;
 
     int lastFirstVisiblePosition;
     int position = 0;
@@ -94,6 +96,27 @@ public class MainActivity extends AppCompatActivity implements CollectionsDialog
         profileMenuClickListeners();
 
         createMainBackButton();
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+                    startActivity(new Intent(this, MainActivity.class));
+                    break;
+                case R.id.navigation_search:
+                    startActivity(new Intent(this, SearchActivity.class));
+                    break;
+                case R.id.navigation_create:
+                    startActivity(new Intent(this, CreateQuotes.class));
+                    break;
+                case R.id.navigation_collections:
+                    startActivity(new Intent(this, CollectionsActivity.class));
+                    break;
+                case R.id.navigation_account:
+                    startActivity(new Intent(this, UserProfile.class));
+                    break;
+            }
+            return true;
+        });
 
         quoteSwipeLayout.setSwipeListener(new Swipe() {
             @Override
@@ -553,6 +576,7 @@ public class MainActivity extends AppCompatActivity implements CollectionsDialog
         collectionsAdapter = new BookmarksAdapter(this);
         usrQuotesRV.setAdapter(usrAdapter);
         quoteRepository = new QuoteRepository();
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
     }
 
     @Override

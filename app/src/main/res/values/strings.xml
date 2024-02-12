@@ -12,6 +12,11 @@
     <string name="delete_account_message">This will delete all of your Quotes, Collections, and every other Data that is Stored</string>
     <string name="quote_source_info">The quotes that are provided by \@myQuotes are fetched from <a href="https://www.goodreads.com/quotes">goodreads.com</a>, so if you like any of them, you should definitely check them out</string>
     <string name="privacy_policy"><a href="https://github.com/PuckyEU/Quotes/blob/master/PrivacyPolicy.md">Privacy Policy</a></string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="create">Create</string>
+    <string name="collections">Collections</string>
+    <string name="account">Account</string>
 
     <string-array name="profileSpinner">
         <item>Profile</item>
