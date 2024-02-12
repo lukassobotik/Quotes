@@ -88,116 +88,12 @@
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <com.google.android.material.button.MaterialButton
-                android:id="@+id/createQuote"
-                style="@style/Button"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="10dp"
-                android:foreground="@drawable/ic_baseline_add_24"
-                android:foregroundGravity="center"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0"/>
-
-        <com.google.android.material.button.MaterialButton
-                android:id="@+id/userProfileButton"
-                style="@style/Button"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:foreground="@drawable/ic_person"
-                android:foregroundTint="@color/white"
-                android:foregroundGravity="center"
-                android:padding="10dp"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0"/>
-
-        <Button
-                android:id="@+id/profileShowProfile"
-                style="@style/Button"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginBottom="8dp"
-                android:text="Profile"
-                android:padding="0dp"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@id/userProfileButton"
-                app:layout_constraintEnd_toEndOf="@id/userProfileButton"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="@id/userProfileButton"/>
-
-        <Button
-                android:id="@+id/profileCollections"
-                style="@style/Button"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginBottom="8dp"
-                android:text="Collections"
-                android:padding="0dp"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@id/profileShowProfile"
-                app:layout_constraintEnd_toEndOf="@id/userProfileButton"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="@id/userProfileButton"/>
-
-        <Button
-                android:id="@+id/profileLogout"
-                style="@style/Button"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginBottom="8dp"
-                android:text="Logout"
-                android:padding="0dp"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@id/profileCollections"
-                app:layout_constraintEnd_toEndOf="@id/userProfileButton"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="@id/userProfileButton"/>
-
-        <Button
-                android:id="@+id/profileLogin"
-                style="@style/Button"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginBottom="8dp"
-                android:text="Login"
-                android:padding="0dp"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@id/profileLogout"
-                app:layout_constraintEnd_toEndOf="@id/userProfileButton"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="@id/userProfileButton"/>
-
-        <com.google.android.material.button.MaterialButton
                 android:id="@+id/quoteBookmarkButton"
                 style="@style/Button"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
                 android:foreground="@drawable/ic_bookmark_empty"
                 android:foregroundTint="@color/white"
                 android:foregroundGravity="center"
@@ -205,31 +101,10 @@
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/userProfileButton"
-                app:layout_constraintEnd_toStartOf="@+id/userProfileButton"
-                app:layout_constraintStart_toEndOf="@+id/createQuote"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0"/>
-
-        <com.google.android.material.button.MaterialButton
-                android:id="@+id/searchButton"
-                style="@style/Button"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginBottom="16dp"
-                android:foreground="@drawable/ic_search"
-                android:foregroundGravity="center"
-                android:foregroundTint="@color/white"
-                android:padding="10dp"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:visibility="visible"
+                app:layout_constraintVertical_bias="1.0"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/userProfileButton"
-                app:layout_constraintStart_toEndOf="@+id/quoteBookmarkButton"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0"/>
+                app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.google.android.material.button.MaterialButton
                 android:id="@+id/shareButton"
@@ -237,6 +112,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginBottom="16dp"
+                android:layout_marginStart="16dp"
                 android:foreground="@drawable/ic_share"
                 android:foregroundGravity="center"
                 android:foregroundTint="@color/white"
@@ -246,8 +122,7 @@
                 android:textSize="16sp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/quoteBookmarkButton"
-                app:layout_constraintStart_toEndOf="@+id/createQuote"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="1.0"/>
 

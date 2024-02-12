@@ -169,21 +169,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/user_data_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            android:layout_margin="16dp"
-            android:elevation="30dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <include layout="@layout/user_data_layout" />
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/about_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -195,7 +180,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <include layout="@layout/about_layout" />
+            <include layout="@layout/settings_about" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

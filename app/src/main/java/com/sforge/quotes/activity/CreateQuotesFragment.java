@@ -1,13 +1,13 @@
 package com.sforge.quotes.activity;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.fragment.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.sforge.quotes.R;
 import com.sforge.quotes.entity.Quote;
@@ -22,17 +22,6 @@ import java.util.Objects;
  * create an instance of this fragment.
  */
 public class CreateQuotesFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-
     private String user;
     private final int quoteLengthLimit = 200;
     private final int authorLengthLimit = 50;
@@ -49,31 +38,13 @@ public class CreateQuotesFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CreateQuotesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CreateQuotesFragment newInstance(String param1, String param2) {
-        CreateQuotesFragment fragment = new CreateQuotesFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public static CreateQuotesFragment newInstance() {
+        return new CreateQuotesFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -86,9 +57,7 @@ public class CreateQuotesFragment extends Fragment {
         createAuthorEditText = fragmentView.findViewById(R.id.createAuthorEditText);
         createQuoteButton = fragmentView.findViewById(R.id.createQuoteButton);
 
-        createQuoteButton.setOnClickListener(view -> {
-            submitQuote();
-        });
+        createQuoteButton.setOnClickListener(view -> submitQuote());
 
         quoteRepository = new QuoteRepository();
 
@@ -103,8 +72,6 @@ public class CreateQuotesFragment extends Fragment {
         if (createQuoteEditText.getText().toString().length() <= quoteLengthLimit && createAuthorEditText.getText().toString().length() <= authorLengthLimit
                 && createQuoteEditText.getText().toString().length() >= minQuoteLengthLimit && createAuthorEditText.getText().toString().length() >= minAuthorLengthLimit) {
             createQuote();
-            // Todo: create finish() method
-//            finish();
         } else if (createQuoteEditText.getText().toString().length() > quoteLengthLimit) {
             createQuoteEditText.setError("Quote Length Limit is " + quoteLengthLimit + " Letters!");
             createQuoteEditText.requestFocus();

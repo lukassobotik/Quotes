@@ -73,7 +73,7 @@ public class HomeFragment extends Fragment {
     TextView mainActivityUsername;
 
     //UI Related
-    Button createQuote, profileButton, showUserProfileButton, profileLogoutButton, profileLoginButton, mainBackButton, bookmarkButton, profileCollectionsButton, searchButton, shareButton;
+    Button mainBackButton, bookmarkButton, shareButton;
     UserQuoteAdapter usrAdapter;
     BookmarksAdapter collectionsAdapter;
     ConstraintLayout quoteItemBackground;
@@ -133,14 +133,6 @@ public class HomeFragment extends Fragment {
             isLoggedIn = true;
         }
 
-        if (isLoggedIn) {
-            profileLoginButton.setVisibility(View.GONE);
-        }
-
-        createQuotesButton();
-
-        profileMenuClickListeners();
-
         createMainBackButton();
 
         quoteSwipeLayout.setSwipeListener(new Swipe() {
@@ -177,8 +169,6 @@ public class HomeFragment extends Fragment {
         createFirebaseAdapters();
 
         createBookmarkButton();
-
-        searchButton.setOnClickListener(view -> startActivity(new Intent(getActivity(), SearchActivity.class)));
 
         shareButton.setOnClickListener(view -> {
             StringBuilder stringBuilder = new StringBuilder();
@@ -406,90 +396,6 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    //Quote Button Logic
-    public void createQuotesButton() {
-        if (isLoggedIn) {
-            createQuote.setOnClickListener(view -> {
-                Intent i = new Intent(getActivity(), CreateQuotes.class);
-                startActivity(i);
-            });
-        } else {
-            createQuote.setOnClickListener(view -> {
-                Toast.makeText(getActivity(), "Please Log in to Create Quotes", Toast.LENGTH_SHORT).show();
-                // Todo: Add a finish() method here
-//                finish();
-                startActivity(new Intent(getActivity(), LoginActivity.class));
-            });
-        }
-    }
-
-    public void profileMenuClickListeners() {
-        profileButton.setOnClickListener(view -> profileIconOnClickEvent());
-
-        profileLoginButton.setOnClickListener(view -> {
-            startActivity(new Intent(getActivity(), LoginActivity.class));
-        });
-
-        showUserProfileButton.setOnClickListener(view -> startActivity(new Intent(getActivity(), UserProfile.class)));
-
-        profileLogoutButton.setOnClickListener(view -> {
-            FirebaseAuth.getInstance().signOut();
-            profileIconOnClickEvent();
-            isLoggedIn = false;
-            createQuotesButton();
-            startActivity(new Intent(getActivity(), MainActivity.class));
-            // Todo: Add a finish() method here
-//            finish();
-        });
-
-        profileCollectionsButton.setOnClickListener(view -> startActivity(new Intent(getActivity(), CollectionsActivity.class)));
-    }
-
-    //Profile Button On Click Logic
-    public void profileIconOnClickEvent() {
-        if (!profileIsOpen) {
-            if (isLoggedIn) {
-                showUserProfileButton.setVisibility(View.VISIBLE);
-                profileLogoutButton.setVisibility(View.VISIBLE);
-                profileCollectionsButton.setVisibility(View.VISIBLE);
-            } else {
-                profileLoginButton.setVisibility(View.VISIBLE);
-            }
-            showUserProfileButton.startAnimation(
-                    AnimationUtils.loadAnimation(requireActivity().getApplicationContext(),
-                                                 R.anim.profile_button_slide_top_to_bottom));
-            profileLogoutButton.startAnimation(
-                    AnimationUtils.loadAnimation(requireActivity().getApplicationContext(),
-                                                 R.anim.profile_button_slide_top_to_bottom));
-            profileLoginButton.startAnimation(
-                    AnimationUtils.loadAnimation(requireActivity().getApplicationContext(),
-                                                 R.anim.profile_button_slide_top_to_bottom));
-            profileCollectionsButton.startAnimation(
-                    AnimationUtils.loadAnimation(requireActivity().getApplicationContext(),
-                                                 R.anim.profile_button_slide_top_to_bottom));
-            profileIsOpen = true;
-        } else {
-            showUserProfileButton.setVisibility(View.GONE);
-            showUserProfileButton.startAnimation(
-                    AnimationUtils.loadAnimation(requireActivity().getApplicationContext(),
-                                                 R.anim.profile_button_slide_bottom_to_top));
-            profileLogoutButton.setVisibility(View.GONE);
-            profileLogoutButton.startAnimation(
-                    AnimationUtils.loadAnimation(requireActivity().getApplicationContext(),
-                                                 R.anim.profile_button_slide_bottom_to_top));
-            profileLoginButton.setVisibility(View.GONE);
-            profileLoginButton.startAnimation(
-                    AnimationUtils.loadAnimation(requireActivity().getApplicationContext(),
-                                                 R.anim.profile_button_slide_bottom_to_top));
-            profileCollectionsButton.setVisibility(View.GONE);
-            profileCollectionsButton.startAnimation(
-                    AnimationUtils.loadAnimation(requireActivity().getApplicationContext(),
-                                                 R.anim.profile_button_slide_bottom_to_top));
-            profileIsOpen = false;
-        }
-        closeBookmarks();
-    }
-
     public void setCurrentQuoteCreatorInfo(int position) {
         String swipeUID = quoteAdapter.getCreatorAccountFromPosition(position);
         new UsernameRepository(swipeUID).getAll().addListenerForSingleValueEvent(new ValueEventListener() {
@@ -514,24 +420,17 @@ public class HomeFragment extends Fragment {
     }
 
     public void defineViews(View view) {
-        createQuote = view.findViewById(R.id.createQuote);
         recyclerView = view.findViewById(R.id.quoteRecyclerView);
         usrQuotesRV = view.findViewById(R.id.usrQuotes);
         collectionsList = view.findViewById(R.id.collectionsList);
         addToBookmarksLayout = view.findViewById(R.id.addToBookmarksRVLinearLayout);
-        profileButton = view.findViewById(R.id.userProfileButton);
-        showUserProfileButton = view.findViewById(R.id.profileShowProfile);
-        profileLogoutButton = view.findViewById(R.id.profileLogout);
-        profileLoginButton = view.findViewById(R.id.profileLogin);
         includeAccountProfile = view.findViewById(R.id.includeAccountProfile);
         mainActivityUsername = view.findViewById(R.id.username);
         swipeRefreshLayout = view.findViewById(R.id.mainSwipeRefreshLayout);
         quoteSwipeLayout = view.findViewById(R.id.quoteSwipeLayout);
         bookmarkButton = view.findViewById(R.id.quoteBookmarkButton);
         mainBackButton = view.findViewById(R.id.mainBackButton);
-        profileCollectionsButton = view.findViewById(R.id.profileCollections);
         mainBackButton.setVisibility(View.VISIBLE);
-        searchButton = view.findViewById(R.id.searchButton);
         shareButton = view.findViewById(R.id.shareButton);
         quoteItemBackground = view.findViewById(R.id.quoteItemBackground);
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());

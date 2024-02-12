@@ -3,12 +3,13 @@ package com.sforge.quotes.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
@@ -51,20 +53,11 @@ import java.util.function.BiFunction;
  * create an instance of this fragment.
  */
 public class UserProfileFragment extends Fragment {
+    private static final String ARG_USERNAME = "username";
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    private String usernameParam;
     
-    
-    
-    private Button profileSettings, changeBackground, backButton, layoutBackButton, aboutButton, dataRequestButton, userDataBackButton, aboutBackButton, deleteAccountButton, deleteButtonSubmit, deleteButtonCancel;
+    private Button profileSettings, changeBackground, layoutBackButton, backButton, aboutButton, dataRequestButton, deleteAccountButton;
 
     private String email = "";
 
@@ -77,10 +70,11 @@ public class UserProfileFragment extends Fragment {
     QuoteRepository quoteRepository;
     UserQuoteAdapter usrAdapter;
     private RecyclerView usrQuotesRV, changeBackgroundRV;
-    LinearLayout backgroundRVLinearLayout, userDataLayout, aboutLayout;
-    ConstraintLayout deleteLayout, userProfileLayout;
+    LinearLayout changeBackgroundLinearLayout, userDataLayout, aboutLayout;
+    ConstraintLayout userProfileLayout;
     EditText deleteButtonEditText;
-
+    FrameLayout settingsBottomSheet;
+    BottomSheetBehavior<FrameLayout> bottomSheetBehavior;
     private final BiFunction<TextView, TextView, ValueEventListener> onDataChangeListener =
             (emailTV, usernameTV) -> new ValueEventListener() {
                 @Override
@@ -101,6 +95,7 @@ public class UserProfileFragment extends Fragment {
                             }
                         }
                         usernameTV.setText(stringBuilder);
+                        usernameParam = String.valueOf(stringBuilder);
                     }
                 }
 
@@ -115,20 +110,10 @@ public class UserProfileFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment UserProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static UserProfileFragment newInstance(String param1, String param2) {
+    public static UserProfileFragment newInstance(String userEmailArg) {
         UserProfileFragment fragment = new UserProfileFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_USERNAME, userEmailArg);
         fragment.setArguments(args);
         return fragment;
     }
@@ -137,8 +122,7 @@ public class UserProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            usernameParam = getArguments().getString(ARG_USERNAME);
         }
     }
 
@@ -150,52 +134,11 @@ public class UserProfileFragment extends Fragment {
 
         TextView emailTV = fragmentView.findViewById(R.id.profileEmail);
         TextView usernameTV = fragmentView.findViewById(R.id.username);
+        defineViews(fragmentView);
 
-        profileSettings = fragmentView.findViewById(R.id.profileSettingsButton);
-        aboutButton = fragmentView.findViewById(R.id.profileAbout);
-        aboutButton.setVisibility(View.GONE);
-        dataRequestButton = fragmentView.findViewById(R.id.profileRequestUserData);
-        dataRequestButton.setVisibility(View.GONE);
-        userDataInfoTV = fragmentView.findViewById(R.id.user_data_info_tv);
-        userDataTV = fragmentView.findViewById(R.id.user_data_bookmarks_tv);
-        userDataPrefsTV = fragmentView.findViewById(R.id.user_data_preferences_tv);
-        userDataQuotesTV = fragmentView.findViewById(R.id.user_data_quotes_tv);
-        userDataUsernameTV = fragmentView.findViewById(R.id.user_data_username_tv);
-        userDataLayout = fragmentView.findViewById(R.id.user_data_layout);
-        userDataBackButton = fragmentView.findViewById(R.id.user_data_back_button);
-        aboutLayout = fragmentView.findViewById(R.id.about_layout);
-        aboutBackButton = fragmentView.findViewById(R.id.about_back_button);
-        aboutAndroidStudioTV = fragmentView.findViewById(R.id.about_android_studio_tv);
-        aboutFirebaseTV = fragmentView.findViewById(R.id.about_firebase_tv);
-        aboutSwipeLayoutTV = fragmentView.findViewById(R.id.about_swipe_reveal_layout_tv);
-        aboutGithub = fragmentView.findViewById(R.id.about_txt_github);
-        quoteSource = fragmentView.findViewById(R.id.about_txt_goodreads);
-        deleteAccountButton = fragmentView.findViewById(R.id.profileDeleteAccount);
-        deleteAccountButton.setVisibility(View.GONE);
-        deleteLayout = fragmentView.findViewById(R.id.delete_account_layout);
-        deleteButtonSubmit = fragmentView.findViewById(R.id.delete_account_delete);
-        deleteButtonCancel = fragmentView.findViewById(R.id.delete_account_cancel);
-        deleteButtonEditText = fragmentView.findViewById(R.id.delete_account_edit_text);
-        deleteAccountText = fragmentView.findViewById(R.id.delete_account_message_confirmation);
-        privacyPolicy = fragmentView.findViewById(R.id.about_privacy_policy);
-        userProfileLayout = fragmentView.findViewById(R.id.user_profile_layout);
-        LinearLayoutManager usrManager = new LinearLayoutManager(getActivity());
-        usrAdapter = new UserQuoteAdapter(getActivity());
-        usrQuotesRV = fragmentView.findViewById(R.id.usrQuotes);
-        usrQuotesRV.setAdapter(usrAdapter);
-        usrQuotesRV.setLayoutManager(usrManager);
-        quoteRepository = new QuoteRepository();
-        backButton = fragmentView.findViewById(R.id.profileBackButton);
-        // Todo: implement finish() method
-        //        backButton.setOnClickListener(view -> finish());
-        layoutBackButton = fragmentView.findViewById(R.id.mainBackButton);
-        layoutBackButton.setVisibility(View.GONE);
-        changeBackground = fragmentView.findViewById(R.id.profileChangeBackground);
-        changeBackground.setVisibility(View.GONE);
-        changeBackgroundRV = fragmentView.findViewById(R.id.changeBackgroundRecyclerView);
-        changeBackgroundRV.setVisibility(View.GONE);
-        backgroundRVLinearLayout = fragmentView.findViewById(R.id.changeBackgroundRVLinearLayout);
-        backgroundRVLinearLayout.setVisibility(View.GONE);
+        if (usernameParam != null) {
+            usernameTV.setText(usernameParam);
+        }
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -210,18 +153,27 @@ public class UserProfileFragment extends Fragment {
 
         loadUserQuotes(null, FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        aboutBackButton.setOnClickListener(view -> aboutLayout.setVisibility(View.GONE));
-
         aboutButton.setOnClickListener(view -> {
             aboutLayout.setVisibility(View.VISIBLE);
+            backButton.setVisibility(View.VISIBLE);
         });
 
-        userDataBackButton.setOnClickListener(view -> userDataLayout.setVisibility(View.GONE));
+        changeBackground.setOnClickListener(view -> {
+            changeBackgroundLinearLayout.setVisibility(View.VISIBLE);
+            backButton.setVisibility(View.VISIBLE);
+        });
+
+        backButton.setOnClickListener(view -> {
+            aboutLayout.setVisibility(View.GONE);
+            userDataLayout.setVisibility(View.GONE);
+            changeBackgroundLinearLayout.setVisibility(View.GONE);
+            backButton.setVisibility(View.GONE);
+        });
 
         dataRequestButton.setOnClickListener(view -> {
+            // TODO: Doesn't load the data
             userDataLayout.setVisibility(View.VISIBLE);
-
-
+            backButton.setVisibility(View.VISIBLE);
             if (user != null) {
                 String userID = user.getUid();
                 new UserRepository().getDatabaseReference()
@@ -288,71 +240,13 @@ public class UserProfileFragment extends Fragment {
         privacyPolicy.setMovementMethod(LinkMovementMethod.getInstance());
 
         deleteAccountButton.setOnClickListener(view -> {
-            userProfileLayout.setVisibility(View.GONE);
-            deleteLayout.setVisibility(View.VISIBLE);
-            if (user != null) {
-                new UsernameRepository(user.getUid()).getDatabaseReference().addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String userProfile = snapshot.getValue(String.class);
-                        if (userProfile != null) {
-                            StringBuilder stringBuilder = new StringBuilder();
-                            stringBuilder.append("Please Type \"").append(userProfile).append("\" to Delete Your Account");
-                            deleteAccountText.setText(stringBuilder.toString());
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Log.e("UserProfile", error.getMessage());
-                    }
-                });
+            Uri webpage = Uri.parse("https://myquotes.account.lukassobotik.dev/");
+            Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+            if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+                startActivity(intent);
             }
         });
 
-        deleteButtonCancel.setOnClickListener(view -> {
-            userProfileLayout.setVisibility(View.VISIBLE);
-            deleteLayout.setVisibility(View.GONE);
-        });
-
-        deleteButtonSubmit.setOnClickListener(view -> {
-            if (user != null) {
-                new UsernameRepository(user.getUid()).getDatabaseReference().addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String userProfile = snapshot.getValue(String.class);
-                        if (userProfile != null) {
-                            if (deleteButtonEditText.getText().toString().trim().equals(userProfile)) {
-
-                                new UserRepository().remove(user.getUid()).addOnCompleteListener(delTask -> {
-                                    if (delTask.isSuccessful()) {
-                                        Toast.makeText(getActivity(), "Successfully Deleted The Account Data", Toast.LENGTH_SHORT).show();
-                                        user.delete().addOnCompleteListener(task -> {
-                                            if (task.isSuccessful()) {
-                                                Toast.makeText(getActivity(), "Successfully Deleted The Account", Toast.LENGTH_SHORT).show();
-                                                // Todo: implement finish() method
-                                                // finish();
-                                                startActivity(new Intent(getActivity() , MainActivity.class));
-                                            } else {
-                                                Toast.makeText(getActivity(), "Couldn't delete The Account. " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                    } else {
-                                        Toast.makeText(getActivity(), "Couldn't delete The Account Data. " + Objects.requireNonNull(delTask.getException()).getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Log.e("UserProfile", error.getMessage());
-                    }
-                });
-            }
-        });
-        
         return fragmentView;
     }
 
@@ -360,42 +254,27 @@ public class UserProfileFragment extends Fragment {
     public void createSettingsMenu() {
         final AtomicBoolean isSettingMenuOpen = new AtomicBoolean(false);
         final AtomicBoolean isBackgroundSettingShown = new AtomicBoolean(false);
+
+        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    isSettingMenuOpen.set(false);
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+
         profileSettings.setOnClickListener(view -> {
             if (!isSettingMenuOpen.get()) {
-                changeBackground.setVisibility(View.VISIBLE);
-                changeBackground.startAnimation(
-                        AnimationUtils.loadAnimation(requireActivity().getApplicationContext(), R.anim.settings_button_slide_bottom_to_top));
-                dataRequestButton.setVisibility(View.VISIBLE);
-                dataRequestButton.startAnimation(
-                        AnimationUtils.loadAnimation(requireActivity().getApplicationContext(), R.anim.settings_button_slide_bottom_to_top));
-                aboutButton.setVisibility(View.VISIBLE);
-                aboutButton.startAnimation(
-                        AnimationUtils.loadAnimation(requireActivity().getApplicationContext(), R.anim.settings_button_slide_bottom_to_top));
-                deleteAccountButton.setVisibility(View.VISIBLE);
-                deleteAccountButton.startAnimation(
-                        AnimationUtils.loadAnimation(requireActivity().getApplicationContext(), R.anim.settings_button_slide_bottom_to_top));
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 isSettingMenuOpen.set(true);
             } else {
-                changeBackground.setVisibility(View.GONE);
-                changeBackground.startAnimation(
-                        AnimationUtils.loadAnimation(requireActivity().getApplicationContext(), R.anim.settings_button_slide_top_to_bottom));
-                if (isBackgroundSettingShown.get()) {
-                    backgroundRVLinearLayout.setVisibility(View.GONE);
-                    backgroundRVLinearLayout.startAnimation(
-                            AnimationUtils.loadAnimation(requireActivity().getApplicationContext(), R.anim.settings_button_slide_top_to_bottom));
-                }
-                changeBackgroundRV.setVisibility(View.GONE);
-                changeBackgroundRV.startAnimation(
-                        AnimationUtils.loadAnimation(requireActivity().getApplicationContext(), R.anim.settings_button_slide_top_to_bottom));
-                dataRequestButton.setVisibility(View.GONE);
-                dataRequestButton.startAnimation(
-                        AnimationUtils.loadAnimation(requireActivity().getApplicationContext(), R.anim.settings_button_slide_top_to_bottom));
-                aboutButton.setVisibility(View.GONE);
-                aboutButton.startAnimation(
-                        AnimationUtils.loadAnimation(requireActivity().getApplicationContext(), R.anim.settings_button_slide_top_to_bottom));
-                deleteAccountButton.setVisibility(View.GONE);
-                deleteAccountButton.startAnimation(
-                        AnimationUtils.loadAnimation(requireActivity().getApplicationContext(), R.anim.settings_button_slide_top_to_bottom));
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 isBackgroundSettingShown.set(false);
                 isSettingMenuOpen.set(false);
             }
@@ -417,17 +296,7 @@ public class UserProfileFragment extends Fragment {
         changeBackgroundRV.setLayoutManager(manager);
         changeBackgroundRV.setAdapter(adapter);
 
-        changeBackground.setOnClickListener(view -> {
-            if (!isBackgroundSettingShown.get()) {
-                backgroundRVLinearLayout.setVisibility(View.VISIBLE);
-                changeBackgroundRV.setVisibility(View.VISIBLE);
-                isBackgroundSettingShown.set(true);
-            } else {
-                backgroundRVLinearLayout.setVisibility(View.GONE);
-                changeBackgroundRV.setVisibility(View.GONE);
-                isBackgroundSettingShown.set(false);
-            }
-        });
+
     }
 
     public void loadUserQuotes(String nodeId, String userId) {
@@ -468,5 +337,46 @@ public class UserProfileFragment extends Fragment {
                 Toast.makeText(getActivity(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void defineViews(View view) {
+        profileSettings = view.findViewById(R.id.profileSettingsButton);
+        aboutButton = view.findViewById(R.id.profileAbout);
+        dataRequestButton = view.findViewById(R.id.profileRequestUserData);
+        userDataInfoTV = view.findViewById(R.id.user_data_info_tv);
+        userDataTV = view.findViewById(R.id.user_data_bookmarks_tv);
+        userDataPrefsTV = view.findViewById(R.id.user_data_preferences_tv);
+        userDataQuotesTV = view.findViewById(R.id.user_data_quotes_tv);
+        userDataUsernameTV = view.findViewById(R.id.user_data_username_tv);
+        userDataLayout = view.findViewById(R.id.settings_user_data_layout);
+        aboutLayout = view.findViewById(R.id.settings_about_layout);
+        aboutAndroidStudioTV = view.findViewById(R.id.about_android_studio_tv);
+        aboutFirebaseTV = view.findViewById(R.id.about_firebase_tv);
+        aboutSwipeLayoutTV = view.findViewById(R.id.about_swipe_reveal_layout_tv);
+        aboutGithub = view.findViewById(R.id.about_txt_github);
+        quoteSource = view.findViewById(R.id.about_txt_goodreads);
+        deleteAccountButton = view.findViewById(R.id.profileDeleteAccount);
+        deleteButtonEditText = view.findViewById(R.id.delete_account_edit_text);
+        deleteAccountText = view.findViewById(R.id.delete_account_message_confirmation);
+        backButton = view.findViewById(R.id.settings_back_button);
+        backButton.setVisibility(View.GONE);
+        privacyPolicy = view.findViewById(R.id.about_privacy_policy);
+        userProfileLayout = view.findViewById(R.id.user_profile_layout);
+        LinearLayoutManager usrManager = new LinearLayoutManager(getActivity());
+        usrAdapter = new UserQuoteAdapter(getActivity());
+        usrQuotesRV = view.findViewById(R.id.usrQuotes);
+        usrQuotesRV.setAdapter(usrAdapter);
+        usrQuotesRV.setLayoutManager(usrManager);
+        quoteRepository = new QuoteRepository();
+        layoutBackButton = view.findViewById(R.id.mainBackButton);
+        layoutBackButton.setVisibility(View.GONE);
+        changeBackground = view.findViewById(R.id.profileChangeBackground);
+        changeBackgroundRV = view.findViewById(R.id.changeBackgroundRecyclerView);
+        changeBackgroundLinearLayout = view.findViewById(R.id.settings_background_layout);
+        changeBackgroundLinearLayout.setVisibility(View.GONE);
+        settingsBottomSheet = view.findViewById(R.id.settings_bottom_sheet);
+        bottomSheetBehavior = BottomSheetBehavior.from(settingsBottomSheet);
+        bottomSheetBehavior.setHideable(true);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 }
