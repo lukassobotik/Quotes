@@ -11,15 +11,19 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.sforge.quotes.R;
+import com.sforge.quotes.activity.MainActivity;
 import com.sforge.quotes.activity.UserProfile;
+import com.sforge.quotes.activity.UserProfileFragment;
 import com.sforge.quotes.dialog.CollectionsDialog;
 import com.sforge.quotes.entity.Quote;
 import com.sforge.quotes.repository.QuoteRepository;
@@ -94,13 +98,16 @@ public class UserQuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             deleteItem(holder, Objects.requireNonNull(auth));
         });
 
-        if (context.getClass().getSimpleName().equals(UserProfile.class.getSimpleName()) && auth != null) {
-            vh.delete.setVisibility(View.VISIBLE);
-            holder.itemView.setOnLongClickListener(view -> {
-                deleteItem(holder, auth);
-                return false;
-            });
-        } else if (!context.getClass().getSimpleName().equals(UserProfile.class.getSimpleName())) {
+        if (context instanceof MainActivity) {
+            Fragment currentFragment = ((MainActivity) context).getCurrentFragment();
+            if (currentFragment instanceof UserProfileFragment && auth != null) {
+                vh.delete.setVisibility(View.VISIBLE);
+                holder.itemView.setOnLongClickListener(view -> {
+                    deleteItem(holder, auth);
+                    return false;
+                });
+            }
+        } else {
             vh.delete.setVisibility(View.GONE);
         }
     }
@@ -133,6 +140,7 @@ public class UserQuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                                         String userQuotesKey = child.getKey();
                                         userQuoteRepository.remove(userQuotesKey);
+                                        Toast.makeText(context, "Quote has been successfully deleted.", Toast.LENGTH_LONG).show();
                                     }
                                 }
 

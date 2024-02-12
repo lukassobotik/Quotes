@@ -57,11 +57,12 @@ public class UserProfileFragment extends Fragment {
 
     private String usernameParam;
     
-    private Button profileSettings, changeBackground, layoutBackButton, backButton, aboutButton, dataRequestButton, deleteAccountButton;
+    private Button profileSettings, changeBackground, layoutBackButton, backButton, aboutButton, dataRequestButton, deleteAccountButton, loginButton, logoutButton;
 
     private String email = "";
 
     private final int PREFETCH_DISTANCE = 10;
+    private boolean isUserLoggedIn = false;
 
     TextView userDataInfoTV, userDataTV, userDataPrefsTV, userDataQuotesTV, userDataUsernameTV, aboutAndroidStudioTV, aboutFirebaseTV, aboutSwipeLayoutTV, aboutGithub, quoteSource, deleteAccountText, privacyPolicy;
 
@@ -141,17 +142,38 @@ public class UserProfileFragment extends Fragment {
         }
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
         if (user != null) {
+            isUserLoggedIn = true;
             String userID = user.getUid();
             new UserRepository().getDatabaseReference()
                     .child(userID)
                     .addListenerForSingleValueEvent(onDataChangeListener.apply(emailTV, usernameTV));
         }
 
+        if (isUserLoggedIn) {
+            loginButton.setVisibility(View.GONE);
+            logoutButton.setVisibility(View.VISIBLE);
+        } else {
+            loginButton.setVisibility(View.VISIBLE);
+            logoutButton.setVisibility(View.GONE);
+        }
+
+        loginButton.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            startActivity(intent);
+        });
+
+        logoutButton.setOnClickListener(view -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            startActivity(intent);
+        });
+
         createSettingsMenu();
 
-        loadUserQuotes(null, FirebaseAuth.getInstance().getCurrentUser().getUid());
+        if (isUserLoggedIn) {
+            loadUserQuotes(null, FirebaseAuth.getInstance().getCurrentUser().getUid());
+        }
 
         aboutButton.setOnClickListener(view -> {
             aboutLayout.setVisibility(View.VISIBLE);
@@ -360,6 +382,8 @@ public class UserProfileFragment extends Fragment {
         deleteAccountText = view.findViewById(R.id.delete_account_message_confirmation);
         backButton = view.findViewById(R.id.settings_back_button);
         backButton.setVisibility(View.GONE);
+        loginButton = view.findViewById(R.id.profileLogin);
+        logoutButton = view.findViewById(R.id.profileLogout);
         privacyPolicy = view.findViewById(R.id.about_privacy_policy);
         userProfileLayout = view.findViewById(R.id.user_profile_layout);
         LinearLayoutManager usrManager = new LinearLayoutManager(getActivity());

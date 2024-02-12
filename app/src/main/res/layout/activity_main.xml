@@ -32,8 +32,7 @@
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottom_navigation"
-                style="@style/Widget.Material3.BottomNavigationView.ActiveIndicator"
-                android:background="?attr/colorSurface"
+                style="@style/Widget.Material3.BottomNavigationView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:menu="@menu/bottom_navigation_menu"/>

@@ -1,30 +1,22 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.Quotes" parent="Theme.Material3.Dark.NoActionBar">
-        <!-- Primary brand color. -->
+    <!-- Base application theme. (not used in MainActivity) -->
+    <style name="Theme.Quotes" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/black</item>
         <item name="colorPrimaryVariant">@color/grey</item>
         <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/black</item>
         <item name="colorSecondaryVariant">@color/black</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
+        <item name="colorSurface">?attr/colorSurface</item>
         <item name="android:statusBarColor">@color/color_primary_variant</item>
-        <!-- Customize your theme here. -->
     </style>
     <style name="Theme.Appcompat.Quotes.NoActionBar" parent="Theme.Material3.Light.NoActionBar">
-        <!-- Primary brand color. -->
         <item name="colorPrimary">@color/black</item>
         <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/black</item>
         <item name="colorSecondaryVariant">@color/black</item>
         <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/color_primary_variant</item>
-        <!-- Customize your theme here. -->
         <item name="alertDialogTheme">@style/AlertDialogTheme</item>
     </style>
 
@@ -56,19 +48,14 @@
     </style>
 
 
+    <!--Main Style used in the app-->
     <style name="Theme.AppCompat.SlidrActivityTheme" parent="Theme.Material3.Light.NoActionBar">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:background">@color/background_material_light</item>
-        <!-- Primary brand color. -->
         <item name="colorPrimary">@color/black</item>
         <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/black</item>
         <item name="colorSecondaryVariant">@color/black</item>
         <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/color_primary_variant</item>
         <item name="alertDialogTheme">@style/AlertDialogTheme</item>
     </style>

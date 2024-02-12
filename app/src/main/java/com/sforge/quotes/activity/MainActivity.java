@@ -1,7 +1,9 @@
 package com.sforge.quotes.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -34,6 +36,16 @@ public class MainActivity extends AppCompatActivity implements CollectionsDialog
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
+        bottomNavigationView.setOnNavigationItemReselectedListener(item -> {
+            if (item.getItemId() == R.id.navigation_search) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            }
+        });
+    }
+
+    public Fragment getCurrentFragment() {
+        return getSupportFragmentManager().findFragmentById(R.id.fragment_container);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
