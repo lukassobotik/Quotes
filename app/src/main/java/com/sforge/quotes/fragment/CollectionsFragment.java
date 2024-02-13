@@ -1,14 +1,13 @@
 package com.sforge.quotes.fragment;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.paging.DatabasePagingOptions;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,28 +40,18 @@ import java.util.Objects;
  * Use the {@link CollectionsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CollectionsFragment extends Fragment implements CollectionActivityAdapter.OnItemClickListener {
+public class CollectionsFragment extends Fragment implements CollectionActivityAdapter.OnItemClickListener, CollectionActivityAdapter.OnItemLongClickListener, QuoteAdapter.OnQuoteLongClickListener {
+    private static final String ARG_VIEWED_COLLECTION = "viewedCollection";
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    private String viewedCollectionParam;
 
     RecyclerView recyclerView;
     DatabasePagingOptions<Quote> quoteOptions;
     CollectionActivityAdapter collectionsAdapter;
-    Button addButton, create, cancel, remove, back;
+    Button addButton, backButton;
     View placeholder;
-    ConstraintLayout addLayout;
-    EditText createCollectionEditText;
     QuoteAdapter quoteAdapter;
     boolean viewingQuotes = false;
-    boolean deleteTool = false;
     String localCollection = "";
     private final int PREFETCH_DISTANCE = 10;
 
@@ -69,20 +59,10 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CollectionsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CollectionsFragment newInstance(String param1, String param2) {
+    public static CollectionsFragment newInstance(String viewedCollectionParam) {
         CollectionsFragment fragment = new CollectionsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_VIEWED_COLLECTION, viewedCollectionParam);
         fragment.setArguments(args);
         return fragment;
     }
@@ -91,8 +71,7 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            viewedCollectionParam = getArguments().getString(ARG_VIEWED_COLLECTION);
         }
     }
 
@@ -105,63 +84,60 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
         defineViews(fragmentView);
 
         collectionsAdapter.setOnItemClickListener(this);
+        collectionsAdapter.setOnItemLongClickListener(this);
+        quoteAdapter.setOnQuoteLongClickListener(this);
+
+        if (viewedCollectionParam != null) {
+            loadCollection(viewedCollectionParam);
+        }
 
         addButton.setOnClickListener(view -> {
-            addLayout.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-            addButton.setVisibility(View.GONE);
-            back.setVisibility(View.GONE);
-            remove.setVisibility(View.GONE);
+            createCollection();
         });
-        cancel.setOnClickListener(view -> {
-            addLayout.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-            addButton.setVisibility(View.VISIBLE);
-            back.setVisibility(View.VISIBLE);
-            remove.setVisibility(View.VISIBLE);
-        });
-        create.setOnClickListener(view -> {
-            String collection = createCollectionEditText.getText().toString().trim();
-            if (collection.length() > 0) {
-                //Create an empty quote (which will not be shown) so the directory will exist in Firebase
-                new UserCollectionRepository(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(), collection).add(new Quote("", "", ""));
-            }
-            createCollectionEditText.setText("");
-            addLayout.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-            addButton.setVisibility(View.VISIBLE);
-            back.setVisibility(View.VISIBLE);
-            remove.setVisibility(View.VISIBLE);
-        });
-        back.setOnClickListener(view -> {
+
+        backButton.setOnClickListener(view -> {
             if (viewingQuotes) {
                 recyclerView.setAdapter(collectionsAdapter);
                 viewingQuotes = false;
+                viewedCollectionParam = null;
                 placeholder.setVisibility(View.VISIBLE);
                 addButton.setVisibility(View.VISIBLE);
-                back.setVisibility(View.VISIBLE);
-                remove.setVisibility(View.VISIBLE);
-            } else {
-                // TODO: Create finish() method
-//                finish();
-            }
-        });
-        remove.setOnClickListener(view -> {
-            if (viewingQuotes) {
-                int position = ((LinearLayoutManager) Objects.requireNonNull(recyclerView.getLayoutManager())).findLastCompletelyVisibleItemPosition();
-                deleteQuote(position);
-            } else {
-                if (!deleteTool) {
-                    remove.setForeground(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_delete_red, null));
-                    deleteTool = true;
-                } else {
-                    remove.setForeground(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_delete, null));
-                    deleteTool = false;
-                }
+                backButton.setVisibility(View.GONE);
             }
         });
 
         return fragmentView;
+    }
+
+    private void createCollection() {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());
+        builder.setTitle("Create Collection");
+
+        LinearLayout layout = new LinearLayout(requireActivity());
+        layout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(50, 0, 50, 0);
+
+        EditText input = new EditText(requireActivity());
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setLayoutParams(params);
+
+        layout.addView(input);
+        builder.setView(layout);
+
+        builder.setPositiveButton("Create", (dialogInterface, i) -> {
+            String collection = input.getText().toString().trim();
+            if (collection.length() > 0) {
+                // Create an empty quote (which will not be shown) so the directory will exist in Firebase
+                new UserCollectionRepository(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(), collection).add(new Quote("", "", ""));
+            }
+            recyclerView.setVisibility(View.VISIBLE);
+            addButton.setVisibility(View.VISIBLE);
+            backButton.setVisibility(View.VISIBLE);
+        });
+        builder.setNegativeButton("Cancel", (dialogInterface, i) -> {});
+        builder.create().show();
     }
 
     public void loadQuotes(String nodeId, String collection, boolean deleteOldQuotes) {
@@ -216,20 +192,16 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
         });
     }
 
-    public void onClickCalled(String collection) {
+    public void loadCollection(String collection) {
         localCollection = collection;
-        if (deleteTool) {
-            delete(collection);
-            deleteTool = false;
-            remove.setForeground(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_delete, null));
-        } else {
-            loadQuotes(null, collection, true);
-            recyclerView.setAdapter(quoteAdapter);
-            quoteAdapter.notifyDataSetChanged();
-            placeholder.setVisibility(View.GONE);
-            addButton.setVisibility(View.GONE);
-            viewingQuotes = true;
-        }
+        viewedCollectionParam = collection;
+        backButton.setVisibility(View.VISIBLE);
+        loadQuotes(null, collection, true);
+        recyclerView.setAdapter(quoteAdapter);
+        quoteAdapter.notifyDataSetChanged();
+        placeholder.setVisibility(View.GONE);
+        addButton.setVisibility(View.GONE);
+        viewingQuotes = true;
     }
 
     public void delete(String collection) {
@@ -237,7 +209,7 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
         collectionRepository.getDatabaseReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());
                 builder.setTitle("Delete " + collection + "?");
                 builder.setMessage("All of the Quotes Saved in \"" + collection + "\" Will Be Deleted.");
                 builder.setPositiveButton("Yes", (dialogInterface, i) -> {
@@ -273,7 +245,7 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
                             Quote childQuote = child.getValue(Quote.class);
 
                             if (childQuote != null && childQuote.getAuthor().equals(quote.getAuthor())) {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+                                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());
                                 builder.setTitle("Delete " + quote.getQuote() + " From " + "\"" + localCollection + "\"" +"?");
                                 builder.setMessage("Are you sure you want to delete \"" + quote.getQuote() + "\"" + " From " + "\"" + localCollection + "\"" +"?");
                                 builder.setPositiveButton("Yes", (dialogInterface, i) -> {
@@ -296,12 +268,8 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
         recyclerView = view.findViewById(R.id.collectionActivityRecyclerView);
         addButton = view.findViewById(R.id.addToCollection);
         placeholder = view.findViewById(R.id.collection_placeholder);
-        addLayout = view.findViewById(R.id.createCollectionLayout);
-        createCollectionEditText = view.findViewById(R.id.createCollectionEditText);
-        create = view.findViewById(R.id.createCollectionButton);
-        cancel = view.findViewById(R.id.createCollectionButtonCancel);
-        remove = view.findViewById(R.id.removeCollection);
-        back = view.findViewById(R.id.collectionBackButton);
+        backButton = view.findViewById(R.id.collectionBackButton);
+        backButton.setVisibility(View.GONE);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         Query query = new UserBookmarksRepository(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).getDatabaseReference();
         FirebaseRecyclerOptions<DataSnapshot> options = new FirebaseRecyclerOptions.Builder<DataSnapshot>()
@@ -334,10 +302,20 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
 
     @Override
     public void onItemClick(String itemName) {
-        onClickCalled(itemName);
+        loadCollection(itemName);
     }
 
-//      TODO: Make this work in the Fragment
+    @Override
+    public void onItemLongClick(final String itemName) {
+        delete(itemName);
+    }
+
+    @Override
+    public void onQuoteLongClick(final int position) {
+        deleteQuote(position);
+    }
+
+    //      TODO: Make this work in the Fragment
 //    @Override
 //    public void onBackPressed() {
 //        if (viewingQuotes) {

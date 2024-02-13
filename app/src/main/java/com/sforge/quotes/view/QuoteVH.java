@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,11 +17,13 @@ public class QuoteVH extends RecyclerView.ViewHolder {
     public TextView textQuote, textAuthor;
     public Button bookmark;
     public LinearLayout RVLayout;
+    public ConstraintLayout itemView;
     public QuoteVH(@NonNull View itemView) {
         super(itemView);
         textQuote = itemView.findViewById(R.id.textQuote);
         textAuthor = itemView.findViewById(R.id.textAuthor);
         bookmark = itemView.findViewById(R.id.quoteBookmarkButton);
         RVLayout = itemView.findViewById(R.id.addToBookmarksRVLinearLayout);
+        this.itemView = itemView.findViewById(R.id.quoteItemBackground);
     }
 }

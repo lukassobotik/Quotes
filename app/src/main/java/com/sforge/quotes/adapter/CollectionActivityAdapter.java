@@ -19,26 +19,26 @@ public class CollectionActivityAdapter extends FirebaseRecyclerAdapter<DataSnaps
     public interface OnItemClickListener {
         void onItemClick(String itemName);
     }
+    public interface OnItemLongClickListener {
+        void onItemLongClick(String itemName);
+    }
 
     Context context;
     List<DataSnapshot> list = new ArrayList<>();
 
-    private OnItemClickListener listener;
-    /**
-     * Initialize an adapter that listens to a Firebase query. See
-     * {@link FirebaseRecyclerOptions} for configuration options.
-     *
-     * @param options
-     */
+    private OnItemClickListener itemClickListener;
+    private OnItemLongClickListener longClickListener;
     public CollectionActivityAdapter(Context context ,@NonNull FirebaseRecyclerOptions<DataSnapshot> options) {
         super(options);
         this.context = context;
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
+        this.itemClickListener = listener;
     }
-
+    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
+        this.longClickListener = listener;
+    }
     public List<DataSnapshot> getList() {
         return list;
     }
@@ -50,10 +50,17 @@ public class CollectionActivityAdapter extends FirebaseRecyclerAdapter<DataSnaps
 
         holder.itemView.setOnClickListener(view -> {
             String itemName = holder.name.getText().toString();
-
-            if (listener != null) {
-                listener.onItemClick(itemName);
+            if (itemClickListener != null) {
+                itemClickListener.onItemClick(itemName);
             }
+        });
+
+        holder.itemView.setOnLongClickListener(view -> {
+            String itemName = holder.name.getText().toString();
+            if (longClickListener != null) {
+                longClickListener.onItemLongClick(itemName);
+            }
+            return true;
         });
     }
 

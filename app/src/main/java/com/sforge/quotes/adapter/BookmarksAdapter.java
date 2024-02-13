@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -86,7 +87,7 @@ public class BookmarksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 if (childQuote != null
                                         && childQuote.getQuote().equals(quote.getQuote())
                                         && childQuote.getAuthor().equals(quote.getAuthor())) {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
                                     builder.setTitle("\"" + shortQuote + "\"" + " Already Exists in " + "\"" + collection + "\"");
                                     builder.setMessage("Do you want to delete \"" + quote.getQuote() + "\" from " + "\"" + collection + "\"" + "?");
                                     builder.setPositiveButton("Yes", (dialogInterface, i) -> {

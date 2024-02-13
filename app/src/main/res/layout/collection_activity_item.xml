@@ -8,25 +8,24 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/dark_grey_bg">
+        android:background="?attr/colorSurface">
 
         <TextView
-            style="@style/text"
             android:id="@+id/collection_activity_item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/button_round_corners"
-            android:backgroundTint="@color/dark_grey"
+            android:backgroundTint="?attr/colorPrimary"
             android:fontFamily="sans-serif-condensed-medium"
-            android:padding="16dp"
+            android:padding="8dp"
             android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:lines="1"
             android:gravity="center"
             android:text="Collection"
-            android:textSize="40sp"
-            android:textStyle="bold" />
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="20sp"/>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
