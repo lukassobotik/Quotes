@@ -17,7 +17,6 @@
         <item name="colorSecondaryVariant">@color/black</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:statusBarColor">@color/color_primary_variant</item>
-        <item name="alertDialogTheme">@style/AlertDialogTheme</item>
     </style>
 
     <style name="Button">
@@ -56,11 +55,6 @@
         <item name="colorSecondaryVariant">@color/black</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:statusBarColor">@color/color_primary_variant</item>
-        <item name="alertDialogTheme">@style/AlertDialogTheme</item>
-    </style>
-
-    <style name="AlertDialogTheme" parent="ThemeOverlay.Material3.Dialog.Alert">
-
     </style>
 
 </resources>

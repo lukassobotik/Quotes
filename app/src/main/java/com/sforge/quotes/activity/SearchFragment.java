@@ -1,8 +1,10 @@
 package com.sforge.quotes.activity;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.widget.LinearLayout;
-import android.widget.SearchView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -32,7 +35,9 @@ public class SearchFragment extends Fragment {
 
     private String lastSearchParam;
 
-    SearchView searchView;
+    com.google.android.material.search.SearchBar searchBar;
+    com.google.android.material.search.SearchView searchView;
+    AppBarLayout appBarLayout;
     LinearLayout searchLayout;
     RecyclerView searchRV;
 
@@ -65,25 +70,53 @@ public class SearchFragment extends Fragment {
         defineViews(fragmentView);
 
         if (lastSearchParam != null) {
-            searchView.setQuery(lastSearchParam, false);
+            searchBar.setText(lastSearchParam);
             search(lastSearchParam);
         }
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
-            public boolean onQueryTextSubmit(String s) {
-                search(s);
-                return false;
+            public void beforeTextChanged(final CharSequence charSequence, final int i, final int i1, final int i2) {
+
             }
 
             @Override
-            public boolean onQueryTextChange(String s) {
-                search(s);
-                return false;
+            public void onTextChanged(final CharSequence charSequence, final int i, final int i1, final int i2) {
+                search(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(final Editable editable) {
+
             }
         });
 
+        searchBar.setOnKeyListener((v, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                search(searchBar.getText().toString());
+            }
+            return false;
+        });
+//
+//        (new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String s) {
+//                search(s);
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String s) {
+//                search(s);
+//                return false;
+//            }
+//        });
+
         return fragmentView;
+    }
+
+    public void expandSearch() {
+        searchBar.performClick();
     }
 
     public void search(String query) {
@@ -130,12 +163,9 @@ public class SearchFragment extends Fragment {
 
     public void defineViews(View view) {
         searchLayout = view.findViewById(R.id.searchLinearLayout);
-        searchView = view.findViewById(R.id.searchView);
-        searchView.setIconifiedByDefault(true);
-        searchView.setFocusable(true);
-        searchView.setIconified(false);
-        searchView.clearFocus();
-        searchView.requestFocusFromTouch();
+        searchBar = view.findViewById(R.id.search_bar);
+        searchView = view.findViewById(R.id.search_view);
+        appBarLayout = view.findViewById(R.id.search_view_app_bar_layout);
         searchRV = view.findViewById(R.id.searchRecyclerView);
         LinearLayoutManager searchManager = new LinearLayoutManager(getActivity());
         searchRV.setLayoutManager(searchManager);

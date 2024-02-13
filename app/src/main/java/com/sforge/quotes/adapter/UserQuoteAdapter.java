@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -127,7 +128,7 @@ public class UserQuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     Quote childQuote = child.getValue(Quote.class);
 
                     if (childQuote != null && childQuote.getAuthor().equals(itemAuthor) && childQuote.getUser().equals(auth.getUid())) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
                         builder.setTitle("Delete " + itemQuote + "?");
                         builder.setMessage("Are you sure you want to delete \"" + itemQuote + "\"? \n \n"  + context.getResources().getString(R.string.delete_quote_disclaimer));
                         builder.setPositiveButton("Yes", (dialogInterface, i) -> {

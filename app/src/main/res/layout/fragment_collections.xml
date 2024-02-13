@@ -81,6 +81,7 @@
                 android:layout_height="48dp"
                 android:layout_margin="16dp"
                 android:foreground="@drawable/ic_baseline_add_24"
+                android:foregroundTint="?attr/colorOnPrimary"
                 android:foregroundGravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -94,6 +95,7 @@
                 android:layout_height="48dp"
                 android:layout_margin="16dp"
                 android:foreground="@drawable/ic_delete"
+                android:foregroundTint="?attr/colorOnPrimary"
                 android:foregroundGravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -105,6 +107,7 @@
                 android:layout_height="48dp"
                 android:layout_margin="16dp"
                 android:foreground="@drawable/ic_arrow_back"
+                android:foregroundTint="?attr/colorOnPrimary"
                 android:foregroundGravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

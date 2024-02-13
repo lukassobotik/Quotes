@@ -38,8 +38,7 @@ public class MainActivity extends AppCompatActivity implements CollectionsDialog
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         bottomNavigationView.setOnNavigationItemReselectedListener(item -> {
             if (item.getItemId() == R.id.navigation_search) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                searchFragment.expandSearch();
             }
         });
     }
