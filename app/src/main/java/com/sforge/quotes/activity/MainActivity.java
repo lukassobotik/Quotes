@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements CollectionsDialog
         bottomNavigationView.setOnNavigationItemReselectedListener(item -> {
             if (item.getItemId() == R.id.navigation_search) {
                 searchFragment.expandSearch();
+            } else if (item.getItemId() == R.id.navigation_home) {
+                homeFragment.refresh();
             }
         });
     }

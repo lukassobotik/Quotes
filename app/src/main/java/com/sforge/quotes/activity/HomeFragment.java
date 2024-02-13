@@ -2,6 +2,7 @@ package com.sforge.quotes.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,17 +49,11 @@ import java.util.Random;
  */
 public class HomeFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_LOADED_QUOTES = "loadedQuotes";
+    private static final String ARG_LOADED_NODE_ID = "loadedQueryPath";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-
-
+    private List<Quote> loadedQuotesParam;
+    private String loadedNodeIDParam;
 
     // Firebase Related
     boolean isLoggedIn = false;
@@ -68,11 +63,11 @@ public class HomeFragment extends Fragment {
     UserBookmarksRepository bookmarksRepository;
     QuoteAdapter quoteAdapter;
 
-    //Account Profile Related
+    // Account Profile Related
     LinearLayout includeAccountProfile;
     TextView mainActivityUsername;
 
-    //UI Related
+    // UI Related
     Button mainBackButton, bookmarkButton, shareButton;
     UserQuoteAdapter usrAdapter;
     BookmarksAdapter collectionsAdapter;
@@ -93,20 +88,11 @@ public class HomeFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
+    public static HomeFragment newInstance(List<Quote> loadedQuotesParam, String loadedNodeIDParam) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putParcelableArrayList(ARG_LOADED_QUOTES, (ArrayList<? extends Parcelable>) loadedQuotesParam);
+        args.putString(ARG_LOADED_NODE_ID, loadedNodeIDParam);
         fragment.setArguments(args);
         return fragment;
     }
@@ -115,8 +101,8 @@ public class HomeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            loadedQuotesParam = getArguments().getParcelableArrayList(ARG_LOADED_QUOTES);
+            loadedNodeIDParam = getArguments().getString(ARG_LOADED_NODE_ID);
         }
     }
 
@@ -127,6 +113,10 @@ public class HomeFragment extends Fragment {
         View fragmentView = inflater.inflate(R.layout.fragment_home, container, false);
 
         defineViews(fragmentView);
+
+        if (loadedQuotesParam == null) {
+            loadedQuotesParam = new ArrayList<>();
+        }
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
@@ -158,13 +148,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            usrAdapter.setItems(new ArrayList<>());
-            quoteAdapter = new QuoteAdapter(getContext());
-            loadQuotes(null);
-            recyclerView.setAdapter(quoteAdapter);
-            swipeRefreshLayout.setRefreshing(false);
-        });
+        swipeRefreshLayout.setOnRefreshListener(this::refresh);
 
         createFirebaseAdapters();
 
@@ -182,6 +166,16 @@ public class HomeFragment extends Fragment {
         });
 
         return fragmentView;
+    }
+
+    public void refresh() {
+        loadedQuotesParam.clear();
+        loadedNodeIDParam = null;
+        usrAdapter.setItems(new ArrayList<>());
+        quoteAdapter = new QuoteAdapter(getContext());
+        loadQuotes(null);
+        recyclerView.setAdapter(quoteAdapter);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private void createBookmarkButton() {
@@ -220,7 +214,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void createFirebaseAdapters() {
-        //CollectionsAdapter
+        // CollectionsAdapter
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             bookmarksRepository = new UserBookmarksRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
             List<String> items = new ArrayList<>();
@@ -245,13 +239,25 @@ public class HomeFragment extends Fragment {
             });
         }
 
-        //QuoteAdapter
+        // QuoteAdapter
         quoteAdapter = new QuoteAdapter(getContext());
         loadQuotes(null);
         recyclerView.setAdapter(quoteAdapter);
     }
 
     public void loadQuotes(String nodeId) {
+        loadedNodeIDParam = nodeId;
+
+        if (loadedNodeIDParam != null) {
+            loadQuotes(loadedNodeIDParam);
+            return;
+        }
+
+        if (!loadedQuotesParam.isEmpty()) {
+            quoteAdapter.setItems(new ArrayList<>(loadedQuotesParam));
+            quoteAdapter.notifyDataSetChanged();
+        }
+
         Query query = null;
 
         if (nodeId == null) {
@@ -282,9 +288,10 @@ public class HomeFragment extends Fragment {
                                     }
 
                                     quoteAdapter.addItems(quotes);
+                                    loadedQuotesParam.addAll(quotes);
                                     quoteAdapter.notifyDataSetChanged();
 
-                                    //Load the first quote creator info
+                                    // Load the first quote creator info
                                     if (position == 0) {
                                         setCurrentQuoteCreatorInfo(0);
                                     }
@@ -292,7 +299,7 @@ public class HomeFragment extends Fragment {
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
-                                    Toast.makeText(getActivity(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
                             return;
@@ -303,7 +310,7 @@ public class HomeFragment extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(getActivity(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -329,9 +336,10 @@ public class HomeFragment extends Fragment {
                     }
 
                     quoteAdapter.addItems(quotes);
+                    loadedQuotesParam.addAll(quotes);
                     quoteAdapter.notifyDataSetChanged();
 
-                    //Load the first quote creator info
+                    // Load the first quote creator info
                     if (position == 0) {
                         setCurrentQuoteCreatorInfo(0);
                     }
