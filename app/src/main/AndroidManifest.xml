@@ -16,16 +16,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Quotes">
         <activity
-            android:name=".activity.SearchActivity"
-            android:exported="false"
-            android:label=""
-            android:theme="@style/Theme.Appcompat.Quotes.NoActionBar" />
-        <activity
-            android:name=".activity.CollectionsActivity"
-            android:exported="false"
-            android:label=""
-            android:theme="@style/Theme.Appcompat.Quotes.NoActionBar" />
-        <activity
             android:name=".activity.ForgottenPassword"
             android:exported="false"
             android:label="" />
@@ -37,11 +27,6 @@
             android:name=".activity.LoginActivity"
             android:exported="false"
             android:label="" />
-        <activity
-            android:name=".activity.CreateQuotes"
-            android:exported="false"
-            android:label="Create A Quote"
-            android:parentActivityName=".activity.MainActivity" />
         <activity
             android:name=".activity.MainActivity"
             android:exported="true"

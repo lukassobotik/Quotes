@@ -21,7 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.sforge.quotes.R;
 import com.sforge.quotes.activity.MainActivity;
-import com.sforge.quotes.activity.UserProfileFragment;
+import com.sforge.quotes.fragment.UserProfileFragment;
 import com.sforge.quotes.dialog.CollectionsDialog;
 import com.sforge.quotes.entity.Quote;
 import com.sforge.quotes.repository.QuoteRepository;

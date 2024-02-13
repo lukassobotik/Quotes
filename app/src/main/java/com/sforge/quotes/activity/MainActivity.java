@@ -1,15 +1,18 @@
 package com.sforge.quotes.activity;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.inputmethod.InputMethodManager;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.sforge.quotes.R;
 import com.sforge.quotes.dialog.CollectionsDialog;
+import com.sforge.quotes.fragment.CollectionsFragment;
+import com.sforge.quotes.fragment.CreateQuotesFragment;
+import com.sforge.quotes.fragment.HomeFragment;
+import com.sforge.quotes.fragment.SearchFragment;
+import com.sforge.quotes.fragment.UserProfileFragment;
 
 public class MainActivity extends AppCompatActivity implements CollectionsDialog.CollectionsDialogListener {
     BottomNavigationView bottomNavigationView;

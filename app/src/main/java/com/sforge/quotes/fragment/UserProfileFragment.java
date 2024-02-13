@@ -1,11 +1,10 @@
-package com.sforge.quotes.activity;
+package com.sforge.quotes.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,6 +31,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.sforge.quotes.R;
+import com.sforge.quotes.activity.LoginActivity;
+import com.sforge.quotes.activity.MainActivity;
 import com.sforge.quotes.adapter.ImageAdapter;
 import com.sforge.quotes.adapter.UserQuoteAdapter;
 import com.sforge.quotes.entity.Background;
@@ -42,12 +43,9 @@ import com.sforge.quotes.repository.QuoteRepository;
 import com.sforge.quotes.repository.UserPreferencesRepository;
 import com.sforge.quotes.repository.UserQuoteRepository;
 import com.sforge.quotes.repository.UserRepository;
-import com.sforge.quotes.repository.UsernameRepository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 

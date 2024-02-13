@@ -1,4 +1,4 @@
-package com.sforge.quotes.activity;
+package com.sforge.quotes.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
