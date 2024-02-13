@@ -44,6 +44,15 @@
             app:layout_constraintTop_toBottomOf="@+id/settings_bottom_sheet_handle_layout"
             app:layout_constraintBottom_toBottomOf="parent">
 
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="App Behavior"
+                android:textSize="20sp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:textStyle="bold"/>
+
         <Button
                 android:id="@+id/profileShowEmail"
                 style="@style/Button"
@@ -54,42 +63,6 @@
                 android:textSize="12dp"
                 android:visibility="gone"
                 android:backgroundTint="?attr/colorPrimary"
-                android:textColor="@color/black"
-                android:elevation="24dp"/>
-
-        <Button
-                android:id="@+id/profileAbout"
-                style="@style/Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="About"
-                android:textSize="12dp"
-                android:backgroundTint="?attr/colorPrimary"
-                android:textColor="@color/black"
-                android:elevation="24dp"/>
-
-        <Button
-                android:id="@+id/profileRequestUserData"
-                style="@style/Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Stored data"
-                android:textSize="12dp"
-                android:backgroundTint="?attr/colorPrimary"
-                android:textColor="@color/black"
-                android:elevation="24dp"/>
-
-        <Button
-                android:id="@+id/profileDeleteAccount"
-                style="@style/Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Delete Account"
-                android:textSize="12dp"
-                android:backgroundTint="?attr/colorPrimary"
-                android:textColor="@color/black"
                 android:elevation="24dp"/>
 
         <Button
@@ -101,7 +74,37 @@
                 android:text="Change Background"
                 android:textSize="12dp"
                 android:backgroundTint="?attr/colorPrimary"
-                android:textColor="@color/black"
+                android:elevation="24dp"/>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Account"
+                android:textSize="20sp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:textStyle="bold"/>
+
+        <Button
+                android:id="@+id/profileRequestUserData"
+                style="@style/Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Stored data"
+                android:textSize="12dp"
+                android:backgroundTint="?attr/colorPrimary"
+                android:elevation="24dp"/>
+
+        <Button
+                android:id="@+id/profileDeleteAccount"
+                style="@style/Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Delete Account"
+                android:textSize="12dp"
+                android:backgroundTint="?attr/colorPrimary"
                 android:elevation="24dp"/>
 
         <Button
@@ -113,7 +116,6 @@
                 android:text="Login"
                 android:textSize="12dp"
                 android:backgroundTint="?attr/colorPrimary"
-                android:textColor="@color/black"
                 android:elevation="24dp"
                 android:visibility="gone"/>
 
@@ -126,9 +128,27 @@
                 android:text="Logout"
                 android:textSize="12dp"
                 android:backgroundTint="?attr/colorPrimary"
-                android:textColor="@color/black"
                 android:elevation="24dp"
                 android:visibility="gone"/>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Extras"
+                android:textSize="20sp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:textStyle="bold"/>
+
+        <Button
+                android:id="@+id/profileAbout"
+                style="@style/Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="About"
+                android:textSize="12dp"
+                android:backgroundTint="?attr/colorPrimary"
+                android:elevation="24dp"/>
     </LinearLayout>
 
     <LinearLayout

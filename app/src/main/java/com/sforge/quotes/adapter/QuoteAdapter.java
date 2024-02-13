@@ -105,7 +105,6 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                         usrPrefs.add(userPreferences);
                                     }
                                     if (snapshot.getValue() != null) {
-
                                         TextView tvQuote = view.findViewById(R.id.textQuote);
                                         TextView tvAuthor = view.findViewById(R.id.textAuthor);
 
@@ -182,6 +181,9 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                             view.findViewById(R.id.quoteItemBackground).setBackgroundResource(R.drawable.rsz_white_gradient);
                                             tvQuote.setTextColor(view.getResources().getColor(R.color.grey, null));
                                             tvAuthor.setTextColor(view.getResources().getColor(R.color.grey, null));
+                                        }
+                                        if (usrPrefs.get(0).getBgId().equals(backgroundEntity.DYNAMIC)) {
+
                                         }
                                     }
                                 }

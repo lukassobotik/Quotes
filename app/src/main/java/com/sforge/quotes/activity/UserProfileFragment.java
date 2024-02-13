@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
@@ -33,9 +34,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.sforge.quotes.R;
 import com.sforge.quotes.adapter.ImageAdapter;
 import com.sforge.quotes.adapter.UserQuoteAdapter;
+import com.sforge.quotes.entity.Background;
 import com.sforge.quotes.entity.Quote;
 import com.sforge.quotes.entity.User;
+import com.sforge.quotes.entity.UserPreferences;
 import com.sforge.quotes.repository.QuoteRepository;
+import com.sforge.quotes.repository.UserPreferencesRepository;
 import com.sforge.quotes.repository.UserQuoteRepository;
 import com.sforge.quotes.repository.UserRepository;
 import com.sforge.quotes.repository.UsernameRepository;
@@ -58,11 +62,13 @@ public class UserProfileFragment extends Fragment {
     private String usernameParam;
     
     private Button profileSettings, changeBackground, layoutBackButton, backButton, aboutButton, dataRequestButton, deleteAccountButton, loginButton, logoutButton;
+    private MaterialSwitch useDynamicBackgroundButton;
 
     private String email = "";
 
     private final int PREFETCH_DISTANCE = 10;
     private boolean isUserLoggedIn = false;
+    private boolean useDynamicBackground = false;
 
     TextView userDataInfoTV, userDataTV, userDataPrefsTV, userDataQuotesTV, userDataUsernameTV, aboutAndroidStudioTV, aboutFirebaseTV, aboutSwipeLayoutTV, aboutGithub, quoteSource, deleteAccountText, privacyPolicy;
 
@@ -76,6 +82,7 @@ public class UserProfileFragment extends Fragment {
     EditText deleteButtonEditText;
     FrameLayout settingsBottomSheet;
     BottomSheetBehavior<FrameLayout> bottomSheetBehavior;
+    UserPreferencesRepository userPreferencesRepository;
     private final BiFunction<TextView, TextView, ValueEventListener> onDataChangeListener =
             (emailTV, usernameTV) -> new ValueEventListener() {
                 @Override
@@ -148,6 +155,8 @@ public class UserProfileFragment extends Fragment {
             new UserRepository().getDatabaseReference()
                     .child(userID)
                     .addListenerForSingleValueEvent(onDataChangeListener.apply(emailTV, usernameTV));
+            userPreferencesRepository = new UserPreferencesRepository(userID);
+            loadBackgroundPreferences();
         }
 
         if (isUserLoggedIn) {
@@ -272,6 +281,33 @@ public class UserProfileFragment extends Fragment {
         return fragmentView;
     }
 
+    private void loadBackgroundPreferences() {
+        userPreferencesRepository.getDatabaseReference().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    return;
+                }
+
+                List<UserPreferences> usrPrefs = new ArrayList<>();
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    UserPreferences userPreferences = data.getValue(UserPreferences.class);
+                    usrPrefs.add(userPreferences);
+                }
+                if (!usrPrefs.isEmpty()) {
+                    String background = usrPrefs.get(0).getBgId();
+                    useDynamicBackground = background.equals(new Background().DYNAMIC);
+                    useDynamicBackgroundButton.setChecked(useDynamicBackground);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("UserProfile", error.getMessage());
+            }
+        });
+    }
+
     @SuppressLint("UseCompatLoadingForDrawables")
     public void createSettingsMenu() {
         final AtomicBoolean isSettingMenuOpen = new AtomicBoolean(false);
@@ -302,6 +338,25 @@ public class UserProfileFragment extends Fragment {
             }
         });
 
+        useDynamicBackgroundButton.setOnClickListener(view -> {
+            useDynamicBackground = !useDynamicBackground;
+            if (useDynamicBackground) {
+                UserPreferences userPreferences = new UserPreferences(new Background().DYNAMIC, "high");
+                userPreferencesRepository.addWithKey("Background", userPreferences).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(requireContext().getApplicationContext(), "Successfully changed the background to use Dynamic Color", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                UserPreferences userPreferences = new UserPreferences(new Background().RSZ_GREY, "low");
+                userPreferencesRepository.addWithKey("Background", userPreferences).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(requireContext().getApplicationContext(), "Successfully changed the background to Gray", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
         StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         ImageAdapter adapter = new ImageAdapter(getActivity());
         List<Drawable> images = new ArrayList<>();
@@ -317,8 +372,6 @@ public class UserProfileFragment extends Fragment {
         adapter.setItems(images);
         changeBackgroundRV.setLayoutManager(manager);
         changeBackgroundRV.setAdapter(adapter);
-
-
     }
 
     public void loadUserQuotes(String nodeId, String userId) {
@@ -382,6 +435,7 @@ public class UserProfileFragment extends Fragment {
         deleteAccountText = view.findViewById(R.id.delete_account_message_confirmation);
         backButton = view.findViewById(R.id.settings_back_button);
         backButton.setVisibility(View.GONE);
+        useDynamicBackgroundButton = view.findViewById(R.id.changeBackgroundDynamicColorSwitch);
         loginButton = view.findViewById(R.id.profileLogin);
         logoutButton = view.findViewById(R.id.profileLogout);
         privacyPolicy = view.findViewById(R.id.about_privacy_policy);

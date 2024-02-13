@@ -48,30 +48,11 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         vh.image.setImageDrawable(image);
 
         UserPreferencesRepository userPreferencesRepository = new UserPreferencesRepository(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-        Background background = new Background();
         AtomicReference<String> bgId = new AtomicReference<>("");
 
-        //Long Click To Set Lower Image Quality
+        // Long Click To Set Lower Image Quality
         holder.itemView.setOnLongClickListener(view -> {
-            if (position == 0) {
-                bgId.set(background.RSZ_BLUE_SKY_1);
-            } else if (position == 1) {
-                bgId.set(background.RSZ_BRIDGE_IN_FOREST_1);
-            } else if (position == 2) {
-                bgId.set(background.RSZ_NIGHT_CITY_1);
-            } else if (position == 3) {
-                bgId.set(background.RSZ_DARK_MOUNTAINS_1);
-            } else if (position == 4) {
-                bgId.set(background.RSZ_BRIDGE_IN_FOREST_2);
-            } else if (position == 5){
-                bgId.set(background.RSZ_FOREST_1);
-            } else if (position == 6) {
-                bgId.set(background.RSZ_WHITE_GRADIENT);
-            } else if (position == 7) {
-                bgId.set(background.RSZ_GREY);
-            } else if (position == 8){
-                bgId.set(background.RSZ_ORANGE_PURPLE_GRADIENT);
-            }
+            bgId.set(getId(position, true));
             UserPreferences userPreferences = new UserPreferences(bgId.get(), "low");
             userPreferencesRepository.addWithKey("Background", userPreferences).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -82,25 +63,7 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         });
 
         holder.itemView.setOnClickListener(view -> {
-            if (position == 0) {
-                bgId.set(background.BLUE_SKY_1);
-            } else if (position == 1) {
-                bgId.set(background.BRIDGE_IN_FOREST_1);
-            } else if (position == 2) {
-                bgId.set(background.NIGHT_CITY_1);
-            } else if (position == 3) {
-                bgId.set(background.DARK_MOUNTAINS_1);
-            } else if (position == 4) {
-                bgId.set(background.BRIDGE_IN_FOREST_2);
-            } else if (position == 5) {
-                bgId.set(background.FOREST_1);
-            } else if (position == 6) {
-                bgId.set(background.WHITE_GRADIENT);
-            } else if (position == 7) {
-                bgId.set(background.GREY);
-            } else if (position == 8) {
-                bgId.set(background.ORANGE_PURPLE_GRADIENT);
-            }
+            bgId.set(getId(position, false));
             UserPreferences userPreferences = new UserPreferences(bgId.get(), "high");
             userPreferencesRepository.addWithKey("Background", userPreferences).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -108,6 +71,31 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 }
             });
         });
+    }
+
+    private static String getId(final int position, final Boolean lowerQuality) {
+        Background background = new Background();
+        String bgId = "";
+        if (position == 0) {
+            bgId = (lowerQuality ? background.RSZ_BLUE_SKY_1 : background.BLUE_SKY_1);
+        } else if (position == 1) {
+            bgId = (lowerQuality ? background.RSZ_BRIDGE_IN_FOREST_1 : background.BRIDGE_IN_FOREST_1);
+        } else if (position == 2) {
+            bgId = (lowerQuality ? background.RSZ_NIGHT_CITY_1 : background.NIGHT_CITY_1);
+        } else if (position == 3) {
+            bgId = (lowerQuality ? background.RSZ_DARK_MOUNTAINS_1 : background.DARK_MOUNTAINS_1);
+        } else if (position == 4) {
+            bgId = (lowerQuality ? background.RSZ_BRIDGE_IN_FOREST_2 : background.BRIDGE_IN_FOREST_2);
+        } else if (position == 5){
+            bgId = (lowerQuality ? background.RSZ_FOREST_1 : background.FOREST_1);
+        } else if (position == 6) {
+            bgId = (lowerQuality ? background.RSZ_WHITE_GRADIENT : background.WHITE_GRADIENT);
+        } else if (position == 7) {
+            bgId = (lowerQuality ? background.RSZ_GREY : background.GREY);
+        } else if (position == 8){
+            bgId = (lowerQuality ? background.RSZ_ORANGE_PURPLE_GRADIENT : background.ORANGE_PURPLE_GRADIENT);
+        }
+        return bgId;
     }
 
     @Override

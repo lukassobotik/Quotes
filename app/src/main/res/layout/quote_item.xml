@@ -13,7 +13,7 @@
             android:id="@+id/quoteItemBackground"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/grey">
+            android:background="?attr/colorSurfaceBright">
 
             <View
                 android:id="@+id/view"
@@ -58,7 +58,7 @@
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:background="@color/transparent"
-                        android:layout_weight="1.5">
+                        android:layout_weight="2.2">
 
                     </LinearLayout>
 
@@ -67,15 +67,19 @@
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:background="@color/transparent"
+                        android:layout_gravity="center"
+
                         android:layout_weight="1">
 
                         <com.google.android.material.floatingactionbutton.FloatingActionButton
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:backgroundTint="@color/dark_grey"
+                            android:backgroundTint="?attr/colorPrimary"
                             android:clickable="false"
                             android:foreground="@drawable/ic_round_format_quote_24"
+                            android:foregroundTint="?attr/colorOnPrimary"
                             android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
                             android:layout_gravity="center"
                             app:backgroundTint="@color/dark_grey"
                             android:layout_weight="0"
@@ -90,6 +94,7 @@
                             android:background="@color/transparent"
                             android:gravity="center|bottom"
                             android:text="Text"
+                            android:textColor="?attr/colorAccent"
                             android:textSize="20sp"
                             android:textStyle="italic"
                             android:layout_weight="1"
@@ -109,6 +114,7 @@
                             android:fontFamily="sans-serif-condensed-medium"
                             android:gravity="center|top"
                             android:text="Text"
+                            android:textColor="?attr/colorAccent"
                             android:textStyle="bold"
                             android:layout_weight="100" />
 
