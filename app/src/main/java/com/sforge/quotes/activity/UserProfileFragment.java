@@ -69,15 +69,12 @@ public class UserProfileFragment extends Fragment {
     private final int PREFETCH_DISTANCE = 10;
     private boolean isUserLoggedIn = false;
     private boolean useDynamicBackground = false;
-
-    TextView userDataInfoTV, userDataTV, userDataPrefsTV, userDataQuotesTV, userDataUsernameTV, aboutAndroidStudioTV, aboutFirebaseTV, aboutSwipeLayoutTV, aboutGithub, quoteSource, deleteAccountText, privacyPolicy;
-
     List<Quote> usrQuotes = new ArrayList<>();
 
     QuoteRepository quoteRepository;
     UserQuoteAdapter usrAdapter;
     private RecyclerView usrQuotesRV, changeBackgroundRV;
-    LinearLayout changeBackgroundLinearLayout, userDataLayout, aboutLayout;
+    LinearLayout changeBackgroundLinearLayout;
     ConstraintLayout userProfileLayout;
     EditText deleteButtonEditText;
     FrameLayout settingsBottomSheet;
@@ -109,8 +106,7 @@ public class UserProfileFragment extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error){
-                    Toast.makeText(getActivity(), "Couldn't Retrieve the User Info. " + error.getMessage(),
-                                   Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Couldn't Retrieve the User Info. " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             };
 
@@ -135,9 +131,7 @@ public class UserProfileFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.fragment_user_profile, container, false);
 
         TextView emailTV = fragmentView.findViewById(R.id.profileEmail);
@@ -185,8 +179,11 @@ public class UserProfileFragment extends Fragment {
         }
 
         aboutButton.setOnClickListener(view -> {
-            aboutLayout.setVisibility(View.VISIBLE);
-            backButton.setVisibility(View.VISIBLE);
+            Uri webpage = Uri.parse("https://github.com/lukassobotik/Quotes/blob/master/About.md");
+            Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+            if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+                startActivity(intent);
+            }
         });
 
         changeBackground.setOnClickListener(view -> {
@@ -195,80 +192,17 @@ public class UserProfileFragment extends Fragment {
         });
 
         backButton.setOnClickListener(view -> {
-            aboutLayout.setVisibility(View.GONE);
-            userDataLayout.setVisibility(View.GONE);
             changeBackgroundLinearLayout.setVisibility(View.GONE);
             backButton.setVisibility(View.GONE);
         });
 
         dataRequestButton.setOnClickListener(view -> {
-            // TODO: Doesn't load the data
-            userDataLayout.setVisibility(View.VISIBLE);
-            backButton.setVisibility(View.VISIBLE);
-            if (user != null) {
-                String userID = user.getUid();
-                new UserRepository().getDatabaseReference()
-                        .child(userID)
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                StringBuilder bookmarksBuilder = new StringBuilder();
-                                StringBuilder preferencesBuilder = new StringBuilder();
-                                StringBuilder quotesBuilder = new StringBuilder();
-                                StringBuilder usernameBuilder = new StringBuilder();
-                                for (DataSnapshot data : snapshot.getChildren()) {
-                                    if (data.getValue() instanceof HashMap && Objects.equals(data.getKey(), "Bookmarks")) {
-                                        for (DataSnapshot ds : data.getChildren()) {
-                                            bookmarksBuilder.append(ds.getKey()).append(": ").append("\n");
-                                            for (DataSnapshot ds2 : ds.getChildren()) {
-                                                bookmarksBuilder.append(ds2.getKey()).append(": ").append(ds2.getValue()).append("\n").append("\n");
-                                            }
-                                            bookmarksBuilder.append("\n").append("\n").append("\n");
-                                        }
-                                    }
-                                    if (data.getValue() instanceof HashMap && Objects.equals(data.getKey(), "User Preferences")) {
-                                        for (DataSnapshot ds : data.getChildren()) {
-                                            preferencesBuilder.append(ds.getKey()).append(": ").append("\n");
-                                            for (DataSnapshot ds2 : ds.getChildren()) {
-                                                preferencesBuilder.append(ds2.getKey()).append(": ").append(ds2.getValue()).append("\n").append("\n");
-                                            }
-                                            preferencesBuilder.append("\n").append("\n").append("\n");
-                                        }
-
-                                    }
-                                    if (data.getValue() instanceof HashMap && Objects.equals(data.getKey(), "User Quotes")) {
-                                        for (DataSnapshot ds : data.getChildren()) {
-                                            quotesBuilder.append(ds.getKey()).append(": ").append("\n").append(ds.getValue());
-                                            quotesBuilder.append("\n").append("\n").append("\n");
-                                        }
-                                    }
-                                    if (data.getValue() instanceof String) {
-                                        String s = data.getValue(String.class);
-                                        usernameBuilder.append(data.getKey()).append(": ").append("\n")
-                                                .append(s).append("\n").append("\n").append("\n");
-                                    }
-                                }
-                                userDataTV.setText(bookmarksBuilder.toString());
-                                userDataPrefsTV.setText(preferencesBuilder.toString());
-                                userDataQuotesTV.setText(quotesBuilder.toString());
-                                userDataUsernameTV.setText(usernameBuilder.toString());
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                                Log.e("UserProfile", error.getMessage());
-                            }
-                        });
+            Uri webpage = Uri.parse("https://myquotes.account.lukassobotik.dev/stored-data/");
+            Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+            if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+                startActivity(intent);
             }
         });
-
-        userDataInfoTV.setMovementMethod(LinkMovementMethod.getInstance());
-        aboutAndroidStudioTV.setMovementMethod(LinkMovementMethod.getInstance());
-        aboutFirebaseTV.setMovementMethod(LinkMovementMethod.getInstance());
-        aboutSwipeLayoutTV.setMovementMethod(LinkMovementMethod.getInstance());
-        aboutGithub.setMovementMethod(LinkMovementMethod.getInstance());
-        quoteSource.setMovementMethod(LinkMovementMethod.getInstance());
-        privacyPolicy.setMovementMethod(LinkMovementMethod.getInstance());
 
         deleteAccountButton.setOnClickListener(view -> {
             Uri webpage = Uri.parse("https://myquotes.account.lukassobotik.dev/");
@@ -418,27 +352,12 @@ public class UserProfileFragment extends Fragment {
         profileSettings = view.findViewById(R.id.profileSettingsButton);
         aboutButton = view.findViewById(R.id.profileAbout);
         dataRequestButton = view.findViewById(R.id.profileRequestUserData);
-        userDataInfoTV = view.findViewById(R.id.user_data_info_tv);
-        userDataTV = view.findViewById(R.id.user_data_bookmarks_tv);
-        userDataPrefsTV = view.findViewById(R.id.user_data_preferences_tv);
-        userDataQuotesTV = view.findViewById(R.id.user_data_quotes_tv);
-        userDataUsernameTV = view.findViewById(R.id.user_data_username_tv);
-        userDataLayout = view.findViewById(R.id.settings_user_data_layout);
-        aboutLayout = view.findViewById(R.id.settings_about_layout);
-        aboutAndroidStudioTV = view.findViewById(R.id.about_android_studio_tv);
-        aboutFirebaseTV = view.findViewById(R.id.about_firebase_tv);
-        aboutSwipeLayoutTV = view.findViewById(R.id.about_swipe_reveal_layout_tv);
-        aboutGithub = view.findViewById(R.id.about_txt_github);
-        quoteSource = view.findViewById(R.id.about_txt_goodreads);
         deleteAccountButton = view.findViewById(R.id.profileDeleteAccount);
-        deleteButtonEditText = view.findViewById(R.id.delete_account_edit_text);
-        deleteAccountText = view.findViewById(R.id.delete_account_message_confirmation);
         backButton = view.findViewById(R.id.settings_back_button);
         backButton.setVisibility(View.GONE);
         useDynamicBackgroundButton = view.findViewById(R.id.changeBackgroundDynamicColorSwitch);
         loginButton = view.findViewById(R.id.profileLogin);
         logoutButton = view.findViewById(R.id.profileLogout);
-        privacyPolicy = view.findViewById(R.id.about_privacy_policy);
         userProfileLayout = view.findViewById(R.id.user_profile_layout);
         LinearLayoutManager usrManager = new LinearLayoutManager(getActivity());
         usrAdapter = new UserQuoteAdapter(getActivity());

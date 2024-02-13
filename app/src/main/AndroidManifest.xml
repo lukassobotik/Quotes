@@ -30,12 +30,6 @@
             android:exported="false"
             android:label="" />
         <activity
-            android:name=".activity.UserProfile"
-            android:exported="false"
-            android:label=""
-            android:parentActivityName=".activity.MainActivity"
-            android:theme="@style/Theme.Appcompat.Quotes.NoActionBar" />
-        <activity
             android:name=".activity.RegisterActivity"
             android:exported="false"
             android:label="" />
