@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements CollectionsDialog
                 searchFragment.expandSearch();
             } else if (item.getItemId() == R.id.navigation_home) {
                 homeFragment.refresh();
+            } else if (item.getItemId() == R.id.navigation_account) {
+                userProfileFragment.openSettingsSheet();
             }
         });
     }

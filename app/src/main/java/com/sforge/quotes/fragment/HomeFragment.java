@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.SnapHelper;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.apachat.swipereveallayout.core.SwipeLayout;
 import com.apachat.swipereveallayout.core.interfaces.Swipe;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -74,7 +76,8 @@ public class HomeFragment extends Fragment {
     ConstraintLayout quoteItemBackground;
     SwipeLayout quoteSwipeLayout;
     SwipeRefreshLayout swipeRefreshLayout;
-    LinearLayout addToBookmarksLayout;
+    FrameLayout collectionsBottomSheet;
+    BottomSheetBehavior<FrameLayout> collectionsBottomSheetBehavior;
 
     int lastFirstVisiblePosition;
     int position = 0;
@@ -192,11 +195,8 @@ public class HomeFragment extends Fragment {
             }
 
             if (!areBookmarksOpen) {
-                addToBookmarksLayout.setVisibility(View.VISIBLE);
+                collectionsBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 areBookmarksOpen = true;
-                addToBookmarksLayout.startAnimation(
-                        AnimationUtils.loadAnimation(getActivity().getApplicationContext(),
-                                                     R.anim.profile_button_slide_top_to_bottom));
             } else {
                 closeBookmarks();
             }
@@ -205,11 +205,8 @@ public class HomeFragment extends Fragment {
 
     public void closeBookmarks() {
         if (areBookmarksOpen) {
-            addToBookmarksLayout.setVisibility(View.GONE);
+            collectionsBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             areBookmarksOpen = false;
-            addToBookmarksLayout.startAnimation(
-                    AnimationUtils.loadAnimation(getActivity().getApplicationContext(),
-                                                 R.anim.profile_button_slide_bottom_to_top));
         }
     }
 
@@ -431,7 +428,6 @@ public class HomeFragment extends Fragment {
         recyclerView = view.findViewById(R.id.quoteRecyclerView);
         usrQuotesRV = view.findViewById(R.id.usrQuotes);
         collectionsList = view.findViewById(R.id.collectionsList);
-        addToBookmarksLayout = view.findViewById(R.id.addToBookmarksRVLinearLayout);
         includeAccountProfile = view.findViewById(R.id.includeAccountProfile);
         mainActivityUsername = view.findViewById(R.id.username);
         swipeRefreshLayout = view.findViewById(R.id.mainSwipeRefreshLayout);
@@ -452,6 +448,10 @@ public class HomeFragment extends Fragment {
         collectionsAdapter = new BookmarksAdapter(getActivity());
         usrQuotesRV.setAdapter(usrAdapter);
         quoteRepository = new QuoteRepository();
+        collectionsBottomSheet = view.findViewById(R.id.collection_bottom_sheet);
+        collectionsBottomSheetBehavior = BottomSheetBehavior.from(collectionsBottomSheet);
+        collectionsBottomSheetBehavior.setHideable(true);
+        collectionsBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
     @Override
@@ -461,7 +461,8 @@ public class HomeFragment extends Fragment {
         if (recyclerView.getOnFlingListener() == null) {
             snapHelper.attachToRecyclerView(recyclerView);
         }
-        //Listens for scrolls, sets the info of the quote creator and sends the quote to the collections adapter to process it
+
+        // Listens for scrolls, sets the info of the quote creator and sends the quote to the collections adapter to process it
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -481,7 +482,8 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
-        //try to set the creator info on the first position
+
+        // Try to set the creator info on the first position
         try {
             setCurrentQuoteCreatorInfo(0);
             collectionsAdapter.setQuote(quoteAdapter.getQuoteFromPosition(0));

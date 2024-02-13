@@ -346,6 +346,10 @@ public class UserProfileFragment extends Fragment {
         });
     }
 
+    public void openSettingsSheet() {
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
     private void defineViews(View view) {
         profileSettings = view.findViewById(R.id.profileSettingsButton);
         aboutButton = view.findViewById(R.id.profileAbout);

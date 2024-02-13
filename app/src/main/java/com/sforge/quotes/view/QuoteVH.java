@@ -16,14 +16,12 @@ import com.sforge.quotes.R;
 public class QuoteVH extends RecyclerView.ViewHolder {
     public TextView textQuote, textAuthor;
     public Button bookmark;
-    public LinearLayout RVLayout;
     public ConstraintLayout itemView;
     public QuoteVH(@NonNull View itemView) {
         super(itemView);
         textQuote = itemView.findViewById(R.id.textQuote);
         textAuthor = itemView.findViewById(R.id.textAuthor);
         bookmark = itemView.findViewById(R.id.quoteBookmarkButton);
-        RVLayout = itemView.findViewById(R.id.addToBookmarksRVLinearLayout);
         this.itemView = itemView.findViewById(R.id.quoteItemBackground);
     }
 }
