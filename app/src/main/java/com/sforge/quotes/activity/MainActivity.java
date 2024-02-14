@@ -17,11 +17,11 @@ import com.sforge.quotes.fragment.UserProfileFragment;
 public class MainActivity extends AppCompatActivity implements CollectionsDialog.CollectionsDialogListener {
     BottomNavigationView bottomNavigationView;
 
-    private HomeFragment homeFragment;
-    private UserProfileFragment userProfileFragment;
-    private CreateQuotesFragment createQuotesFragment;
-    private ExploreFragment exploreFragment;
-    private CollectionsFragment collectionsActivityFragment;
+    public HomeFragment homeFragment;
+    public UserProfileFragment userProfileFragment;
+    public CreateQuotesFragment createQuotesFragment;
+    public ExploreFragment exploreFragment;
+    public CollectionsFragment collectionsActivityFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +46,21 @@ public class MainActivity extends AppCompatActivity implements CollectionsDialog
                 userProfileFragment.openSettingsSheet();
             }
         });
+    }
+
+    public void loadFragment(Fragment fragment) {
+        if (fragment instanceof HomeFragment) {
+            bottomNavigationView.setSelectedItemId(R.id.navigation_home);
+        } else if (fragment instanceof ExploreFragment) {
+            bottomNavigationView.setSelectedItemId(R.id.navigation_explore);
+        } else if (fragment instanceof CreateQuotesFragment) {
+            bottomNavigationView.setSelectedItemId(R.id.navigation_create);
+        } else if (fragment instanceof CollectionsFragment) {
+            bottomNavigationView.setSelectedItemId(R.id.navigation_collections);
+        } else if (fragment instanceof UserProfileFragment) {
+            bottomNavigationView.setSelectedItemId(R.id.navigation_account);
+        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
     }
 
     public Fragment getCurrentFragment() {

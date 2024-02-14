@@ -108,14 +108,12 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
             });
 
             backButton.setOnClickListener(view -> {
-                if (viewingQuotes) {
-                    recyclerView.setAdapter(collectionsAdapter);
-                    viewingQuotes = false;
-                    viewedCollectionParam = null;
-                    placeholder.setVisibility(View.VISIBLE);
-                    addButton.setVisibility(View.VISIBLE);
-                    backButton.setVisibility(View.GONE);
-                }
+                recyclerView.setAdapter(collectionsAdapter);
+                viewingQuotes = false;
+                viewedCollectionParam = null;
+                placeholder.setVisibility(View.VISIBLE);
+                addButton.setVisibility(View.VISIBLE);
+                backButton.setVisibility(View.GONE);
             });
         }
 

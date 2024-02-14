@@ -21,6 +21,7 @@ import com.sforge.quotes.R;
 import com.sforge.quotes.activity.MainActivity;
 import com.sforge.quotes.entity.Quote;
 import com.sforge.quotes.fragment.CollectionsFragment;
+import com.sforge.quotes.fragment.HomeFragment;
 import com.sforge.quotes.fragment.UserProfileFragment;
 import com.sforge.quotes.repository.UserCollectionRepository;
 import com.sforge.quotes.view.CollectionsVH;
@@ -75,6 +76,11 @@ public class BookmarksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     String collection = vh.name.getText().toString().trim();
                     createDialog(collection);
                 });
+            } else if (currentFragment instanceof HomeFragment) {
+                holder.itemView.setOnClickListener(view -> {
+                    ((MainActivity) context).collectionsActivityFragment = CollectionsFragment.newInstance(collectionName);
+                    ((MainActivity) context).loadFragment(((MainActivity) context).collectionsActivityFragment);
+                });
             }
         }
     }
@@ -87,8 +93,7 @@ public class BookmarksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
 
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            UserCollectionRepository collectionRepository = new UserCollectionRepository(FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                                                                                         collection);
+            UserCollectionRepository collectionRepository = new UserCollectionRepository(FirebaseAuth.getInstance().getCurrentUser().getUid(), collection);
 
             collectionRepository.getDatabaseReference()
                     .orderByChild("quote")
