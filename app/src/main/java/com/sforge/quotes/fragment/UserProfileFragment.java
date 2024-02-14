@@ -130,6 +130,12 @@ public class UserProfileFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            startActivity(intent);
+            Toast.makeText(getActivity(), "Please Log In to View Your Profile.", Toast.LENGTH_SHORT).show();
+        }
+
         View fragmentView = inflater.inflate(R.layout.fragment_user_profile, container, false);
 
         TextView emailTV = fragmentView.findViewById(R.id.profileEmail);

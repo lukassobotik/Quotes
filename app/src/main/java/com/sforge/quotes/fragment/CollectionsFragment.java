@@ -1,5 +1,6 @@
 package com.sforge.quotes.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -25,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.sforge.quotes.R;
+import com.sforge.quotes.activity.LoginActivity;
 import com.sforge.quotes.adapter.CollectionActivityAdapter;
 import com.sforge.quotes.adapter.QuoteAdapter;
 import com.sforge.quotes.entity.Quote;
@@ -76,35 +78,44 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View fragmentView = inflater.inflate(R.layout.fragment_collections, container, false);
-
-        defineViews(fragmentView);
-
-        collectionsAdapter.setOnItemClickListener(this);
-        collectionsAdapter.setOnItemLongClickListener(this);
-        quoteAdapter.setOnQuoteLongClickListener(this);
-
-        if (viewedCollectionParam != null) {
-            loadCollection(viewedCollectionParam);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        boolean isUserLoggedIn = false;
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            startActivity(intent);
+            Toast.makeText(getActivity(), "Please Log In to Create Collections.", Toast.LENGTH_SHORT).show();
+        } else {
+            isUserLoggedIn = true;
         }
 
-        addButton.setOnClickListener(view -> {
-            createCollection();
-        });
+        View fragmentView = inflater.inflate(R.layout.fragment_collections, container, false);
 
-        backButton.setOnClickListener(view -> {
-            if (viewingQuotes) {
-                recyclerView.setAdapter(collectionsAdapter);
-                viewingQuotes = false;
-                viewedCollectionParam = null;
-                placeholder.setVisibility(View.VISIBLE);
-                addButton.setVisibility(View.VISIBLE);
-                backButton.setVisibility(View.GONE);
+        if (isUserLoggedIn) {
+            defineViews(fragmentView);
+
+            collectionsAdapter.setOnItemClickListener(this);
+            collectionsAdapter.setOnItemLongClickListener(this);
+            quoteAdapter.setOnQuoteLongClickListener(this);
+
+            if (viewedCollectionParam != null) {
+                loadCollection(viewedCollectionParam);
             }
-        });
+
+            addButton.setOnClickListener(view -> {
+                createCollection();
+            });
+
+            backButton.setOnClickListener(view -> {
+                if (viewingQuotes) {
+                    recyclerView.setAdapter(collectionsAdapter);
+                    viewingQuotes = false;
+                    viewedCollectionParam = null;
+                    placeholder.setVisibility(View.VISIBLE);
+                    addButton.setVisibility(View.VISIBLE);
+                    backButton.setVisibility(View.GONE);
+                }
+            });
+        }
 
         return fragmentView;
     }
@@ -285,6 +296,10 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
     public void onStart() {
         super.onStart();
         SnapHelper snapHelper = new PagerSnapHelper();
+        if (recyclerView == null) {
+            return;
+        }
+
         if (recyclerView.getOnFlingListener() == null) {
             snapHelper.attachToRecyclerView(recyclerView);
         }
