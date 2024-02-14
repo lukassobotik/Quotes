@@ -11,7 +11,7 @@ import com.sforge.quotes.dialog.CollectionsDialog;
 import com.sforge.quotes.fragment.CollectionsFragment;
 import com.sforge.quotes.fragment.CreateQuotesFragment;
 import com.sforge.quotes.fragment.HomeFragment;
-import com.sforge.quotes.fragment.SearchFragment;
+import com.sforge.quotes.fragment.ExploreFragment;
 import com.sforge.quotes.fragment.UserProfileFragment;
 
 public class MainActivity extends AppCompatActivity implements CollectionsDialog.CollectionsDialogListener {
@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity implements CollectionsDialog
     private HomeFragment homeFragment;
     private UserProfileFragment userProfileFragment;
     private CreateQuotesFragment createQuotesFragment;
-    private SearchFragment searchFragment;
+    private ExploreFragment exploreFragment;
     private CollectionsFragment collectionsActivityFragment;
 
     @Override
@@ -33,17 +33,15 @@ public class MainActivity extends AppCompatActivity implements CollectionsDialog
         homeFragment = new HomeFragment();
         userProfileFragment = new UserProfileFragment();
         createQuotesFragment = new CreateQuotesFragment();
-        searchFragment = new SearchFragment();
+        exploreFragment = new ExploreFragment();
         collectionsActivityFragment = new CollectionsFragment();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         bottomNavigationView.setOnNavigationItemReselectedListener(item -> {
-            if (item.getItemId() == R.id.navigation_search) {
-                searchFragment.expandSearch();
-            } else if (item.getItemId() == R.id.navigation_home) {
-                homeFragment.refresh();
+            if (item.getItemId() == R.id.navigation_explore) {
+                exploreFragment.expandSearch();
             } else if (item.getItemId() == R.id.navigation_account) {
                 userProfileFragment.openSettingsSheet();
             }
@@ -64,8 +62,8 @@ public class MainActivity extends AppCompatActivity implements CollectionsDialog
                         case R.id.navigation_home:
                             selectedFragment = homeFragment;
                             break;
-                        case R.id.navigation_search:
-                            selectedFragment = searchFragment;
+                        case R.id.navigation_explore:
+                            selectedFragment = exploreFragment;
                             break;
                         case R.id.navigation_create:
                             selectedFragment = createQuotesFragment;

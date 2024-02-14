@@ -58,7 +58,7 @@
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:background="@color/transparent"
-                        android:layout_weight="2.2">
+                        android:layout_weight="2.5">
 
                     </LinearLayout>
 

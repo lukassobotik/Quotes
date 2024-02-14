@@ -33,7 +33,7 @@
         <a href="https://github.com/PuckyEU/Quotes/blob/master/PrivacyPolicy.md">Privacy Policy</a>
     </string>
     <string name="home">Home</string>
-    <string name="search">Search</string>
+    <string name="explore">Explore</string>
     <string name="create">Create</string>
     <string name="collections">Collections</string>
     <string name="account">Account</string>
@@ -43,4 +43,6 @@
         <item>Profile</item>
         <item>Log out</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
