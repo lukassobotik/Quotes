@@ -324,7 +324,6 @@ public class ExploreFragment extends Fragment {
 
         bookmarksRepository = new UserBookmarksRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
         bookmarkButton.setOnClickListener(view -> {
-
             if (position == 0 && !areBookmarksOpen) {
                 collectionsAdapter.setQuote(quoteAdapter.getQuoteFromPosition(0));
             }

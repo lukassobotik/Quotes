@@ -1,6 +1,7 @@
 package com.sforge.quotes.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,21 +83,25 @@ public class BookmarksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             boolean doesTheQuoteExist = false;
                             for (DataSnapshot child : snapshot.getChildren()) {
                                 String quoteKey = child.getKey();
-                                Quote childQuote = child.getValue(Quote.class);
+                                try {
+                                    Quote childQuote = child.getValue(Quote.class);
 
-                                if (childQuote != null
-                                        && childQuote.getQuote().equals(quote.getQuote())
-                                        && childQuote.getAuthor().equals(quote.getAuthor())) {
-                                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-                                    builder.setTitle("\"" + shortQuote + "\"" + " Already Exists in " + "\"" + collection + "\"");
-                                    builder.setMessage("Do you want to delete \"" + quote.getQuote() + "\" from " + "\"" + collection + "\"" + "?");
-                                    builder.setPositiveButton("Yes", (dialogInterface, i) -> {
-                                        collectionRepository.remove(quoteKey);
-                                        Toast.makeText(context, "Removed the Quote from " + "\"" + collection + "\"", Toast.LENGTH_SHORT).show();
-                                    });
-                                    builder.setNegativeButton("No", (dialogInterface, i) -> {});
-                                    builder.create().show();
-                                    doesTheQuoteExist = true;
+                                    if (childQuote != null
+                                            && childQuote.getQuote().equals(quote.getQuote())
+                                            && childQuote.getAuthor().equals(quote.getAuthor())) {
+                                        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+                                        builder.setTitle("\"" + shortQuote + "\"" + " Already Exists in " + "\"" + collection + "\"");
+                                        builder.setMessage("Do you want to delete \"" + quote.getQuote() + "\" from " + "\"" + collection + "\"" + "?");
+                                        builder.setPositiveButton("Yes", (dialogInterface, i) -> {
+                                            collectionRepository.remove(quoteKey);
+                                            Toast.makeText(context, "Removed the Quote from " + "\"" + collection + "\"", Toast.LENGTH_SHORT).show();
+                                        });
+                                        builder.setNegativeButton("No", (dialogInterface, i) -> {});
+                                        builder.create().show();
+                                        doesTheQuoteExist = true;
+                                    }
+                                } catch (Exception e) {
+                                    Log.e("BookmarksAdapter", "onDataChange: ", e);
                                 }
                             }
                             if (!doesTheQuoteExist) {

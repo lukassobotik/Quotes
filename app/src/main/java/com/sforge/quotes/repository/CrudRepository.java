@@ -72,6 +72,13 @@ abstract class CrudRepository {
                 .removeValue();
     }
 
+    public Task<Void> pin(String key, boolean value) {
+        return databaseReference
+                .child(key)
+                .child("pinned")
+                .setValue(value);
+    }
+
     /**
      * Get all entities.
      * @return all stored entities.

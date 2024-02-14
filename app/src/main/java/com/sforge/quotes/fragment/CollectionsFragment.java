@@ -42,7 +42,7 @@ import java.util.Objects;
  * Use the {@link CollectionsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CollectionsFragment extends Fragment implements CollectionActivityAdapter.OnItemClickListener, CollectionActivityAdapter.OnItemLongClickListener, QuoteAdapter.OnQuoteLongClickListener {
+public class CollectionsFragment extends Fragment implements CollectionActivityAdapter.OnItemClickListener, CollectionActivityAdapter.OnItemLongClickListener, CollectionActivityAdapter.OnPinClickListener, QuoteAdapter.OnQuoteLongClickListener {
     private static final String ARG_VIEWED_COLLECTION = "viewedCollection";
 
     private String viewedCollectionParam;
@@ -95,6 +95,7 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
 
             collectionsAdapter.setOnItemClickListener(this);
             collectionsAdapter.setOnItemLongClickListener(this);
+            collectionsAdapter.setOnPinClickListener(this);
             quoteAdapter.setOnQuoteLongClickListener(this);
 
             if (viewedCollectionParam != null) {
@@ -172,18 +173,22 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Quote> quotes = new ArrayList<>();
                 for (DataSnapshot data : snapshot.getChildren()) {
-                    Quote quote = data.getValue(Quote.class);
+                    try {
+                        Quote quote = data.getValue(Quote.class);
 
-                    if (quote == null) {
-                        continue;
+                        if (quote == null) {
+                            continue;
+                        }
+
+                        if ("".equals(quote.getQuote()) && "".equals(quote.getAuthor()) && "".equals(quote.getUser())) {
+                            continue;
+                        }
+
+                        Quote quoteWithKey = new Quote(quote.getQuote(), quote.getAuthor(), quote.getUser(), data.getKey());
+                        quotes.add(quoteWithKey);
+                    } catch (Exception e) {
+                        Log.d("loadQuotes", "Error: " + e.getMessage());
                     }
-
-                    if ("".equals(quote.getQuote()) && "".equals(quote.getAuthor()) && "".equals(quote.getUser())) {
-                        continue;
-                    }
-
-                    Quote quoteWithKey = new Quote(quote.getQuote(), quote.getAuthor(), quote.getUser(), data.getKey());
-                    quotes.add(quoteWithKey);
                 }
 
                 if (deleteOldQuotes) {
@@ -275,6 +280,64 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
                 });
     }
 
+    public void pin(String collection, int position) {
+        UserBookmarksRepository bookmarksRepository = new UserBookmarksRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        bookmarksRepository.getDatabaseReference().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot item : dataSnapshot.getChildren()) {
+                    if (!Objects.equals(item.getKey(), collection)) {
+                        continue;
+                    }
+
+                    if (item.child("pinned").getValue() == null) {
+                        bookmarksRepository.pin(item.getKey(), true);
+                        collectionsAdapter.pinItem(position, true);
+                    } else {
+                        Boolean pinned = item.child("pinned").getValue(Boolean.class);
+                        pinned = !pinned;
+                        bookmarksRepository.pin(item.getKey(), pinned);
+                        collectionsAdapter.pinItem(position, true);
+                        Toast.makeText(getActivity(), pinned ? "Pinned" : "Unpinned", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), "Failed To Retrieve Data. " + error, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public boolean isPinned(String collection) {
+        UserBookmarksRepository bookmarksRepository = new UserBookmarksRepository(
+                Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+        bookmarksRepository.getDatabaseReference().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    if (!Objects.equals(child.getKey(), collection)) {
+                        continue;
+                    }
+                    if (child.child("pinned").getValue() != null) {
+                        if ((boolean) child.child("pinned").getValue()) {
+                            Toast.makeText(getActivity(), "Pinned", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getActivity(), "Not Pinned", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), "Failed To Retrieve Data. " + error, Toast.LENGTH_LONG).show();
+            }
+        });
+        return false;
+    }
+
     public void defineViews(View view) {
         recyclerView = view.findViewById(R.id.collectionActivityRecyclerView);
         addButton = view.findViewById(R.id.addToCollection);
@@ -316,6 +379,18 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        collectionsAdapter.clearViewHolders();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        collectionsAdapter.clearViewHolders();
+    }
+
+    @Override
     public void onItemClick(String itemName) {
         loadCollection(itemName);
     }
@@ -328,6 +403,11 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
     @Override
     public void onQuoteLongClick(final int position) {
         deleteQuote(position);
+    }
+
+    @Override
+    public void onPinClick(final String itemName, final int position) {
+        pin(itemName, position);
     }
 
     //      TODO: Make this work in the Fragment

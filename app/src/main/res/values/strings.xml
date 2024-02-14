@@ -38,11 +38,11 @@
     <string name="collections">Collections</string>
     <string name="account">Account</string>
     <string name="use_dynamic_color">Use Dynamic Color</string>
+    <string name="greeting">Hello!</string>
+    <string name="pinned_collections">Pinned Collections</string>
 
     <string-array name="profileSpinner">
         <item>Profile</item>
         <item>Log out</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
