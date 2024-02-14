@@ -32,11 +32,11 @@
             android:textSize="20sp"/>
 
         <com.google.android.material.button.MaterialButton
-                android:id="@+id/pinCollectionButton"
+                android:id="@+id/favoriteCollectionButton"
                 style="@style/Button"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:foreground="@drawable/ic_pin_outline"
+                android:foreground="@drawable/ic_star_outline"
                 android:backgroundTint="?attr/colorPrimary"
                 android:foregroundTint="?attr/colorOnPrimary"
                 android:padding="16dp"

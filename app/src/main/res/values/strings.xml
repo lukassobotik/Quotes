@@ -39,7 +39,7 @@
     <string name="account">Account</string>
     <string name="use_dynamic_color">Use Dynamic Color</string>
     <string name="greeting">Hello!</string>
-    <string name="pinned_collections">Pinned Collections</string>
+    <string name="favorite_collections">Favorite Collections</string>
 
     <string-array name="profileSpinner">
         <item>Profile</item>

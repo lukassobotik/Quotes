@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -17,7 +18,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.sforge.quotes.R;
+import com.sforge.quotes.activity.MainActivity;
 import com.sforge.quotes.entity.Quote;
+import com.sforge.quotes.fragment.CollectionsFragment;
+import com.sforge.quotes.fragment.UserProfileFragment;
 import com.sforge.quotes.repository.UserCollectionRepository;
 import com.sforge.quotes.view.CollectionsVH;
 
@@ -64,20 +68,31 @@ public class BookmarksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         String collectionName = list.get(position);
         vh.name.setText(collectionName);
 
-        holder.itemView.setOnClickListener(view -> {
-            String collection = vh.name.getText().toString().trim();
-            shortQuote = quote.getQuote();
-
-            if (quote.getQuote().length() > 15) {
-                shortQuote = quote.getQuote().substring(0, 15) + "...";
+        if (context instanceof MainActivity) {
+            Fragment currentFragment = ((MainActivity) context).getCurrentFragment();
+            if (currentFragment instanceof CollectionsFragment) {
+                holder.itemView.setOnClickListener(view -> {
+                    String collection = vh.name.getText().toString().trim();
+                    createDialog(collection);
+                });
             }
+        }
+    }
 
-            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                UserCollectionRepository collectionRepository = new UserCollectionRepository(FirebaseAuth.getInstance().getCurrentUser().getUid(), collection);
+    private void createDialog(final String collection) {
+        shortQuote = quote.getQuote();
 
-                collectionRepository.getDatabaseReference()
-                        .orderByChild("quote")
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
+        if (quote.getQuote().length() > 15) {
+            shortQuote = quote.getQuote().substring(0, 15) + "...";
+        }
+
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            UserCollectionRepository collectionRepository = new UserCollectionRepository(FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                                                                                         collection);
+
+            collectionRepository.getDatabaseReference()
+                    .orderByChild("quote")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             boolean doesTheQuoteExist = false;
@@ -90,8 +105,10 @@ public class BookmarksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                             && childQuote.getQuote().equals(quote.getQuote())
                                             && childQuote.getAuthor().equals(quote.getAuthor())) {
                                         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-                                        builder.setTitle("\"" + shortQuote + "\"" + " Already Exists in " + "\"" + collection + "\"");
-                                        builder.setMessage("Do you want to delete \"" + quote.getQuote() + "\" from " + "\"" + collection + "\"" + "?");
+                                        builder.setTitle("\"" + shortQuote + "\"" + " Already Exists in " + "\"" + collection
+                                                                 + "\"");
+                                        builder.setMessage("Do you want to delete \"" + quote.getQuote() + "\" from " + "\"" + collection
+                                                                   + "\"" + "?");
                                         builder.setPositiveButton("Yes", (dialogInterface, i) -> {
                                             collectionRepository.remove(quoteKey);
                                             Toast.makeText(context, "Removed the Quote from " + "\"" + collection + "\"", Toast.LENGTH_SHORT).show();
@@ -114,8 +131,7 @@ public class BookmarksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         public void onCancelled(@NonNull DatabaseError error) {
                         }
                     });
-            }
-        });
+        }
     }
 
     @Override

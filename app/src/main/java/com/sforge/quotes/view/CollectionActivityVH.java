@@ -11,10 +11,10 @@ import com.sforge.quotes.R;
 
 public class CollectionActivityVH extends RecyclerView.ViewHolder {
     public TextView name;
-    public Button pin;
+    public Button favorite;
     public CollectionActivityVH(@NonNull View itemView) {
         super(itemView);
         name = itemView.findViewById(R.id.collection_activity_item_name);
-        pin = itemView.findViewById(R.id.pinCollectionButton);
+        favorite = itemView.findViewById(R.id.favoriteCollectionButton);
     }
 }

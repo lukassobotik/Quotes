@@ -72,10 +72,10 @@ abstract class CrudRepository {
                 .removeValue();
     }
 
-    public Task<Void> pin(String key, boolean value) {
+    public Task<Void> favorite(String key, boolean value) {
         return databaseReference
                 .child(key)
-                .child("pinned")
+                .child("favorite")
                 .setValue(value);
     }
 

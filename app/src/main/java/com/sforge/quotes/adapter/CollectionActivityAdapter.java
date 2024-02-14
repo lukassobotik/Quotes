@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -27,8 +26,8 @@ public class CollectionActivityAdapter extends FirebaseRecyclerAdapter<DataSnaps
     public interface OnItemLongClickListener {
         void onItemLongClick(String itemName);
     }
-    public interface OnPinClickListener {
-        void onPinClick(String itemName, int position);
+    public interface OnFavoriteClickListener {
+        void onFavoriteClick(String itemName, int position);
     }
 
     Context context;
@@ -36,7 +35,7 @@ public class CollectionActivityAdapter extends FirebaseRecyclerAdapter<DataSnaps
     List<DataSnapshot> list = new ArrayList<>();
     private OnItemClickListener itemClickListener;
     private OnItemLongClickListener longClickListener;
-    private OnPinClickListener pinClickListener;
+    private OnFavoriteClickListener favoriteClickListener;
     public CollectionActivityAdapter(Context context ,@NonNull FirebaseRecyclerOptions<DataSnapshot> options) {
         super(options);
         this.context = context;
@@ -48,8 +47,8 @@ public class CollectionActivityAdapter extends FirebaseRecyclerAdapter<DataSnaps
     public void setOnItemLongClickListener(OnItemLongClickListener listener) {
         this.longClickListener = listener;
     }
-    public void setOnPinClickListener(OnPinClickListener listener) {
-        this.pinClickListener = listener;
+    public void setOnPinClickListener(OnFavoriteClickListener listener) {
+        this.favoriteClickListener = listener;
     }
     public List<DataSnapshot> getList() {
         return list;
@@ -60,7 +59,6 @@ public class CollectionActivityAdapter extends FirebaseRecyclerAdapter<DataSnaps
         viewHolders.add(holder);
         holder.name.setText(model.getKey());
         list.add(model);
-        UserBookmarksRepository userBookmarksRepository = new UserBookmarksRepository(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
 
         holder.itemView.setOnClickListener(view -> {
             String itemName = holder.name.getText().toString();
@@ -77,20 +75,25 @@ public class CollectionActivityAdapter extends FirebaseRecyclerAdapter<DataSnaps
             return true;
         });
 
-        holder.pin.setOnClickListener(view -> {
+        holder.favorite.setOnClickListener(view -> {
             String itemName = holder.name.getText().toString();
-            if (pinClickListener != null) {
-                pinClickListener.onPinClick(itemName, position);
+            if (favoriteClickListener != null) {
+                favoriteClickListener.onFavoriteClick(itemName, position);
+            }
+            if (holder.favorite.getForeground().equals(AppCompatResources.getDrawable(context, R.drawable.ic_favorite))) {
+                holder.favorite.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_star_outline));
+            } else if (holder.favorite.getForeground().equals(AppCompatResources.getDrawable(context, R.drawable.ic_star_outline))) {
+                holder.favorite.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_favorite));
             }
         });
 
-        boolean pinned = Boolean.TRUE.equals(model.child("pinned").getValue(Boolean.class));
-        pinItem(position, pinned);
+        boolean pinned = Boolean.TRUE.equals(model.child("favorite").getValue(Boolean.class));
+        favoriteItem(position, pinned);
     }
 
-    public void pinItem(int position, boolean pinned) {
-        viewHolders.get(position).pin.setForeground(pinned ? AppCompatResources.getDrawable(context, R.drawable.ic_pin)
-                                 : AppCompatResources.getDrawable(context, R.drawable.ic_pin_outline));
+    public void favoriteItem(int position, boolean pinned) {
+        viewHolders.get(position).favorite.setForeground(pinned ? AppCompatResources.getDrawable(context, R.drawable.ic_favorite)
+                                                                : AppCompatResources.getDrawable(context, R.drawable.ic_star_outline));
     }
 
     public void clearViewHolders() {

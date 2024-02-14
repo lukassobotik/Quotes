@@ -35,7 +35,7 @@
                 android:background="@color/transparent"
                 android:fontFamily="sans-serif-condensed-medium"
                 android:gravity="start|bottom"
-                android:text="@string/pinned_collections"
+                android:text="@string/favorite_collections"
                 android:textColor="?attr/colorAccent"/>
 
         <androidx.recyclerview.widget.RecyclerView

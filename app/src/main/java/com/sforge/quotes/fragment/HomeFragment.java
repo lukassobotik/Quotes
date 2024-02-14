@@ -134,7 +134,7 @@ public class HomeFragment extends Fragment {
                     items.clear();
                     for (DataSnapshot data : snapshot.getChildren()) {
                         String text = data.getKey();
-                        if (Boolean.TRUE.equals(data.child("pinned").getValue(Boolean.class))) {
+                        if (Boolean.TRUE.equals(data.child("favorite").getValue(Boolean.class))) {
                             items.add(text);
                         }
                     }
