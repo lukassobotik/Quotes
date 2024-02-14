@@ -21,6 +21,7 @@ import com.sforge.quotes.R;
 import com.sforge.quotes.activity.MainActivity;
 import com.sforge.quotes.entity.Quote;
 import com.sforge.quotes.fragment.CollectionsFragment;
+import com.sforge.quotes.fragment.ExploreFragment;
 import com.sforge.quotes.fragment.HomeFragment;
 import com.sforge.quotes.fragment.UserProfileFragment;
 import com.sforge.quotes.repository.UserCollectionRepository;
@@ -71,7 +72,7 @@ public class BookmarksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         if (context instanceof MainActivity) {
             Fragment currentFragment = ((MainActivity) context).getCurrentFragment();
-            if (currentFragment instanceof CollectionsFragment) {
+            if (currentFragment instanceof ExploreFragment) {
                 holder.itemView.setOnClickListener(view -> {
                     String collection = vh.name.getText().toString().trim();
                     createDialog(collection);

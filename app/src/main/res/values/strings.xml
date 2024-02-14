@@ -40,6 +40,8 @@
     <string name="use_dynamic_color">Use Dynamic Color</string>
     <string name="greeting">Hello!</string>
     <string name="favorite_collections">Favorite Collections</string>
+    <string name="amount_of_collected_quotes">Amount of Collected Quotes</string>
+    <string name="_0">0</string>
 
     <string-array name="profileSpinner">
         <item>Profile</item>

@@ -36,8 +36,10 @@ public class HomeFragment extends Fragment {
 
     RecyclerView pinnedCollections;
     BookmarksAdapter collectionsAdapter;
-    TextView greetingsTextView;
+    TextView greetingsTextView, quoteCount;
     UserBookmarksRepository bookmarksRepository;
+
+    public int collectionQuoteCount = 0;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -128,19 +130,27 @@ public class HomeFragment extends Fragment {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             bookmarksRepository = new UserBookmarksRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
             List<String> items = new ArrayList<>();
-            bookmarksRepository.getAll().addValueEventListener(new ValueEventListener() {
+            bookmarksRepository.getAll().addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     items.clear();
                     for (DataSnapshot data : snapshot.getChildren()) {
                         String text = data.getKey();
+
+                        int count = (int) data.getChildrenCount();
                         if (Boolean.TRUE.equals(data.child("favorite").getValue(Boolean.class))) {
                             items.add(text);
+                            count -= 1;
                         }
+
+                        // Remove the count of the empty quote
+                        count -= 1;
+                        collectionQuoteCount += count;
                     }
                     collectionsAdapter.setItems(items);
                     collectionsAdapter.notifyDataSetChanged();
                     pinnedCollections.setAdapter(collectionsAdapter);
+                    quoteCount.setText(String.valueOf(collectionQuoteCount));
                 }
 
                 @Override
@@ -157,6 +167,20 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager collectionsManager = new LinearLayoutManager(getActivity());
         pinnedCollections.setLayoutManager(collectionsManager);
         collectionsAdapter = new BookmarksAdapter(getActivity());
+        quoteCount = fragmentView.findViewById(R.id.quote_count);
+
         loadCollections();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        collectionQuoteCount = 0;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        collectionQuoteCount = 0;
     }
 }

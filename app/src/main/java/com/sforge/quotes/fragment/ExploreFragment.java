@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -37,6 +38,7 @@ import com.sforge.quotes.adapter.BookmarksAdapter;
 import com.sforge.quotes.adapter.QuoteAdapter;
 import com.sforge.quotes.adapter.SearchAdapter;
 import com.sforge.quotes.adapter.UserQuoteAdapter;
+import com.sforge.quotes.animation.FadeInItemAnimator;
 import com.sforge.quotes.entity.Quote;
 import com.sforge.quotes.repository.QuoteRepository;
 import com.sforge.quotes.repository.UserBookmarksRepository;
@@ -278,6 +280,7 @@ public class ExploreFragment extends Fragment {
 
         // Discover
         recyclerView = view.findViewById(R.id.quoteRecyclerView);
+        recyclerView.setItemAnimator(new FadeInItemAnimator());
         usrQuotesRV = view.findViewById(R.id.usrQuotes);
         collectionsList = view.findViewById(R.id.collectionsList);
         includeAccountProfile = view.findViewById(R.id.includeAccountProfile);

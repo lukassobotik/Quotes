@@ -1,6 +1,7 @@
 package com.sforge.quotes.activity;
 
 import android.os.Bundle;
+import android.transition.Fade;
 import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,10 +32,15 @@ public class MainActivity extends AppCompatActivity implements CollectionsDialog
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         homeFragment = new HomeFragment();
+        homeFragment.setEnterTransition(new Fade());
         userProfileFragment = new UserProfileFragment();
+        userProfileFragment.setEnterTransition(new Fade());
         createQuotesFragment = new CreateQuotesFragment();
+        createQuotesFragment.setEnterTransition(new Fade());
         exploreFragment = new ExploreFragment();
+        exploreFragment.setEnterTransition(new Fade());
         collectionsActivityFragment = new CollectionsFragment();
+        collectionsActivityFragment.setEnterTransition(new Fade());
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
 
