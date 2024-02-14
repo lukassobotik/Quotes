@@ -179,9 +179,7 @@ public class UserProfileFragment extends Fragment {
         aboutButton.setOnClickListener(view -> {
             Uri webpage = Uri.parse("https://github.com/lukassobotik/Quotes/blob/master/About.md");
             Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
-            if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
-                startActivity(intent);
-            }
+            startActivity(intent);
         });
 
         changeBackground.setOnClickListener(view -> {
@@ -197,17 +195,13 @@ public class UserProfileFragment extends Fragment {
         dataRequestButton.setOnClickListener(view -> {
             Uri webpage = Uri.parse("https://myquotes.account.lukassobotik.dev/stored-data/");
             Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
-            if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
-                startActivity(intent);
-            }
+            startActivity(intent);
         });
 
         deleteAccountButton.setOnClickListener(view -> {
             Uri webpage = Uri.parse("https://myquotes.account.lukassobotik.dev/");
             Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
-            if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
-                startActivity(intent);
-            }
+            startActivity(intent);
         });
 
         return fragmentView;
