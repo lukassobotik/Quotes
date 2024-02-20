@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
+import com.faltenreich.skeletonlayout.Skeleton;
+import com.faltenreich.skeletonlayout.SkeletonLayoutUtils;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.paging.DatabasePagingOptions;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -32,6 +34,7 @@ import com.sforge.quotes.adapter.QuoteAdapter;
 import com.sforge.quotes.entity.Quote;
 import com.sforge.quotes.repository.UserBookmarksRepository;
 import com.sforge.quotes.repository.UserCollectionRepository;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +55,7 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
     DatabasePagingOptions<Quote> quoteOptions;
     CollectionActivityAdapter collectionsAdapter;
     Button addButton, backButton;
+    Skeleton collectionsSkeleton;
     View placeholder;
     QuoteAdapter quoteAdapter;
     boolean viewingQuotes = false;
@@ -306,6 +310,33 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
         });
     }
 
+    private void createCollectionsSkeleton() {
+        collectionsSkeleton = SkeletonLayoutUtils.applySkeleton(recyclerView, R.layout.collection_item, 5);
+        collectionsSkeleton.setMaskColor(0);
+        collectionsSkeleton.setMaskCornerRadius(50f);
+        collectionsSkeleton.showSkeleton();
+    }
+
+    @NotNull
+    private Query getQuery() {
+        Query query = new UserBookmarksRepository(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).getDatabaseReference();
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getChildrenCount() == 0) {
+                    placeholder.setVisibility(View.VISIBLE);
+                }
+                collectionsSkeleton.showOriginal();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), "Cannot Access the Database Right Now. " + error, Toast.LENGTH_SHORT).show();
+            }
+        });
+        return query;
+    }
+
     public void defineViews(View view) {
         recyclerView = view.findViewById(R.id.collectionActivityRecyclerView);
         addButton = view.findViewById(R.id.addToCollection);
@@ -313,7 +344,7 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
         backButton = view.findViewById(R.id.collectionBackButton);
         backButton.setVisibility(View.GONE);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        Query query = new UserBookmarksRepository(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).getDatabaseReference();
+        Query query = getQuery();
         FirebaseRecyclerOptions<DataSnapshot> options = new FirebaseRecyclerOptions.Builder<DataSnapshot>()
                 .setQuery(query, snapshot -> snapshot)
                 .build();
@@ -321,6 +352,8 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
         collectionsAdapter = new CollectionActivityAdapter(getContext(), options);
         collectionsAdapter.startListening();
         recyclerView.setAdapter(collectionsAdapter);
+
+        createCollectionsSkeleton();
     }
 
     @Override

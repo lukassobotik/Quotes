@@ -6,7 +6,9 @@ import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.animation.AlphaAnimation;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -15,9 +17,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,7 +24,6 @@ import androidx.recyclerview.widget.SnapHelper;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.apachat.swipereveallayout.core.SwipeLayout;
 import com.apachat.swipereveallayout.core.interfaces.Swipe;
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -67,7 +65,6 @@ public class ExploreFragment extends Fragment {
 
     com.google.android.material.search.SearchBar searchBar;
     com.google.android.material.search.SearchView searchView;
-    AppBarLayout appBarLayout;
     LinearLayout searchLayout;
     RecyclerView searchRV;
 
@@ -273,7 +270,6 @@ public class ExploreFragment extends Fragment {
         searchLayout = view.findViewById(R.id.searchLinearLayout);
         searchBar = view.findViewById(R.id.search_bar);
         searchView = view.findViewById(R.id.search_view);
-        appBarLayout = view.findViewById(R.id.search_view_app_bar_layout);
         searchRV = view.findViewById(R.id.searchRecyclerView);
         LinearLayoutManager searchManager = new LinearLayoutManager(getActivity());
         searchRV.setLayoutManager(searchManager);

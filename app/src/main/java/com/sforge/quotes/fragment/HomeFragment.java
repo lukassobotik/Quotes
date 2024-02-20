@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.faltenreich.skeletonlayout.Skeleton;
+import com.faltenreich.skeletonlayout.SkeletonLayoutUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,6 +40,7 @@ public class HomeFragment extends Fragment {
     BookmarksAdapter collectionsAdapter;
     TextView greetingsTextView, quoteCount;
     UserBookmarksRepository bookmarksRepository;
+    Skeleton collectionsSkeleton;
 
     public int collectionQuoteCount = 0;
 
@@ -70,8 +73,6 @@ public class HomeFragment extends Fragment {
         defineViews(fragmentView);
 
         loadUsername();
-
-
 
         return fragmentView;
     }
@@ -169,7 +170,15 @@ public class HomeFragment extends Fragment {
         collectionsAdapter = new BookmarksAdapter(getActivity());
         quoteCount = fragmentView.findViewById(R.id.quote_count);
 
+        createFavoriteCollectionsSkeleton();
         loadCollections();
+    }
+
+    private void createFavoriteCollectionsSkeleton() {
+        collectionsSkeleton = SkeletonLayoutUtils.applySkeleton(pinnedCollections, R.layout.collection_item, 5);
+        collectionsSkeleton.showSkeleton();
+        collectionsSkeleton.setMaskColor(0);
+        collectionsSkeleton.setMaskCornerRadius(50f);
     }
 
     @Override

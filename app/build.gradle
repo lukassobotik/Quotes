@@ -49,4 +49,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     implementation group: 'com.apachat', name: 'swipereveallayout-android', version: '1.1.2'
+    implementation 'com.faltenreich:skeletonlayout:5.0.0'
 }

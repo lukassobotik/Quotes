@@ -12,4 +12,6 @@ so if you like any of them, you should definitely check them out.
 
 [**Swipe Reveal Layout**](https://github.com/FarhamHosseini/SwipeRevealLayout)
 
+[**SkeletonLayout**](https://github.com/Faltenreich/SkeletonLayout)
+
 ## [Privacy Policy](https://github.com/lukassobotik/Quotes/blob/master/PrivacyPolicy.md)

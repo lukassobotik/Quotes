@@ -2,8 +2,9 @@
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_height="match_parent"
         tools:context=".fragment.HomeFragment"
         android:padding="16dp"
         android:orientation="vertical">
@@ -74,3 +75,90 @@
             android:text="@string/_0"
             android:textColor="?attr/colorAccent"/>
 </LinearLayout>
+
+<!--
+<?xml version="1.0" encoding="utf-8"?>
+<com.faltenreich.skeletonlayout.SkeletonLayout
+        android:id="@+id/skeletonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context=".fragment.HomeFragment"
+        android:padding="16dp">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        <TextView
+                android:id="@+id/greetings_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:textSize="30sp"
+                android:autoSizeTextType="uniform"
+                android:background="@color/transparent"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:gravity="start|bottom"
+                android:text="@string/greeting"
+                android:textColor="?attr/colorAccent"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="8dp">
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:textSize="20sp"
+                    android:autoSizeTextType="uniform"
+                    android:background="@color/transparent"
+                    android:fontFamily="sans-serif-condensed-medium"
+                    android:gravity="start|bottom"
+                    android:text="@string/favorite_collections"
+                    android:textColor="?attr/colorAccent"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/pinned_collections_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/settings_bottom_sheet_handle_layout"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+        </LinearLayout>
+
+        <TextView
+                android:id="@+id/quote_count_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:textSize="20sp"
+                android:autoSizeTextType="uniform"
+                android:background="@color/transparent"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:gravity="start|bottom"
+                android:text="@string/amount_of_collected_quotes"
+                android:textColor="?attr/colorAccent"/>
+
+        <TextView
+                android:id="@+id/quote_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:textSize="15sp"
+                android:autoSizeTextType="uniform"
+                android:background="@color/transparent"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:gravity="start|bottom"
+                android:text="@string/_0"
+                android:textColor="?attr/colorAccent"/>
+    </LinearLayout>
+
+</com.faltenreich.skeletonlayout.SkeletonLayout>
+-->
