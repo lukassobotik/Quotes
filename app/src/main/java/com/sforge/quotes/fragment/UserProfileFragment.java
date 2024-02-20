@@ -205,7 +205,7 @@ public class UserProfileFragment extends Fragment {
         });
 
         deleteAccountButton.setOnClickListener(view -> {
-            Uri webpage = Uri.parse("https://myquotes.account.lukassobotik.dev/");
+            Uri webpage = Uri.parse("https://myquotes.account.lukassobotik.dev/delete-account/");
             Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
             startActivity(intent);
         });
