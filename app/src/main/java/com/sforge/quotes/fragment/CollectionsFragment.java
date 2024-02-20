@@ -31,6 +31,7 @@ import com.sforge.quotes.R;
 import com.sforge.quotes.activity.LoginActivity;
 import com.sforge.quotes.adapter.CollectionActivityAdapter;
 import com.sforge.quotes.adapter.QuoteAdapter;
+import com.sforge.quotes.animation.FadeInItemAnimator;
 import com.sforge.quotes.entity.Quote;
 import com.sforge.quotes.repository.UserBookmarksRepository;
 import com.sforge.quotes.repository.UserCollectionRepository;
@@ -339,6 +340,7 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
 
     public void defineViews(View view) {
         recyclerView = view.findViewById(R.id.collectionActivityRecyclerView);
+        recyclerView.setItemAnimator(new FadeInItemAnimator());
         addButton = view.findViewById(R.id.addToCollection);
         placeholder = view.findViewById(R.id.collection_placeholder);
         backButton = view.findViewById(R.id.collectionBackButton);

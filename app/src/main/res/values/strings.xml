@@ -42,6 +42,10 @@
     <string name="favorite_collections">Favorite Collections</string>
     <string name="amount_of_collected_quotes">Amount of Collected Quotes</string>
     <string name="_0">0</string>
+    <string name="amount_of_created_quotes">Amount of Created Quotes</string>
+    <string name="your_random_quote">Your Random Quote</string>
+    <string name="no_quote_yet_create_one_now">No quote yet. Create one now!</string>
+    <string name="minus_myquotes">- myQuotes</string>
 
     <string-array name="profileSpinner">
         <item>Profile</item>

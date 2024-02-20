@@ -20,6 +20,7 @@ import com.sforge.quotes.R;
 import com.sforge.quotes.adapter.BookmarksAdapter;
 import com.sforge.quotes.entity.User;
 import com.sforge.quotes.repository.UserBookmarksRepository;
+import com.sforge.quotes.repository.UserQuoteRepository;
 import com.sforge.quotes.repository.UserRepository;
 
 import java.util.ArrayList;
@@ -33,13 +34,18 @@ import java.util.List;
 public class HomeFragment extends Fragment {
     private static final String ARG_USERNAME = "username";
     private static final String ARG_GREETING = "greeting";
-    private String usernameParam;
-    private String greetingParam;
+    private static final String ARG_USER_QUOTES = "userQuotes";
+    private static final String ARG_RANDOM_QUOTE = "randomQuote";
+    private static final String ARG_RANDOM_QUOTE_AUTHOR = "randomQuoteAuthor";
+
+
+    private String usernameParam, greetingParam, randomQuoteParam, randomQuoteAuthorParam, userQuotesParam;
 
     RecyclerView pinnedCollections;
     BookmarksAdapter collectionsAdapter;
-    TextView greetingsTextView, quoteCount;
+    TextView greetingsTextView, collectionsQuoteCount, quoteCount, randomQuote, randomQuoteAuthor;
     UserBookmarksRepository bookmarksRepository;
+    UserQuoteRepository userQuoteRepository;
     Skeleton collectionsSkeleton;
 
     public int collectionQuoteCount = 0;
@@ -48,11 +54,14 @@ public class HomeFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static HomeFragment newInstance(String username, String greeting) {
+    public static HomeFragment newInstance(String username, String greeting, String randomQuote, String randomQuoteAuthor, String userQuotes) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
         args.putString(ARG_USERNAME, username);
         args.putString(ARG_GREETING, greeting);
+        args.putString(ARG_USER_QUOTES, userQuotes);
+        args.putString(ARG_RANDOM_QUOTE, randomQuote);
+        args.putString(ARG_RANDOM_QUOTE_AUTHOR, randomQuoteAuthor);
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,6 +72,9 @@ public class HomeFragment extends Fragment {
         if (getArguments() != null) {
             usernameParam = getArguments().getString(ARG_USERNAME);
             greetingParam = getArguments().getString(ARG_GREETING);
+            userQuotesParam = getArguments().getString(ARG_USER_QUOTES);
+            randomQuoteParam = getArguments().getString(ARG_RANDOM_QUOTE);
+            randomQuoteAuthorParam = getArguments().getString(ARG_RANDOM_QUOTE_AUTHOR);
         }
     }
 
@@ -151,7 +163,48 @@ public class HomeFragment extends Fragment {
                     collectionsAdapter.setItems(items);
                     collectionsAdapter.notifyDataSetChanged();
                     pinnedCollections.setAdapter(collectionsAdapter);
-                    quoteCount.setText(String.valueOf(collectionQuoteCount));
+                    collectionsQuoteCount.setText(String.valueOf(collectionQuoteCount));
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(getActivity(), "Cannot Access the Database Right Now. " + error, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    private void loadUserQuotes() {
+        if (userQuotesParam != null) {
+            quoteCount.setText(userQuotesParam);
+        }
+
+        if (randomQuoteParam != null && randomQuoteAuthorParam != null) {
+            randomQuote.setText(randomQuoteParam);
+            randomQuoteAuthor.setText(randomQuoteAuthorParam);
+            return;
+        }
+
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            userQuoteRepository = new UserQuoteRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            userQuoteRepository.getAll().addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    int count = (int) snapshot.getChildrenCount();
+                    int randomIndex = (int) (Math.random() * count);
+                    int index = 0;
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        if (index == randomIndex) {
+                            randomQuote.setText("\"" + data.child("quote").getValue(String.class) + "\"");
+                            randomQuoteParam = randomQuote.getText().toString();
+                            randomQuoteAuthor.setText("- " + data.child("author").getValue(String.class));
+                            randomQuoteAuthorParam = randomQuoteAuthor.getText().toString();
+                            break;
+                        }
+                        index++;
+                    }
+                    quoteCount.setText(String.valueOf(count));
+                    userQuotesParam = String.valueOf(count);
                 }
 
                 @Override
@@ -168,10 +221,14 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager collectionsManager = new LinearLayoutManager(getActivity());
         pinnedCollections.setLayoutManager(collectionsManager);
         collectionsAdapter = new BookmarksAdapter(getActivity());
+        collectionsQuoteCount = fragmentView.findViewById(R.id.collection_quote_count);
         quoteCount = fragmentView.findViewById(R.id.quote_count);
+        randomQuote = fragmentView.findViewById(R.id.random_quote);
+        randomQuoteAuthor = fragmentView.findViewById(R.id.random_quote_author);
 
         createFavoriteCollectionsSkeleton();
         loadCollections();
+        loadUserQuotes();
     }
 
     private void createFavoriteCollectionsSkeleton() {
