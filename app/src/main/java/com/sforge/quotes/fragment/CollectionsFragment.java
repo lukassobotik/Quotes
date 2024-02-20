@@ -4,15 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.SnapHelper;
 import com.faltenreich.skeletonlayout.Skeleton;
 import com.faltenreich.skeletonlayout.SkeletonLayoutUtils;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.firebase.ui.database.paging.DatabasePagingOptions;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -53,7 +52,6 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
     private String viewedCollectionParam;
 
     RecyclerView recyclerView;
-    DatabasePagingOptions<Quote> quoteOptions;
     CollectionActivityAdapter collectionsAdapter;
     Button addButton, backButton;
     Skeleton collectionsSkeleton;
@@ -63,6 +61,7 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
     String localCollection = "";
     private final int PREFETCH_DISTANCE = 10;
 
+    // TODO: Make user back press to go back to the collections list
     public CollectionsFragment() {
         // Required empty public constructor
     }
@@ -84,7 +83,7 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         boolean isUserLoggedIn = false;
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Intent intent = new Intent(getActivity(), LoginActivity.class);
@@ -108,9 +107,7 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
                 loadCollection(viewedCollectionParam);
             }
 
-            addButton.setOnClickListener(view -> {
-                createCollection();
-            });
+            addButton.setOnClickListener(view -> createCollection());
 
             backButton.setOnClickListener(view -> {
                 recyclerView.setAdapter(collectionsAdapter);
@@ -144,7 +141,7 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
 
         builder.setPositiveButton("Create", (dialogInterface, i) -> {
             String collection = input.getText().toString().trim();
-            if (collection.length() > 0) {
+            if (!collection.isEmpty()) {
                 // Create an empty quote (which will not be shown) so the directory will exist in Firebase
                 new UserCollectionRepository(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(), collection).add(new Quote("", "", ""));
             }
@@ -207,7 +204,7 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -268,9 +265,7 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
                                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());
                                 builder.setTitle("Delete " + quote.getQuote() + " From " + "\"" + localCollection + "\"" +"?");
                                 builder.setMessage("Are you sure you want to delete \"" + quote.getQuote() + "\"" + " From " + "\"" + localCollection + "\"" +"?");
-                                builder.setPositiveButton("Yes", (dialogInterface, i) -> {
-                                    collectionRepository.remove(quoteKey);
-                                });
+                                builder.setPositiveButton("Yes", (dialogInterface, i) -> collectionRepository.remove(quoteKey));
                                 builder.setNegativeButton("No", (dialogInterface, i) -> {});
                                 builder.create().show();
                             }
@@ -284,8 +279,9 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
                 });
     }
 
-    public void favorite(String collection, int position) {
-        UserBookmarksRepository bookmarksRepository = new UserBookmarksRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
+    public void favorite(String collection) {
+        UserBookmarksRepository bookmarksRepository = new UserBookmarksRepository(
+                Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
         bookmarksRepository.getDatabaseReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -408,22 +404,6 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
 
     @Override
     public void onFavoriteClick(final String itemName, final int position) {
-        favorite(itemName, position);
+        favorite(itemName);
     }
-
-    //      TODO: Make this work in the Fragment
-//    @Override
-//    public void onBackPressed() {
-//        if (viewingQuotes) {
-//            recyclerView.setAdapter(collectionsAdapter);
-//            viewingQuotes = false;
-//            placeholder.setVisibility(View.VISIBLE);
-//            addButton.setVisibility(View.VISIBLE);
-//            back.setVisibility(View.VISIBLE);
-//            remove.setVisibility(View.VISIBLE);
-//            return;
-//        }
-//
-//        super.onBackPressed();
-//    }
 }

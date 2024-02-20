@@ -11,8 +11,8 @@ android {
         applicationId "com.sforge.quotes"
         minSdk 26
         targetSdk 34
-        versionCode 9
-        versionName "1.2.O-pre1"
+        versionCode 10
+        versionName "1.2.O-pre2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
