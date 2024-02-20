@@ -31,7 +31,6 @@ public class CollectionActivityAdapter extends FirebaseRecyclerAdapter<DataSnaps
     }
 
     Context context;
-    List <CollectionActivityVH> viewHolders = new ArrayList<>();
     List<DataSnapshot> list = new ArrayList<>();
     private OnItemClickListener itemClickListener;
     private OnItemLongClickListener longClickListener;
@@ -56,7 +55,6 @@ public class CollectionActivityAdapter extends FirebaseRecyclerAdapter<DataSnaps
 
     @Override
     protected void onBindViewHolder(@NonNull CollectionActivityVH holder, int position, @NonNull DataSnapshot model) {
-        viewHolders.add(holder);
         holder.name.setText(model.getKey());
         list.add(model);
 
@@ -80,24 +78,23 @@ public class CollectionActivityAdapter extends FirebaseRecyclerAdapter<DataSnaps
             if (favoriteClickListener != null) {
                 favoriteClickListener.onFavoriteClick(itemName, position);
             }
-            if (holder.favorite.getForeground().equals(AppCompatResources.getDrawable(context, R.drawable.ic_favorite))) {
+            if (holder.favorite.getForeground().equals(AppCompatResources.getDrawable(context, R.drawable.ic_favorite)) || holder.favorite.isChecked()) {
                 holder.favorite.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_star_outline));
-            } else if (holder.favorite.getForeground().equals(AppCompatResources.getDrawable(context, R.drawable.ic_star_outline))) {
+                holder.favorite.setChecked(false);
+            } else if (holder.favorite.getForeground().equals(AppCompatResources.getDrawable(context, R.drawable.ic_star_outline)) || !holder.favorite.isChecked()) {
                 holder.favorite.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_favorite));
+                holder.favorite.setChecked(true);
             }
         });
 
         boolean pinned = Boolean.TRUE.equals(model.child("favorite").getValue(Boolean.class));
-        favoriteItem(position, pinned);
+        favoriteItem(holder, pinned);
     }
 
-    public void favoriteItem(int position, boolean pinned) {
-        viewHolders.get(position).favorite.setForeground(pinned ? AppCompatResources.getDrawable(context, R.drawable.ic_favorite)
-                                                                : AppCompatResources.getDrawable(context, R.drawable.ic_star_outline));
-    }
-
-    public void clearViewHolders() {
-        viewHolders.clear();
+    public void favoriteItem(CollectionActivityVH holder, boolean pinned) {
+        holder.favorite.setForeground(pinned ? AppCompatResources.getDrawable(context, R.drawable.ic_favorite)
+                                             : AppCompatResources.getDrawable(context, R.drawable.ic_star_outline));
+        holder.favorite.setChecked(pinned);
     }
 
     @NonNull

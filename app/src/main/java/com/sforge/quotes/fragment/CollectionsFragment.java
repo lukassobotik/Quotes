@@ -382,13 +382,11 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
     @Override
     public void onPause() {
         super.onPause();
-        collectionsAdapter.clearViewHolders();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        collectionsAdapter.clearViewHolders();
     }
 
     @Override

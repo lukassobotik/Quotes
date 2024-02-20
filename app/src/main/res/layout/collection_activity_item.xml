@@ -31,7 +31,7 @@
             android:textColor="?attr/colorOnPrimary"
             android:textSize="20sp"/>
 
-        <com.google.android.material.button.MaterialButton
+        <ToggleButton
                 android:id="@+id/favoriteCollectionButton"
                 style="@style/Button"
                 android:layout_width="wrap_content"
