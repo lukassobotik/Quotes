@@ -1,14 +1,18 @@
 package com.sforge.quotes.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -131,6 +135,7 @@ public class ExploreFragment extends Fragment {
         View fragmentView = inflater.inflate(R.layout.fragment_explore, container, false);
 
         defineViews(fragmentView);
+        changeStatusBarColor(true);
 
         if (lastSearchParam != null) {
             searchBar.setText(lastSearchParam);
@@ -165,6 +170,23 @@ public class ExploreFragment extends Fragment {
         loadDiscoverElements();
 
         return fragmentView;
+    }
+
+    private void changeStatusBarColor(boolean bright) {
+        int resId = bright ? com.google.android.material.R.attr.colorSurfaceBright
+                           : com.google.android.material.R.attr.colorSurface;
+        Activity activity = getActivity();
+        if (activity != null) {
+            Window window = activity.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+            // Retrieve the color using TypedValue
+            TypedValue typedValue = new TypedValue();
+            activity.getTheme().resolveAttribute(resId, typedValue, true);
+            int color = typedValue.data;
+
+            window.setStatusBarColor(color);
+        }
     }
 
     private void loadDiscoverElements() {
@@ -602,5 +624,17 @@ public class ExploreFragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        changeStatusBarColor(false);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        changeStatusBarColor(false);
     }
 }

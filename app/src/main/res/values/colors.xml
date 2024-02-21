@@ -20,6 +20,9 @@
     <color name="lighter_transparent">#40000000</color>
     <color name="darker_transparent">#50000000</color>
 
+    <color name="dynamicSurface">?attr/colorSurface</color>
+    <color name="dynamicSurfaceBright">?attr/colorSurfaceBright</color>
+
     <!--Dark theme Colors-->
     <color name="dark_grey">#272727</color>
     <color name="dark_grey_bg">#121212</color>
