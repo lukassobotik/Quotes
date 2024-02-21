@@ -212,6 +212,10 @@ public class HomeFragment extends Fragment {
                     Toast.makeText(getActivity(), "Cannot Access the Database Right Now. " + error, Toast.LENGTH_SHORT).show();
                 }
             });
+        } else {
+            randomQuote.setText("You have not logged in yet.");
+            randomQuoteAuthor.setText("Please log in to see your quotes.");
+            collectionsSkeleton.showOriginal();
         }
     }
 
