@@ -53,12 +53,13 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
 
     RecyclerView recyclerView;
     CollectionActivityAdapter collectionsAdapter;
-    Button addButton, backButton;
+    Button addButton, backButton, shareButton;
     Skeleton collectionsSkeleton;
     View placeholder;
     QuoteAdapter quoteAdapter;
     boolean viewingQuotes = false;
     String localCollection = "";
+    int position = 0;
     private final int PREFETCH_DISTANCE = 10;
 
     // TODO: Make user back press to go back to the collections list
@@ -115,7 +116,25 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
                 viewedCollectionParam = null;
                 placeholder.setVisibility(View.VISIBLE);
                 addButton.setVisibility(View.VISIBLE);
+                shareButton.setVisibility(View.GONE);
                 backButton.setVisibility(View.GONE);
+            });
+
+            shareButton.setOnClickListener(view -> {
+                StringBuilder stringBuilder = new StringBuilder();
+                if (position < 0) {
+                    return;
+                }
+                Quote quote = quoteAdapter.getQuoteFromPosition(position);
+                if (quote == null) {
+                    return;
+                }
+                stringBuilder.append(quote.getQuote()).append(" - By ").append(quote.getAuthor());
+
+                Intent myIntent = new Intent (Intent.ACTION_SEND);
+                myIntent.setType("text/plain");
+                myIntent.putExtra(Intent.EXTRA_TEXT, stringBuilder.toString());
+                startActivity(Intent.createChooser(myIntent, "Share using"));
             });
         }
 
@@ -213,6 +232,7 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
         localCollection = collection;
         viewedCollectionParam = collection;
         backButton.setVisibility(View.VISIBLE);
+        shareButton.setVisibility(View.VISIBLE);
         loadQuotes(null, collection, true);
         recyclerView.setAdapter(quoteAdapter);
         quoteAdapter.notifyDataSetChanged();
@@ -350,6 +370,7 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
         collectionsAdapter = new CollectionActivityAdapter(getContext(), options);
         collectionsAdapter.startListening();
         recyclerView.setAdapter(collectionsAdapter);
+        shareButton = view.findViewById(R.id.collectionsShareButton);
 
         createCollectionsSkeleton();
     }
@@ -370,6 +391,7 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                position = ((LinearLayoutManager) Objects.requireNonNull(recyclerView.getLayoutManager())).findLastCompletelyVisibleItemPosition();
                 if (!recyclerView.canScrollVertically(1)) {
                     loadQuotes(quoteAdapter.getLastItemId(), localCollection, false);
                 }

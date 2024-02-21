@@ -95,7 +95,11 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      * @return quote what is supposed to be added to a collection
      */
     public Quote getQuoteFromPosition(int position) {
-        return list.get(position);
+        if (list != null && !list.isEmpty()) {
+            return list.get(position);
+        } else {
+            return null;
+        }
     }
 
     @NonNull
