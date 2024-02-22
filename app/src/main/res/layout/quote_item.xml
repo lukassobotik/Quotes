@@ -11,9 +11,9 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/quoteItemBackground"
+            style="@style/elevatedBackground"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?attr/colorSurfaceBright">
+            android:layout_height="match_parent">
 
             <com.google.android.material.divider.MaterialDivider
                     android:layout_width="match_parent"
@@ -62,21 +62,21 @@
                         android:layout_weight="1">
 
                         <com.google.android.material.floatingactionbutton.FloatingActionButton
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:backgroundTint="?attr/colorPrimary"
-                            android:clickable="false"
-                            android:foreground="@drawable/ic_round_format_quote_24"
-                            android:foregroundTint="?attr/colorOnPrimary"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:layout_gravity="center"
-                            app:backgroundTint="@color/dark_grey"
-                            android:layout_weight="0"
+                                style="@style/Button"
+                                android:id="@+id/quote_logo"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:clickable="false"
+                                android:foreground="@drawable/ic_round_format_quote_24"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_gravity="center"
+                                android:layout_weight="0"
                             />
 
                         <TextView
                             android:id="@+id/textAuthor"
+                            style="@style/text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
@@ -84,7 +84,6 @@
                             android:background="@color/transparent"
                             android:gravity="center|bottom"
                             android:text="Text"
-                            android:textColor="?attr/colorAccent"
                             android:textSize="20sp"
                             android:textStyle="italic"
                             android:layout_weight="1"
@@ -92,6 +91,7 @@
 
                         <TextView
                             android:id="@+id/textQuote"
+                            style="@style/text"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginStart="8dp"
@@ -104,7 +104,6 @@
                             android:fontFamily="sans-serif-condensed-medium"
                             android:gravity="center|top"
                             android:text="Text"
-                            android:textColor="?attr/colorAccent"
                             android:textStyle="bold"
                             android:layout_weight="100" />
 

@@ -3,10 +3,10 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        style="@style/elevatedBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".fragment.ExploreFragment"
-        android:background="?attr/colorSurfaceBright">
+        tools:context=".fragment.ExploreFragment">
 
     <include layout="@layout/explore_discover_quotes_layout" />
 

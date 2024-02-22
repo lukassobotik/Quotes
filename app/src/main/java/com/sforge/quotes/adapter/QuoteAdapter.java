@@ -2,20 +2,13 @@ package com.sforge.quotes.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -27,18 +20,12 @@ import com.sforge.quotes.entity.Background;
 import com.sforge.quotes.entity.Quote;
 import com.sforge.quotes.entity.UserPreferences;
 import com.sforge.quotes.fragment.CollectionsFragment;
-import com.sforge.quotes.fragment.UserProfileFragment;
-import com.sforge.quotes.repository.QuoteRepository;
-import com.sforge.quotes.repository.UserBookmarksRepository;
 import com.sforge.quotes.repository.UserPreferencesRepository;
-import com.sforge.quotes.repository.UserQuoteRepository;
 import com.sforge.quotes.view.QuoteVH;
-import com.sforge.quotes.view.UserQuoteVH;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

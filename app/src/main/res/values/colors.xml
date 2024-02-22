@@ -35,5 +35,8 @@
     <color name="color_primary_variant">#272727</color>
 
     <!--Light theme Colors-->
-
+    <color name="half_light_grey">#E3E3E3</color>
+    <color name="light_grey">#F5F5F5</color>
+    <color name="light_grey_bg">#F5F5F5</color>
+    <color name="light_on_primary">#FFFFFF</color>
 </resources>

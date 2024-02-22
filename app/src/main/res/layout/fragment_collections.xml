@@ -80,7 +80,6 @@
                 android:layout_height="48dp"
                 android:layout_margin="16dp"
                 android:foreground="@drawable/ic_baseline_add_24"
-                android:foregroundTint="?attr/colorOnPrimary"
                 android:foregroundGravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -95,7 +94,6 @@
                 android:layout_height="48dp"
                 android:layout_margin="16dp"
                 android:foreground="@drawable/ic_arrow_back"
-                android:foregroundTint="?attr/colorOnPrimary"
                 android:foregroundGravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -109,7 +107,6 @@
                 android:layout_marginEnd="16dp"
                 android:foreground="@drawable/ic_share"
                 android:foregroundGravity="center"
-                android:foregroundTint="?attr/colorOnPrimary"
                 android:padding="10dp"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
@@ -117,7 +114,8 @@
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0" app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintVertical_bias="1.0"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

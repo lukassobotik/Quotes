@@ -6,17 +6,16 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorSurface">
+            style="@style/background"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         <TextView
-            style="@style/text"
+            style="@style/Button"
             android:id="@+id/collection_item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/button_round_corners"
-            android:backgroundTint="?attr/colorPrimary"
             android:fontFamily="sans-serif-condensed-medium"
             android:gravity="center"
             android:layout_marginBottom="8dp"
@@ -24,7 +23,6 @@
             android:layout_marginRight="8dp"
             android:padding="8dp"
             android:text="Collection"
-            android:textColor="?attr/colorOnPrimary"
             android:textSize="20sp"/>
 
     </LinearLayout>

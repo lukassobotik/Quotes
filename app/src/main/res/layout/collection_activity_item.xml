@@ -3,32 +3,31 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        style="@style/background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:background="?attr/colorSurface">
+        android:layout_marginRight="16dp">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="?attr/colorSurface">
+            style="@style/background"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
         <TextView
+            style="@style/Button"
             android:id="@+id/collection_activity_item_name"
             android:layout_width="match_parent"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:background="@drawable/button_round_corners"
-            android:backgroundTint="?attr/colorPrimary"
             android:fontFamily="sans-serif-condensed-medium"
             android:padding="8dp"
             android:lines="1"
             android:gravity="center"
             android:text="Collection"
-            android:textColor="?attr/colorOnPrimary"
             android:textSize="20sp"/>
 
         <ToggleButton
@@ -37,8 +36,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:foreground="@drawable/ic_star_outline"
-                android:backgroundTint="?attr/colorPrimary"
-                android:foregroundTint="?attr/colorOnPrimary"
                 android:padding="16dp"
                 android:layout_marginStart="4dp"
                 android:foregroundGravity="center"

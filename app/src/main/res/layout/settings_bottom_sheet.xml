@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-        android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:background="?attr/colorSurface">
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        style="@style/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <LinearLayout
             android:id="@+id/settings_bottom_sheet_handle_layout"
@@ -62,7 +64,6 @@
                 android:text="Show Email"
                 android:textSize="12dp"
                 android:visibility="gone"
-                android:backgroundTint="?attr/colorPrimary"
                 android:elevation="24dp"/>
 
         <Button
@@ -73,7 +74,6 @@
                 android:layout_marginTop="4dp"
                 android:text="Change Background"
                 android:textSize="12dp"
-                android:backgroundTint="?attr/colorPrimary"
                 android:elevation="24dp"/>
 
         <TextView
@@ -93,7 +93,6 @@
                 android:layout_marginTop="4dp"
                 android:text="Stored data"
                 android:textSize="12dp"
-                android:backgroundTint="?attr/colorPrimary"
                 android:elevation="24dp"/>
 
         <Button
@@ -104,7 +103,6 @@
                 android:layout_marginTop="4dp"
                 android:text="Delete Account"
                 android:textSize="12dp"
-                android:backgroundTint="?attr/colorPrimary"
                 android:elevation="24dp"/>
 
         <Button
@@ -115,7 +113,6 @@
                 android:layout_marginTop="4dp"
                 android:text="Login"
                 android:textSize="12dp"
-                android:backgroundTint="?attr/colorPrimary"
                 android:elevation="24dp"
                 android:visibility="gone"/>
 
@@ -127,7 +124,6 @@
                 android:layout_marginTop="4dp"
                 android:text="Logout"
                 android:textSize="12dp"
-                android:backgroundTint="?attr/colorPrimary"
                 android:elevation="24dp"
                 android:visibility="gone"/>
 
@@ -147,7 +143,6 @@
                 android:layout_height="wrap_content"
                 android:text="About"
                 android:textSize="12dp"
-                android:backgroundTint="?attr/colorPrimary"
                 android:elevation="24dp"/>
     </LinearLayout>
     <LinearLayout
