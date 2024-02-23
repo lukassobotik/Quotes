@@ -112,26 +112,11 @@ public class MainActivity extends AppCompatActivity implements CollectionsDialog
     @Override
     protected void onPause() {
         super.onPause();
-//        //Store the Recyclerview scroll position
-//        lastFirstVisiblePosition =
-//                ((LinearLayoutManager) Objects.requireNonNull(recyclerView.getLayoutManager())).findLastCompletelyVisibleItemPosition();
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
-//        //Restore the last stored Recyclerview scroll position
-//        recyclerView.getLayoutManager().scrollToPosition(lastFirstVisiblePosition);
-//        if (quoteAdapter.getItemCount() != 0) {
-//            setCurrentQuoteCreatorInfo(lastFirstVisiblePosition);
-//            collectionsAdapter.setQuote(quoteAdapter.getQuoteFromPosition(lastFirstVisiblePosition));
-//        }
-//
-//        //#5 Issue Fix
-//        if (FirebaseAuth.getInstance().getCurrentUser() != null && !isLoggedIn) {
-//            finish();
-//            startActivity(new Intent(MainActivity.this, MainActivity.class));
-//        }
     }
 
     @Override
