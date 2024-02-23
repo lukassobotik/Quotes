@@ -38,10 +38,11 @@
                 android:foreground="@drawable/ic_star_outline"
                 android:padding="16dp"
                 android:layout_marginStart="4dp"
+                android:textOff=""
+                android:textOn=""
                 android:foregroundGravity="center"
                 android:layout_gravity="center"
                 android:gravity="center"
-                app:iconGravity="start"
                 android:layout_weight="1"/>
 
     </LinearLayout>

@@ -236,7 +236,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void createFavoriteCollectionsSkeleton() {
-        collectionsSkeleton = SkeletonLayoutUtils.applySkeleton(pinnedCollections, R.layout.collection_item, 5);
+        collectionsSkeleton = SkeletonLayoutUtils.applySkeleton(pinnedCollections, R.layout.collection_item, 2);
         collectionsSkeleton.showSkeleton();
         collectionsSkeleton.setMaskColor(0);
         collectionsSkeleton.setMaskCornerRadius(50f);
