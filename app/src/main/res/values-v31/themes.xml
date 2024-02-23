@@ -9,6 +9,7 @@
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:statusBarColor">?attr/colorSurface</item>
         <item name="android:navigationBarColor">?attr/colorSurfaceContainer</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <style name="bottomNavigation" parent="Widget.Material3.BottomNavigationView">
