@@ -72,6 +72,13 @@ abstract class CrudRepository {
                 .removeValue();
     }
 
+    public Task<Void> favorite(String key, boolean value) {
+        return databaseReference
+                .child(key)
+                .child("favorite")
+                .setValue(value);
+    }
+
     /**
      * Get all entities.
      * @return all stored entities.

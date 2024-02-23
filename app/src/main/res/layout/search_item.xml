@@ -14,26 +14,16 @@
             android:layout_weight="1">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/grey">
-
-                <View
+                    style="@style/elevatedBackground"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/dark_grey"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_height="match_parent">
 
-                <View
-                    android:id="@+id/view3"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/dark_grey"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                <com.google.android.material.divider.MaterialDivider
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"/>
 
                 <LinearLayout
                     android:id="@+id/searchQuoteIconLayout"
@@ -47,9 +37,9 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        style="@style/Button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:backgroundTint="@color/dark_grey"
                         android:clickable="false"
                         android:foreground="@drawable/ic_round_format_quote_24"
                         app:backgroundTint="@color/dark_grey" />
@@ -75,6 +65,7 @@
 
                         <TextView
                             android:id="@+id/searchTextAuthor"
+                            style="@style/text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
@@ -87,6 +78,7 @@
 
                         <TextView
                             android:id="@+id/searchTextQuote"
+                            style="@style/text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
@@ -121,7 +113,6 @@
                         android:layout_height="48dp"
                         android:foreground="@drawable/ic_share"
                         android:foregroundGravity="center"
-                        android:foregroundTint="@color/white"
                         android:padding="10dp"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
@@ -135,7 +126,6 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:foreground="@drawable/ic_bookmark_empty"
-                        android:foregroundTint="@color/white"
                         android:foregroundGravity="center"
                         android:padding="10dp"
                         android:textAllCaps="false"

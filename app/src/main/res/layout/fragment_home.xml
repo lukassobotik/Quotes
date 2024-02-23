@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".fragment.HomeFragment"
+        android:padding="16dp"
+        android:orientation="vertical">
+
+    <TextView
+            android:id="@+id/greetings_text"
+            style="@style/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textSize="30sp"
+            android:autoSizeTextType="uniform"
+            android:background="@color/transparent"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:gravity="start|bottom"
+            android:text="@string/greeting"/>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="8dp">
+
+        <TextView
+                style="@style/text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:textSize="20sp"
+                android:autoSizeTextType="uniform"
+                android:background="@color/transparent"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:gravity="start|bottom"
+                android:text="@string/favorite_collections"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/pinned_collections_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/settings_bottom_sheet_handle_layout"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+    </LinearLayout>
+
+    <TextView
+            android:id="@+id/collection_quote_count_text"
+            style="@style/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textSize="20sp"
+            android:autoSizeTextType="uniform"
+            android:background="@color/transparent"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:gravity="start|bottom"
+            android:text="@string/amount_of_collected_quotes"/>
+
+    <TextView
+            android:id="@+id/collection_quote_count"
+            style="@style/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textSize="15sp"
+            android:autoSizeTextType="uniform"
+            android:background="@color/transparent"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:gravity="start|bottom"
+            android:text="@string/_0"/>
+
+    <TextView
+            android:id="@+id/quote_count_text"
+            style="@style/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textSize="20sp"
+            android:autoSizeTextType="uniform"
+            android:background="@color/transparent"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:gravity="start|bottom"
+            android:text="@string/amount_of_created_quotes"/>
+
+    <TextView
+            android:id="@+id/quote_count"
+            style="@style/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textSize="15sp"
+            android:autoSizeTextType="uniform"
+            android:background="@color/transparent"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:gravity="start|bottom"
+            android:text="@string/_0"/>
+
+    <TextView
+            android:id="@+id/random_quote_text"
+            style="@style/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textSize="20sp"
+            android:autoSizeTextType="uniform"
+            android:background="@color/transparent"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:gravity="start|bottom"
+            android:text="@string/your_random_quote"/>
+
+    <TextView
+            android:id="@+id/random_quote"
+            style="@style/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textSize="15sp"
+            android:autoSizeTextType="uniform"
+            android:background="@color/transparent"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:gravity="start|bottom"
+            android:text="@string/no_quote_yet_create_one_now"/>
+
+    <TextView
+            android:id="@+id/random_quote_author"
+            style="@style/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textSize="15sp"
+            android:autoSizeTextType="uniform"
+            android:background="@color/transparent"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:gravity="start|bottom"
+            android:text="@string/minus_myquotes"/>
+</LinearLayout>

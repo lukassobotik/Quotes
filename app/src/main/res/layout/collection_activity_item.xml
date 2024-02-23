@@ -1,32 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <LinearLayout
+<androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        style="@style/background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/dark_grey_bg">
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp">
 
-        <TextView
-            style="@style/text"
-            android:id="@+id/collection_activity_item_name"
+    <LinearLayout
+            style="@style/background"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        <TextView
+            style="@style/Button"
+            android:id="@+id/collection_activity_item_name"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="@drawable/button_round_corners"
-            android:backgroundTint="@color/dark_grey"
             android:fontFamily="sans-serif-condensed-medium"
-            android:padding="16dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:padding="8dp"
             android:lines="1"
             android:gravity="center"
             android:text="Collection"
-            android:textSize="40sp"
-            android:textStyle="bold" />
+            android:textSize="20sp"/>
+
+        <ToggleButton
+                android:id="@+id/favoriteCollectionButton"
+                style="@style/Button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:foreground="@drawable/ic_star_outline"
+                android:padding="16dp"
+                android:layout_marginStart="4dp"
+                android:textOff=""
+                android:textOn=""
+                android:foregroundGravity="center"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_weight="1"/>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

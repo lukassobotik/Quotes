@@ -1,9 +1,6 @@
 package com.sforge.quotes.entity;
 
 public class Background {
-    /**
-     * Final Strings to Define what Background to Use
-     */
     public final String BLUE_SKY_1 = "blue_sky_1";
     public final String BRIDGE_IN_FOREST_1 = "bridge_in_forest_1";
     public final String BRIDGE_IN_FOREST_2 = "bridge_in_forest_2";
@@ -22,4 +19,5 @@ public class Background {
     public final String RSZ_GREY = "rsz_grey";
     public final String RSZ_ORANGE_PURPLE_GRADIENT = "rsz_orange_purple_gradient";
     public final String RSZ_WHITE_GRADIENT = "rsz_white_gradient";
+    public final String DYNAMIC = "dynamic";
 }

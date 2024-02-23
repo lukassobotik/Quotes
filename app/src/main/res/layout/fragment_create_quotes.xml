@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".fragment.CreateQuotesFragment">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".activity.CreateQuotes"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/createQuoteEditTextLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Quote">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/createQuoteEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+            />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/createAuthorEditTextLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="Author">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/createAuthorEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+            />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/createQuoteButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Create"
+                app:layout_constraintTop_toBottomOf="@+id/createAuthorEditText"
+                tools:layout_editor_absoluteX="8dp"/>
+
+    </LinearLayout>
+
+</FrameLayout>

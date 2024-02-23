@@ -1,34 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:name=".myQuotesApplication"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Quotes">
         <activity
-            android:name=".activity.SearchActivity"
-            android:exported="false"
-            android:label=""
-            android:theme="@style/Theme.Appcompat.Quotes.NoActionBar" />
-        <activity
-            android:name=".activity.CollectionsActivity"
-            android:exported="false"
-            android:label=""
-            android:theme="@style/Theme.Appcompat.Quotes.NoActionBar" />
-        <activity
             android:name=".activity.ForgottenPassword"
             android:exported="false"
             android:label="" />
-        <activity
-            android:name=".activity.UserProfile"
-            android:exported="false"
-            android:label=""
-            android:parentActivityName=".activity.MainActivity"
-            android:theme="@style/Theme.Appcompat.Quotes.NoActionBar" />
         <activity
             android:name=".activity.RegisterActivity"
             android:exported="false"
@@ -38,14 +28,8 @@
             android:exported="false"
             android:label="" />
         <activity
-            android:name=".activity.CreateQuotes"
-            android:exported="false"
-            android:label="Create A Quote"
-            android:parentActivityName=".activity.MainActivity" />
-        <activity
             android:name=".activity.MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AppCompat.SlidrActivityTheme">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

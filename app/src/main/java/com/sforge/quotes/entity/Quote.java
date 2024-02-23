@@ -1,23 +1,11 @@
 package com.sforge.quotes.entity;
 
-/**
- * Basic entity holding data for Quote.
- */
-public class Quote {
+import android.os.Parcel;
+import android.os.Parcelable;
 
-    /**
-     * Quote string to be displayed.
-     */
+public class Quote implements Parcelable {
     private String quote;
-
-    /**
-     * Author of the quote.
-     */
     private String author;
-
-    /**
-     * User who added the quote.
-     */
     private String user;
 
     /**
@@ -69,4 +57,37 @@ public class Quote {
     public String getKey() {
         return key;
     }
+
+
+    protected Quote(Parcel in) {
+        quote = in.readString();
+        author = in.readString();
+        user = in.readString();
+        key = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(quote);
+        dest.writeString(author);
+        dest.writeString(user);
+        dest.writeString(key);
+    }
+
+    public static final Creator<Quote> CREATOR = new Creator<Quote>() {
+        @Override
+        public Quote createFromParcel(Parcel in) {
+            return new Quote(in);
+        }
+
+        @Override
+        public Quote[] newArray(int size) {
+            return new Quote[size];
+        }
+    };
 }

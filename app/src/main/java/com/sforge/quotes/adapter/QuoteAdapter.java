@@ -2,19 +2,13 @@ package com.sforge.quotes.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,21 +19,22 @@ import com.sforge.quotes.activity.MainActivity;
 import com.sforge.quotes.entity.Background;
 import com.sforge.quotes.entity.Quote;
 import com.sforge.quotes.entity.UserPreferences;
-import com.sforge.quotes.repository.QuoteRepository;
-import com.sforge.quotes.repository.UserBookmarksRepository;
+import com.sforge.quotes.fragment.CollectionsFragment;
 import com.sforge.quotes.repository.UserPreferencesRepository;
-import com.sforge.quotes.repository.UserQuoteRepository;
 import com.sforge.quotes.view.QuoteVH;
-import com.sforge.quotes.view.UserQuoteVH;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    public interface OnQuoteLongClickListener {
+        void onQuoteLongClick(int position);
+    }
+
     private final Context context;
+    private OnQuoteLongClickListener longClickListener;
     List<Quote> list = new ArrayList<>();
 
     /**
@@ -57,6 +52,10 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void setItems(List<Quote> quotes){
         list.clear();
         list.addAll(quotes);
+    }
+
+    public void setOnQuoteLongClickListener(OnQuoteLongClickListener listener) {
+        this.longClickListener = listener;
     }
 
     /**
@@ -83,7 +82,11 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      * @return quote what is supposed to be added to a collection
      */
     public Quote getQuoteFromPosition(int position) {
-        return list.get(position);
+        if (list != null && !list.isEmpty()) {
+            return list.get(position);
+        } else {
+            return null;
+        }
     }
 
     @NonNull
@@ -92,6 +95,11 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         View view = LayoutInflater.from(context).inflate(R.layout.quote_item, parent, false);
         Background backgroundEntity = new Background();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        setBackground(user, view, backgroundEntity);
+        return new QuoteVH(view);
+    }
+
+    private static void setBackground(final FirebaseUser user, final View view, final Background backgroundEntity) {
         if (user != null) {
             new UserPreferencesRepository(user.getUid()).getDatabaseReference()
                     .addValueEventListener(
@@ -105,7 +113,6 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                         usrPrefs.add(userPreferences);
                                     }
                                     if (snapshot.getValue() != null) {
-
                                         TextView tvQuote = view.findViewById(R.id.textQuote);
                                         TextView tvAuthor = view.findViewById(R.id.textAuthor);
 
@@ -183,6 +190,9 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                             tvQuote.setTextColor(view.getResources().getColor(R.color.grey, null));
                                             tvAuthor.setTextColor(view.getResources().getColor(R.color.grey, null));
                                         }
+                                        if (usrPrefs.get(0).getBgId().equals(backgroundEntity.DYNAMIC)) {
+
+                                        }
                                     }
                                 }
 
@@ -191,7 +201,6 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                 }
                             });
         }
-        return new QuoteVH(view);
     }
 
     @Override
@@ -200,6 +209,18 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         Quote quote = list.get(position);
         vh.textQuote.setText(quote.getQuote());
         vh.textAuthor.setText(quote.getAuthor());
+
+        FirebaseUser auth = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (context instanceof MainActivity) {
+            Fragment currentFragment = ((MainActivity) context).getCurrentFragment();
+            if (currentFragment instanceof CollectionsFragment && auth != null) {
+                vh.itemView.setOnLongClickListener(view -> {
+                    longClickListener.onQuoteLongClick(position);
+                    return true;
+                });
+            }
+        }
     }
 
     @Override

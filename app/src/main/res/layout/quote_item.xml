@@ -11,26 +11,16 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/quoteItemBackground"
+            style="@style/elevatedBackground"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/grey">
+            android:layout_height="match_parent">
 
-            <View
-                android:id="@+id/view"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/dark_grey"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/dark_grey"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+            <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
 
             <LinearLayout
                 android:id="@+id/quoteLinearLayout"
@@ -58,7 +48,7 @@
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:background="@color/transparent"
-                        android:layout_weight="1.5">
+                        android:layout_weight="2.5">
 
                     </LinearLayout>
 
@@ -67,22 +57,26 @@
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:background="@color/transparent"
+                        android:layout_gravity="center"
+
                         android:layout_weight="1">
 
                         <com.google.android.material.floatingactionbutton.FloatingActionButton
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:backgroundTint="@color/dark_grey"
-                            android:clickable="false"
-                            android:foreground="@drawable/ic_round_format_quote_24"
-                            android:layout_marginTop="8dp"
-                            android:layout_gravity="center"
-                            app:backgroundTint="@color/dark_grey"
-                            android:layout_weight="0"
+                                style="@style/Button"
+                                android:id="@+id/quote_logo"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:clickable="false"
+                                android:foreground="@drawable/ic_round_format_quote_24"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_gravity="center"
+                                android:layout_weight="0"
                             />
 
                         <TextView
                             android:id="@+id/textAuthor"
+                            style="@style/text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
@@ -97,6 +91,7 @@
 
                         <TextView
                             android:id="@+id/textQuote"
+                            style="@style/text"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginStart="8dp"
