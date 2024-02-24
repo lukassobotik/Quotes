@@ -100,7 +100,6 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
             defineViews(fragmentView);
 
             if (viewedCollectionParam != null) {
-                System.out.println("Viewed Collection: " + viewedCollectionParam);
                 loadCollection(viewedCollectionParam);
             }
 
@@ -198,7 +197,6 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Quote> quotes = new ArrayList<>();
                 for (DataSnapshot data : snapshot.getChildren()) {
-                    System.out.println("LOADING QUOTES FROM " + collection);
 
                     if ("favorite".equals(data.getKey())) {
                         continue;
@@ -232,7 +230,6 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
     }
 
     public void loadCollection(String collection) {
-        System.out.println("Loading collection: " + "\"" + collection + "\"");
         localCollection = collection;
         viewedCollectionParam = collection;
         backButton.setVisibility(View.VISIBLE);
