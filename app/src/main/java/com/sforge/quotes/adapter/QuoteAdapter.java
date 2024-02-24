@@ -72,8 +72,14 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      * @param position what position is the recycler view scrolled to
      * @return user id
      */
-    public String getCreatorAccountFromPosition(int position){
-        return list.get(position).getUser();
+    public String getCreatorAccountFromPosition(int position) {
+        if ((list == null || list.isEmpty())) {
+            return "";
+        } else if (position < 0 || position >= list.size()) {
+            return "";
+        } else {
+            return list.get(position).getUser();
+        }
     }
 
     /**
@@ -100,106 +106,61 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private static void setBackground(final FirebaseUser user, final View view, final Background backgroundEntity) {
-        if (user != null) {
-            new UserPreferencesRepository(user.getUid()).getDatabaseReference()
-                    .addValueEventListener(
-                            new ValueEventListener() {
-                                @SuppressLint("NotifyDataSetChanged")
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    List<UserPreferences> usrPrefs = new ArrayList<>();
-                                    for (DataSnapshot data : snapshot.getChildren()) {
-                                        UserPreferences userPreferences = data.getValue(UserPreferences.class);
-                                        usrPrefs.add(userPreferences);
-                                    }
-                                    if (snapshot.getValue() != null) {
-                                        TextView tvQuote = view.findViewById(R.id.textQuote);
-                                        TextView tvAuthor = view.findViewById(R.id.textAuthor);
+        if (user == null) {
+            return;
+        }
+        new UserPreferencesRepository(user.getUid()).getDatabaseReference()
+                .addValueEventListener(new ValueEventListener() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        List<UserPreferences> usrPrefs = new ArrayList<>();
+                        for (DataSnapshot data : snapshot.getChildren()) {
+                            UserPreferences userPreferences = data.getValue(UserPreferences.class);
+                            usrPrefs.add(userPreferences);
+                        }
+                        if (snapshot.getValue() != null) {
+                            TextView tvQuote = view.findViewById(R.id.textQuote);
+                            TextView tvAuthor = view.findViewById(R.id.textAuthor);
 
-                                        if (usrPrefs.get(0).getBgId().equals(backgroundEntity.BLUE_SKY_1)){
-                                            view.findViewById(R.id.quoteItemBackground).setBackgroundResource(R.drawable.blue_sky_1);
-                                            tvQuote.setTextColor(view.getResources().getColor(R.color.grey, null));
-                                            tvAuthor.setTextColor(view.getResources().getColor(R.color.grey, null));
-                                        } else if (usrPrefs.get(0).getBgId().equals(backgroundEntity.BRIDGE_IN_FOREST_1)) {
-                                            view.findViewById(R.id.quoteItemBackground).setBackgroundResource(R.drawable.bridge_in_forest_1);
-                                            tvQuote.setTextColor(view.getResources().getColor(R.color.white, null));
-                                            tvAuthor.setTextColor(view.getResources().getColor(R.color.white, null));
-                                        } else if (usrPrefs.get(0).getBgId().equals(backgroundEntity.NIGHT_CITY_1)) {
-                                            view.findViewById(R.id.quoteItemBackground).setBackgroundResource(R.drawable.night_city_1);
-                                            tvQuote.setTextColor(view.getResources().getColor(R.color.white, null));
-                                            tvAuthor.setTextColor(view.getResources().getColor(R.color.white, null));
-                                        } else if (usrPrefs.get(0).getBgId().equals(backgroundEntity.DARK_MOUNTAINS_1)) {
-                                            view.findViewById(R.id.quoteItemBackground).setBackgroundResource(R.drawable.dark_mountains_1);
-                                            tvQuote.setTextColor(view.getResources().getColor(R.color.white, null));
-                                            tvAuthor.setTextColor(view.getResources().getColor(R.color.white, null));
-                                        } else if (usrPrefs.get(0).getBgId().equals(backgroundEntity.BRIDGE_IN_FOREST_2)) {
-                                            view.findViewById(R.id.quoteItemBackground).setBackgroundResource(R.drawable.bridge_in_forest_2);
-                                            tvQuote.setTextColor(view.getResources().getColor(R.color.white, null));
-                                            tvAuthor.setTextColor(view.getResources().getColor(R.color.white, null));
-                                        } else if (usrPrefs.get(0).getBgId().equals(backgroundEntity.FOREST_1)) {
-                                            view.findViewById(R.id.quoteItemBackground).setBackgroundResource(R.drawable.forest_1);
-                                            tvQuote.setTextColor(view.getResources().getColor(R.color.white, null));
-                                            tvAuthor.setTextColor(view.getResources().getColor(R.color.white, null));
-                                        } else if (usrPrefs.get(0).getBgId().equals(backgroundEntity.GREY)) {
-                                            view.findViewById(R.id.quoteItemBackground).setBackgroundResource(R.drawable.grey);
-                                            tvQuote.setTextColor(view.getResources().getColor(R.color.white, null));
-                                            tvAuthor.setTextColor(view.getResources().getColor(R.color.white, null));
-                                        } else if (usrPrefs.get(0).getBgId().equals(backgroundEntity.ORANGE_PURPLE_GRADIENT)) {
-                                            view.findViewById(R.id.quoteItemBackground).setBackgroundResource(R.drawable.orange_purple_gradient);
-                                            tvQuote.setTextColor(view.getResources().getColor(R.color.white, null));
-                                            tvAuthor.setTextColor(view.getResources().getColor(R.color.white, null));
-                                        } else if (usrPrefs.get(0).getBgId().equals(backgroundEntity.WHITE_GRADIENT)) {
-                                            view.findViewById(R.id.quoteItemBackground).setBackgroundResource(R.drawable.white_gradient);
-                                            tvQuote.setTextColor(view.getResources().getColor(R.color.grey, null));
-                                            tvAuthor.setTextColor(view.getResources().getColor(R.color.grey, null));
-                                        }
-                                        if (usrPrefs.get(0).getBgId().equals(backgroundEntity.RSZ_BLUE_SKY_1)){
-                                            view.findViewById(R.id.quoteItemBackground).setBackgroundResource(R.drawable.rsz_blue_sky_1);
-                                            tvQuote.setTextColor(view.getResources().getColor(R.color.grey, null));
-                                            tvAuthor.setTextColor(view.getResources().getColor(R.color.grey, null));
-                                        } else if (usrPrefs.get(0).getBgId().equals(backgroundEntity.RSZ_BRIDGE_IN_FOREST_1)) {
-                                            view.findViewById(R.id.quoteItemBackground).setBackgroundResource(R.drawable.rsz_bridge_in_forest_1);
-                                            tvQuote.setTextColor(view.getResources().getColor(R.color.white, null));
-                                            tvAuthor.setTextColor(view.getResources().getColor(R.color.white, null));
-                                        } else if (usrPrefs.get(0).getBgId().equals(backgroundEntity.RSZ_NIGHT_CITY_1)) {
-                                            view.findViewById(R.id.quoteItemBackground).setBackgroundResource(R.drawable.rsz_night_city_1);
-                                            tvQuote.setTextColor(view.getResources().getColor(R.color.white, null));
-                                            tvAuthor.setTextColor(view.getResources().getColor(R.color.white, null));
-                                        } else if (usrPrefs.get(0).getBgId().equals(backgroundEntity.RSZ_DARK_MOUNTAINS_1)) {
-                                            view.findViewById(R.id.quoteItemBackground).setBackgroundResource(R.drawable.rsz_dark_mountains_1);
-                                            tvQuote.setTextColor(view.getResources().getColor(R.color.white, null));
-                                            tvAuthor.setTextColor(view.getResources().getColor(R.color.white, null));
-                                        } else if (usrPrefs.get(0).getBgId().equals(backgroundEntity.RSZ_BRIDGE_IN_FOREST_2)) {
-                                            view.findViewById(R.id.quoteItemBackground).setBackgroundResource(R.drawable.rsz_bridge_in_forest_2);
-                                            tvQuote.setTextColor(view.getResources().getColor(R.color.white, null));
-                                            tvAuthor.setTextColor(view.getResources().getColor(R.color.white, null));
-                                        } else if (usrPrefs.get(0).getBgId().equals(backgroundEntity.RSZ_FOREST_1)) {
-                                            view.findViewById(R.id.quoteItemBackground).setBackgroundResource(R.drawable.rsz_forest_1);
-                                            tvQuote.setTextColor(view.getResources().getColor(R.color.white, null));
-                                            tvAuthor.setTextColor(view.getResources().getColor(R.color.white, null));
-                                        } else if (usrPrefs.get(0).getBgId().equals(backgroundEntity.RSZ_GREY)) {
-                                            view.findViewById(R.id.quoteItemBackground).setBackgroundResource(R.drawable.rsz_grey);
-                                            tvQuote.setTextColor(view.getResources().getColor(R.color.white, null));
-                                            tvAuthor.setTextColor(view.getResources().getColor(R.color.white, null));
-                                        } else if (usrPrefs.get(0).getBgId().equals(backgroundEntity.RSZ_ORANGE_PURPLE_GRADIENT)) {
-                                            view.findViewById(R.id.quoteItemBackground).setBackgroundResource(R.drawable.rsz_orange_purple_gradient);
-                                            tvQuote.setTextColor(view.getResources().getColor(R.color.white, null));
-                                            tvAuthor.setTextColor(view.getResources().getColor(R.color.white, null));
-                                        } else if (usrPrefs.get(0).getBgId().equals(backgroundEntity.RSZ_WHITE_GRADIENT)) {
-                                            view.findViewById(R.id.quoteItemBackground).setBackgroundResource(R.drawable.rsz_white_gradient);
-                                            tvQuote.setTextColor(view.getResources().getColor(R.color.grey, null));
-                                            tvAuthor.setTextColor(view.getResources().getColor(R.color.grey, null));
-                                        }
-                                        if (usrPrefs.get(0).getBgId().equals(backgroundEntity.DYNAMIC)) {
+                            applyUserPreferences(usrPrefs, view, tvQuote, tvAuthor, backgroundEntity);
+                        }
+                    }
 
-                                        }
-                                    }
-                                }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
+    }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                }
-                            });
+    private static void setBackgroundAndTextColor(View view, TextView tvQuote, TextView tvAuthor, int backgroundResource, int textColor) {
+        view.findViewById(R.id.quoteItemBackground).setBackgroundResource(backgroundResource);
+        tvQuote.setTextColor(view.getResources().getColor(textColor, null));
+        tvAuthor.setTextColor(view.getResources().getColor(textColor, null));
+    }
+
+    private static void applyUserPreferences(List<UserPreferences> usrPrefs, View view, TextView tvQuote, TextView tvAuthor, Background backgroundEntity) {
+        String bgId = usrPrefs.get(0).getBgId();
+        if (bgId.equals(backgroundEntity.BLUE_SKY_1)) setBackgroundAndTextColor(view, tvQuote, tvAuthor, R.drawable.blue_sky_1, R.color.grey);
+        else if (bgId.equals(backgroundEntity.BRIDGE_IN_FOREST_1)) setBackgroundAndTextColor(view, tvQuote, tvAuthor, R.drawable.bridge_in_forest_1, R.color.white);
+        else if (bgId.equals(backgroundEntity.NIGHT_CITY_1)) setBackgroundAndTextColor(view, tvQuote, tvAuthor, R.drawable.night_city_1, R.color.white);
+        else if (bgId.equals(backgroundEntity.DARK_MOUNTAINS_1)) setBackgroundAndTextColor(view, tvQuote, tvAuthor, R.drawable.dark_mountains_1, R.color.white);
+        else if (bgId.equals(backgroundEntity.BRIDGE_IN_FOREST_2)) setBackgroundAndTextColor(view, tvQuote, tvAuthor, R.drawable.bridge_in_forest_2, R.color.white);
+        else if (bgId.equals(backgroundEntity.FOREST_1)) setBackgroundAndTextColor(view, tvQuote, tvAuthor, R.drawable.forest_1, R.color.white);
+        else if (bgId.equals(backgroundEntity.GREY)) setBackgroundAndTextColor(view, tvQuote, tvAuthor, R.drawable.grey, R.color.white);
+        else if (bgId.equals(backgroundEntity.ORANGE_PURPLE_GRADIENT)) setBackgroundAndTextColor(view, tvQuote, tvAuthor, R.drawable.orange_purple_gradient, R.color.white);
+        else if (bgId.equals(backgroundEntity.WHITE_GRADIENT)) setBackgroundAndTextColor(view, tvQuote, tvAuthor, R.drawable.white_gradient, R.color.grey);
+        else if (bgId.equals(backgroundEntity.RSZ_BLUE_SKY_1)) setBackgroundAndTextColor(view, tvQuote, tvAuthor, R.drawable.rsz_blue_sky_1, R.color.grey);
+        else if (bgId.equals(backgroundEntity.RSZ_BRIDGE_IN_FOREST_1)) setBackgroundAndTextColor(view, tvQuote, tvAuthor, R.drawable.rsz_bridge_in_forest_1, R.color.white);
+        else if (bgId.equals(backgroundEntity.RSZ_NIGHT_CITY_1)) setBackgroundAndTextColor(view, tvQuote, tvAuthor, R.drawable.rsz_night_city_1, R.color.white);
+        else if (bgId.equals(backgroundEntity.RSZ_DARK_MOUNTAINS_1)) setBackgroundAndTextColor(view, tvQuote, tvAuthor, R.drawable.rsz_dark_mountains_1, R.color.white);
+        else if (bgId.equals(backgroundEntity.RSZ_BRIDGE_IN_FOREST_2)) setBackgroundAndTextColor(view, tvQuote, tvAuthor, R.drawable.rsz_bridge_in_forest_2, R.color.white);
+        else if (bgId.equals(backgroundEntity.RSZ_FOREST_1)) setBackgroundAndTextColor(view, tvQuote, tvAuthor, R.drawable.rsz_forest_1, R.color.white);
+        else if (bgId.equals(backgroundEntity.RSZ_GREY)) setBackgroundAndTextColor(view, tvQuote, tvAuthor, R.drawable.rsz_grey, R.color.white);
+        else if (bgId.equals(backgroundEntity.RSZ_ORANGE_PURPLE_GRADIENT)) setBackgroundAndTextColor(view, tvQuote, tvAuthor, R.drawable.rsz_orange_purple_gradient, R.color.white);
+        else if (bgId.equals(backgroundEntity.RSZ_WHITE_GRADIENT)) setBackgroundAndTextColor(view, tvQuote, tvAuthor, R.drawable.rsz_white_gradient, R.color.grey);
+        else if (bgId.equals(backgroundEntity.DYNAMIC)) {
+
         }
     }
 
@@ -233,7 +194,7 @@ public class QuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      * @return key of the last quote in the list
      */
     public String getLastItemId() {
-        if (list.size() > 0) {
+        if (!list.isEmpty()) {
             return list.get(list.size() - 1).getKey();
         } else {
             return "";

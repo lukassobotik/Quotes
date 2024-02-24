@@ -172,6 +172,9 @@ public class UserQuoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
      * @return key of the last quote in the list
      */
     public String getLastItemId() {
+        if (list.isEmpty()) {
+            return null;
+        }
         return list.get(list.size() - 1).getKey();
     }
 }
