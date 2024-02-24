@@ -99,14 +99,15 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
         if (isUserLoggedIn) {
             defineViews(fragmentView);
 
+            if (viewedCollectionParam != null) {
+                System.out.println("Viewed Collection: " + viewedCollectionParam);
+                loadCollection(viewedCollectionParam);
+            }
+
             collectionsAdapter.setOnItemClickListener(this);
             collectionsAdapter.setOnItemLongClickListener(this);
             collectionsAdapter.setOnPinClickListener(this);
             quoteAdapter.setOnQuoteLongClickListener(this);
-
-            if (viewedCollectionParam != null) {
-                loadCollection(viewedCollectionParam);
-            }
 
             addButton.setOnClickListener(view -> createCollection());
 
@@ -139,6 +140,10 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
         }
 
         return fragmentView;
+    }
+
+    public void setArgViewedCollection(String viewedCollectionParam) {
+        this.viewedCollectionParam = viewedCollectionParam;
     }
 
     private void createCollection() {
@@ -193,29 +198,27 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Quote> quotes = new ArrayList<>();
                 for (DataSnapshot data : snapshot.getChildren()) {
-                    try {
-                        Quote quote = data.getValue(Quote.class);
+                    System.out.println("LOADING QUOTES FROM " + collection);
 
-                        if (quote == null) {
-                            continue;
-                        }
-
-                        if ("".equals(quote.getQuote()) && "".equals(quote.getAuthor()) && "".equals(quote.getUser())) {
-                            continue;
-                        }
-
-                        Quote quoteWithKey = new Quote(quote.getQuote(), quote.getAuthor(), quote.getUser(), data.getKey());
-                        quotes.add(quoteWithKey);
-                    } catch (Exception e) {
-                        Log.d("loadQuotes", "Error: " + e.getMessage());
+                    if ("favorite".equals(data.getKey())) {
+                        continue;
                     }
+
+                    Quote quote = data.getValue(Quote.class);
+
+                    if (quote == null || ("".equals(quote.getQuote()) && "".equals(quote.getAuthor()) && "".equals(quote.getUser()))) {
+                        continue;
+                    }
+
+                    Quote quoteWithKey = new Quote(quote.getQuote(), quote.getAuthor(), quote.getUser(), data.getKey());
+                    quotes.add(quoteWithKey);
                 }
 
                 if (deleteOldQuotes) {
-                    quoteAdapter.setItems(new ArrayList<>(quotes));
+                    quoteAdapter.setItems(quotes);
                     quoteAdapter.notifyDataSetChanged();
                 } else {
-                    quoteAdapter.addItems(new ArrayList<>(quotes));
+                    quoteAdapter.addItems(quotes);
                     quoteAdapter.notifyItemRangeInserted(quoteAdapter.getItemCount(), quotes.size());
                 }
 
@@ -229,6 +232,7 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
     }
 
     public void loadCollection(String collection) {
+        System.out.println("Loading collection: " + "\"" + collection + "\"");
         localCollection = collection;
         viewedCollectionParam = collection;
         backButton.setVisibility(View.VISIBLE);
@@ -369,7 +373,11 @@ public class CollectionsFragment extends Fragment implements CollectionActivityA
         quoteAdapter = new QuoteAdapter(getActivity());
         collectionsAdapter = new CollectionActivityAdapter(getContext(), options);
         collectionsAdapter.startListening();
-        recyclerView.setAdapter(collectionsAdapter);
+        if (viewedCollectionParam == null || viewedCollectionParam.isEmpty()) {
+            recyclerView.setAdapter(collectionsAdapter);
+        } else {
+            recyclerView.setAdapter(quoteAdapter);
+        }
         shareButton = view.findViewById(R.id.collectionsShareButton);
 
         createCollectionsSkeleton();

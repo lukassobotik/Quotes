@@ -79,7 +79,7 @@ public class BookmarksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 });
             } else if (currentFragment instanceof HomeFragment) {
                 holder.itemView.setOnClickListener(view -> {
-                    ((MainActivity) context).collectionsActivityFragment = CollectionsFragment.newInstance(collectionName);
+                    ((MainActivity) context).collectionsActivityFragment.setArgViewedCollection(vh.name.getText().toString());
                     ((MainActivity) context).loadFragment(((MainActivity) context).collectionsActivityFragment);
                 });
             }
