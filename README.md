@@ -1,6 +1,6 @@
 <div align="center"><img style="align:center;" src="./app/src/rsz_logo.png" alt="Logo" width="100" /></div>
 <h1 align="center">myQuotes</h1>
-<h3 align="center">Share, Discover and Save New Quotes!</h3>
+<h3 align="center">Manage Your Quotes!</h3>
 <p align="center">
 <a href="https://play.google.com/store/apps/details?id=com.sforge.quotes">Play Store</a> | <a href="https://www.buymeacoffee.com/lukassobotik">Support Me</a> | <a href="https://lukassobotik.dev/project/myQuotes">Website</a> | <a href="https://github.com/lukassobotik/Quotes/blob/master/PrivacyPolicy.md">Privacy Policy</a> | <a href="https://github.com/lukassobotik/Quotes/blob/master/LICENSE">License</a>
 </p>
