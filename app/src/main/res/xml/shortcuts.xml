@@ -1,0 +1,58 @@
+<?xml version ="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Add shortcuts that launch your app to a specific screen or task. -->
+    <!-- Learn more at https://developer.android.com/guide/topics/ui/shortcuts/creating-shortcuts -->
+    <!-- <shortcut android:shortcutId="SHORTCUT_ID" -->
+    <!--     android:enabled="true" -->
+    <!--     android:shortcutShortLabel="SHORTCUT_SHORT_LABEL" -->
+    <!--     android:shortcutLongLabel="SHORTCUT_LONG_LABEL" -->
+    <!--     android:shortcutDisabledMessage="SHORTCUT_DISABLED_MESSAGE"> -->
+    <!--     <intent -->
+    <!--         android:action="android.intent.action.VIEW" -->
+    <!--         android:targetClass="REPLACE_IT_WITH_FULL_QUALIFIED_CLASS" -->
+    <!--         android:targetPackage="REPLACE_IT_WITH_TARGET_PACKAGE" /> -->
+    <!-- </shortcut> -->
+
+    <!-- Integrate with Google Assistant App Actions for launching your app with various voice commands. -->
+    <!-- Learn more at: https://developers.google.com/assistant/app/overview -->
+    <!-- <capability android:name="actions.intent.OPEN_APP_FEATURE"> -->
+    <!--     Provide query fulfillment instructions for this capability, or bind it to a shortcut. -->
+    <!--     Learn more at: https://developers.google.com/assistant/app/action-schema -->
+    <!-- </capability> -->
+    <shortcut
+            android:shortcutId="collections"
+            android:enabled="true"
+            android:icon="@drawable/collections"
+            android:shortcutShortLabel="@string/collections"
+            android:shortcutLongLabel="@string/collections"
+            android:shortcutDisabledMessage="@string/collections">
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.sforge.quotes"
+                android:targetClass="com.sforge.quotes.activity.CollectionsActivity" />
+    </shortcut>
+    <shortcut
+            android:shortcutId="explore"
+            android:enabled="true"
+            android:icon="@drawable/explore_white_bg"
+            android:shortcutShortLabel="@string/explore"
+            android:shortcutLongLabel="@string/explore"
+            android:shortcutDisabledMessage="@string/explore">
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.sforge.quotes"
+                android:targetClass="com.sforge.quotes.activity.ExploreActivity" />
+    </shortcut>
+    <shortcut
+            android:shortcutId="create"
+            android:enabled="true"
+            android:icon="@drawable/create_white_bg"
+            android:shortcutShortLabel="@string/create_quote"
+            android:shortcutLongLabel="@string/create_a_new_quote"
+            android:shortcutDisabledMessage="@string/create_a_new_quote_is_unavailable">
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.sforge.quotes"
+                android:targetClass="com.sforge.quotes.activity.CreateQuoteActivity" />
+    </shortcut>
+</shortcuts>

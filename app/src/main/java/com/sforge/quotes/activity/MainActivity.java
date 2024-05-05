@@ -42,7 +42,16 @@ public class MainActivity extends AppCompatActivity implements CollectionsDialog
         collectionsActivityFragment = new CollectionsFragment();
         collectionsActivityFragment.setEnterTransition(new Fade());
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
+        // Read the arguments from the intent.
+        if (getIntent().getBooleanExtra("create", false)) {
+            loadFragment(createQuotesFragment);
+        } else if (getIntent().getBooleanExtra("collections", false)) {
+            loadFragment(collectionsActivityFragment);
+        } else if (getIntent().getBooleanExtra("explore", false)) {
+            loadFragment(exploreFragment);
+        } else {
+            loadFragment(homeFragment);
+        }
 
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         bottomNavigationView.setOnNavigationItemReselectedListener(item -> {

@@ -36,6 +36,7 @@
     <string name="explore">Explore</string>
     <string name="create">Create</string>
     <string name="collections">Collections</string>
+    <string name="profile">Profile</string>
     <string name="account">Account</string>
     <string name="use_dynamic_color">Use Dynamic Color</string>
     <string name="greeting">Hello!</string>
@@ -46,6 +47,9 @@
     <string name="your_random_quote">Your Random Quote</string>
     <string name="no_quote_yet_create_one_now">No quote yet. Create one now!</string>
     <string name="minus_myquotes">- myQuotes</string>
+    <string name="create_quote">Create</string>
+    <string name="create_a_new_quote">Create a new quote</string>
+    <string name="create_a_new_quote_is_unavailable">Create a new quote is unavailable</string>
 
     <string-array name="profileSpinner">
         <item>Profile</item>
