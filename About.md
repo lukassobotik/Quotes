@@ -1,6 +1,6 @@
 Hi, [I'm](https://github.com/lukassobotik) an Indie developer, and I'm trying to make the best apps I possibly can.
 
-This is an open-source app, so you can find the app's code on its [Github Page](https://github.com/lukassobotik/Quotes).
+This is an open-source app, so the code can be found on its [Github Page](https://github.com/lukassobotik/Quotes).
 
 The quotes that are provided by **`@myQuotes`** are fetched from [goodreads.com](https://www.goodreads.com/quotes), 
 so if you like any of them, you should check them out.
